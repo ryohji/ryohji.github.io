@@ -25,6 +25,8 @@ Table of Contents
   * [2.21 Type Annotated Code](#221-type-annotated-code)
 * [3 Python Style Rules](#3-python-style-rules)
   * [3.1 Semicolons](#31-semicolons)
+  * [3.2 Line length](#32-line-length)
+  * [3.3 Parentheses](#33-parentheses)
 
 ## 1 Background
 
@@ -1763,3 +1765,42 @@ when it is sensible.
 これ以外で、行が 80 文字を超えてしまい [yapf](https://github.com/google/yapf/)
 での自動整形で制限内におさまらない場合は、これらはすべて制限を超過してよいものとします。
 コードを書く人は上述の内容にしたがい理にかなった行わけをするよう努めてください。
+
+### 3.3 Parentheses
+
+丸カッコ
+
+Use parentheses sparingly.  
+括弧は控えめに。
+
+It is fine, though not required, to use parentheses around tuples.
+Do not use them in return statements or conditional statements unless
+using parentheses for implied line continuation or to indicate a tuple.  
+タプルのまわりの括弧は、必要とはされていませんが、つけてください。
+ただし return 文や条件文では不要です。（この場合も、
+暗黙の行継続やタプルを明示するためなら利用可です）
+
+```python
+Yes: if foo:
+         bar()
+     while x:
+         x = bar()
+     if x and y:
+         bar()
+     if not x:
+         bar()
+     # For a 1 item tuple the ()s are more visually obvious than the comma.
+     # 1 要素のタプルはコンマでなく () をつかうと見た目でもわかりやすくなります。
+     onesie = (foo,)
+     return foo
+     return spam, beans
+     return (spam, beans)
+     for (x, y) in dict.items(): ...
+```
+```python
+No:  if (x):
+         bar()
+     if not(x):
+         bar()
+     return (foo)
+```
