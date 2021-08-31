@@ -30,6 +30,7 @@ Table of Contents
   * [3.4 Indentation](#34-indentation)
   * [3.5 Blank Lines](#35-blank-lines)
   * [3.6 Whitespace](#36-whitespace)
+  * [3.7 Shebang Line](#37-shebang-line)
 
 ## 1 Background
 
@@ -2042,3 +2043,24 @@ No:
       'long_name': 2,
   }
 ```
+
+
+### 3.7 Shebang Line
+
+シェバン行
+
+Most `.py` files do not need to start with a `#!` line. Start the main file
+of a program with `#!/usr/bin/env python3` (to support virtualenvs) or
+`#!/usr/bin/python3` per
+[PEP-394](https://www.python.org/dev/peps/pep-0394/).  
+ほとんどの `.py` ファイルは `#!` 行ではじめる必要はありません。
+プログラムのメインファイルは（仮想環境に対応するなら） `#!/user/bin/env python3` で、
+あるいは [PEP-394](https://www.python.org/dev/peps/pep-0394/) にしたがって
+`#!/usr/bin/python3` ではじめます。
+
+This line is used by the kernel to find the Python interpreter, but is ignored
+by Python when importing modules. It is only necessary on a file intended to
+be executed directly.  
+この行はカーネルが Python インタープリターを見つけるためにつかうもので、
+Python がモジュールをインポートするときにはこれを無視します。
+これは直接実行する想定のファイルでのみ必要です。
