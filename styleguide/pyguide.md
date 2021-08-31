@@ -11,6 +11,7 @@ Table of Contents
   * [2.6 Nested/Local/Inner Classes and Functions](#26-nestedlocalinner-classes-and-functions)
   * [2.7 Comprehensions & Generator Expressions](#27-comprehensions--generator-expressions)
   * [2.8 Default Iterators and Operators](#28-default-iterators-and-operators)
+  * [2.9 Generators](#29-generators)
 
 ## 1 Background
 
@@ -727,3 +728,47 @@ No:   for key in adict.keys(): ...   # 既定の演算子で充分
       for line in afile.readlines(): ...  # for line in afile: で OK
       for k, v in dict.iteritems(): ...  # Python 3 以降 items() をつかう
 ```
+
+
+### 2.9 Generators
+
+ジェネレーター
+
+Use generators as needed.  
+必要に応じてつかってください。
+
+#### 2.9 Definition
+
+定義
+
+A generator function returns an iterator that yields a value each time it
+executes a `yield` statement. After it yields a value, the runtime state of
+the generator function is suspended until the next value is needed.  
+ジェネレーター関数は `yield` 文を実行するたびに値を生成するイテレーターを返します。
+関数は値を生成すると、次の値が要求されるまでそこで一旦停止状態になります。
+
+#### 2.9.2 Pros
+
+利点
+
+Simpler code, because the state of local variables and control flow are
+preserved for each call. A generator uses less memory than a function that
+creates an entire list of values at once.  
+呼び出しのたびにローカル変数と実行位置（訳注：原文は controll flow）の状態が保存されるため、
+コードが簡単になります。リスト全体を生成する関数とくらべて、ジェネレーターはメモリーを消費しません。
+
+#### 2.9.3 Cons
+
+欠点
+
+None.  
+なし。
+
+#### 2.9.4 Decision
+
+取り決め
+
+Fine. Use “Yields:” rather than “Returns:” in the docstring for generator
+functions.  
+すばらしい。
+ジェネレーター関数の docstring では “Returns:” でなく “Yields:” をつかいます。
