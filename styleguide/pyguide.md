@@ -1663,3 +1663,103 @@ to put two statements on the same line.
 行末にセミコロンをおいてはいけません。
 ふたつの文を一行にまとめるためにセミコロンをつかってもいけません。
 
+
+### 3.2 Line length
+
+行の長さ
+
+Maximum line length is *80 characters*.  
+１行は最大で *80文字まで* とします。
+
+Explicit exceptions to the 80 character limit:  
+80文字を超えてよいのは以下にかぎります：
+
+* Long import statements.  
+長いインポート文。
+* URLs, pathnames, or long flags in comments.  
+コメント中の URL、ファイルパス名、長いフラグなど。
+* Long string module level constants not containing whitespace that would be
+inconvenient to split across lines such as URLs or pathnames.  
+モジュールレベルの文字列定数で空白をふくんでおらず、 URL
+やファイルパス名のように行をまたいだ分割が適さないもの。
+  * Pylint disable comments. (e.g.: `# pylint: disable=invalid-name`)  
+  Pylint 停止コメントを付します（`# pylint: disable=invalid-name`）
+
+Do not use backslash line continuation except for `with` statements requiring
+three or more context managers.  
+バックスラッシュによる行継続はつかいません。（例外として、３つ以上のコンテキスト・
+マネージャーを必要とする `with` 文はバックスラッシュ継続を認めます）
+
+Make use of
+[Python’s implicit line joining inside parentheses, brackets and braces](http://docs.python.org/reference/lexical_analysis.html#implicit-line-joining).
+If necessary, you can add an extra pair of parentheses around an expression.  
+[Python の括弧内の暗黙の行結合](http://docs.python.org/reference/lexical_analysis.html#implicit-line-joining)を活用します。
+必要に応じて式をかこむ括弧を追加してください。
+
+```python
+Yes: foo_bar(self, width, height, color='black', design=None, x='foo',
+             emphasis=None, highlight=0)
+
+     if (width == 0 and height == 0 and
+         color == 'red' and emphasis == 'strong'):
+```
+
+When a literal string won’t fit on a single line, use parentheses for implicit
+line joining.  
+文字列リテラルが一行におさまらなければ括弧による行結合をつかいます。
+
+```python
+x = ('This will build a very long long '
+     'long long long long long long string')
+```
+
+Within comments, put long URLs on their own line if necessary.  
+コメント中では、必要に応じて長い URL のために１行つかってください。
+
+```python
+Yes:  # See details at
+      # http://www.example.com/us/developer/documentation/api/content/v2.0/csv_file_name_extension_full_specification.html
+```
+```python
+No:  # See details at
+     # http://www.example.com/us/developer/documentation/api/content/\
+     # v2.0/csv_file_name_extension_full_specification.html
+```
+
+It is permissible to use backslash continuation when defining a `with`
+statement whose expressions span three or more lines. For two lines of
+expressions, use a nested `with` statement:  
+３行以上にまたがる `with` 文を定義するときはバックスラッシュでの行継続をつかってよいものとします。
+２式までなら `with` 文を入れ子にしてください。
+
+```python
+Yes:  with very_long_first_expression_function() as spam, \
+           very_long_second_expression_function() as beans, \
+           third_thing() as eggs:
+          place_order(eggs, beans, spam, beans)
+```
+```python
+No:  with VeryLongFirstExpressionFunction() as spam, \
+          VeryLongSecondExpressionFunction() as beans:
+       PlaceOrder(beans, spam)
+```
+```python
+Yes:  with very_long_first_expression_function() as spam:
+          with very_long_second_expression_function() as beans:
+              place_order(beans, spam)
+```
+
+Make note of the indentation of the elements in the line continuation
+examples above; see the [indentation](#34-indentation) section for
+explanation.  
+上記例中の継続行内要素のインデントについて注意してください。
+詳細は[インデント](#34-indentation)の節を参照してください。
+
+In all other cases where a line exceeds 80 characters, and the
+[yapf](https://github.com/google/yapf/) auto-formatter does not help bring
+the line below the limit, the line is allowed to exceed this maximum.
+Authors are encouraged to manually break the line up per the notes above
+when it is sensible.  
+これ以外で、行が 80 文字を超えてしまい [yapf](https://github.com/google/yapf/)
+での自動整形で制限内におさまらない場合は、これらはすべて制限を超過してよいものとします。
+コードを書く人は上述の内容にしたがい理にかなった行わけをするよう努めてください。
