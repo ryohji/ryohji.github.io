@@ -20,6 +20,7 @@ Table of Contents
   * [2.16 Lexical Scoping](#216-lexical-scoping)
   * [2.17 Function and Method Decorators](#217-function-and-method-decorators)
   * [2.18 Threading](#218-threading)
+  * [2.19 Power Features](#219-power-features)
 
 ## 1 Background
 
@@ -1387,3 +1388,57 @@ using lower-level locks.
 スレッド間でのデータの受けわたしには Queue モジュールの `Queue` データ型をつかいましょう。
 そうでなければ threading モジュールと、これのロック用プリミティブをつかいます。
 その他の低レベルロックでなく条件変数 `threading.Condition` をつかってください。
+
+### 2.19 Power Features
+
+上級者機能
+
+Avoid these features.  
+つかわないでください。
+
+#### 2.19.1 Definition
+
+定義
+
+Python is an extremely flexible language and gives you many fancy features
+such as custom metaclasses, access to bytecode, on-the-fly compilation,
+dynamic inheritance, object reparenting, import hacks, reflection (e.g.
+some uses of `getattr()`), modification of system internals, `__del__`
+methods implementing customized cleanup, etc.  
+Python は柔軟性に富んでいます。カスタム・メタクラス、バイトコードへのアクセス、
+実行時コンパイル、動的継承、親の更新、インポートハック、リフレクション（`getattr()`
+の応用）、システム内部の書きかえ、 `__del__` メソッドによるクリーンアップの改造など、
+めくるめく機能が目白押しです。
+
+#### 2.19.2 Pros
+
+利点
+
+These are powerful language features. They can make your code more compact.  
+強力な言語機能です。コードをより小さくできます。
+
+#### 2.19.3 Cons
+
+欠点
+
+It’s very tempting to use these “cool” features when they’re not absolutely
+necessary. It’s harder to read, understand, and debug code that’s using
+unusual features underneath. It doesn’t seem that way at first (to the
+original author), but when revisiting the code, it tends to be more difficult
+than code that is longer but is straightforward.  
+とりたてて必要がなくてもつかいたくなるくらい「魅力的」な機能です。
+しかし背後で一般的でない機能をつかったコードは、読みづらく、把握しづらく、
+デバッグしづらくなります。最初はそうは見えません（コードの原著者には）が、
+ふたたび読みかえしてみると、長めであっても直截に書かれたコードより難しく感じられるものです。
+
+#### 2.19.4 Decision
+
+取り決め
+
+Avoid these features in your code.  
+つかわないでください。
+
+Standard library modules and classes that internally use these features are
+okay to use (for example, `abc.ABCMeta`, `dataclasses`, and `enum`).  
+標準ライブラリー定義のモジュールや、これらを内部的につかうクラスはつかって構いません。
+（たとえば `abc.ABCMeta` や `dataclasses`、 `enum` など）
