@@ -18,6 +18,7 @@ Table of Contents
   * [2.13 Properties](#213-properties)
   * [2.14 True/False Evaluation](#214-truefalse-evaluations)
   * [2.16 Lexical Scoping](#216-lexical-scoping)
+  * [2.17 Function and Method Decorators](#217-function-and-method-decorators)
 
 ## 1 Background
 
@@ -1258,3 +1259,104 @@ So `foo([1, 2, 3])` will print `1 2 3 3`, not `1 2 3 4`.
 
 Okay to use.
 おつかいください。
+
+
+### 2.17 Function and Method Decorators
+
+関数とメソッドのデコレーター
+
+Use decorators judiciously when there is a clear advantage.
+Avoid `staticmethod` and limit use of `classmethod`.  
+明確な利点があると判断できるときにデコレーターをつかいます。
+`staticmethod` はつかわないでください。 `classmethod` の利用は控えてください。
+
+#### 2.17.1 Definition
+
+定義
+
+[Decorators for Functions and Methods](https://docs.python.org/3/glossary.html#term-decorator)
+(a.k.a “the `@` notation”). One common decorator is `@property`, used for
+converting ordinary methods into dynamically computed attributes. However,
+the decorator syntax allows for user-defined decorators as well. Specifically,
+for some function `my_decorator`, this:  
+[関数とメソッドのデコレーター](https://docs.python.org/3/glossary.html#term-decorator)のとおりです
+（「`@` 記法」ともいう）。 `@property` が有名です。これはふつうのメソッドを動的に計算する属性に変換します。
+ところでデコレーターの文法はユーザー定義のデコレーターをつくるためにもつかえます。
+たとえばある関数 `my_decorator` があるとして、つぎのようにつかうと：
+
+```python
+class C:
+    @my_decorator
+    def method(self):
+        # method body ...
+```
+
+is equivalent to:  
+これはつぎとおなじ効果をもちます：
+
+```python
+class C:
+    def method(self):
+        # method body ...
+    method = my_decorator(method)
+```
+
+#### 2.17.2 Pros
+
+利点
+
+Elegantly specifies some transformation on a method; the transformation might
+eliminate some repetitive code, enforce invariants, etc.  
+メソッドへのある種の変換をエレガントに表現できます。この変換はコードの繰り返しをなくしたり、
+不変条件の強化などのためにつかえます。
+
+#### 2.17.3 Cons
+
+欠点
+
+Decorators can perform arbitrary operations on a function’s arguments or
+return values, resulting in surprising implicit behavior. Additionally,
+decorators execute at import time. Failures in decorator code are pretty
+much impossible to recover from.  
+デコレーターは関数の引数や戻り値にたいしてあらゆる操作ができるため、
+驚くような予期せぬ結果が生じます。加えてデコレーターはインポート時に処理されます。
+デコレーターの実装に問題があると、ここから復帰することはほぼ不可能です。
+
+#### 2.17.4 Decision
+
+取り決め
+
+Use decorators judiciously when there is a clear advantage. Decorators
+should follow the same import and naming guidelines as functions. Decorator
+pydoc should clearly state that the function is a decorator. Write unit
+tests for decorators.  
+明確な利点があると判断できるときだけデコレーターをつかいます。
+デコレーターは関数と同じインポートと名前づけのガイドラインにしたがってください。
+デコレーターの docstring では、それがデコレーターであると明記してください。
+デコレーター（の定義）にはユニットテストを書きます。
+
+Avoid external dependencies in the decorator itself (e.g. don’t rely on
+files, sockets, database connections, etc.), since they might not be
+available when the decorator runs (at import time, perhaps from `pydoc`
+or other tools). A decorator that is called with valid parameters should
+(as much as possible) be guaranteed to succeed in all cases.  
+デコレーターに外部への依存を持ちこまないでください（つまり、ファイルやソケット、
+データベース接続などに頼らない）。これらはデコレーターの解釈時に利用できないかもしれません
+（解釈はインポート時におこなわれ、 pydoc などのツールもインポートはします）。
+ただしく呼びだされたデコレーターはいかなるときも必ず成功するようにしてください。
+
+Decorators are a special case of “top level code” - see [main](#317-main)
+for more discussion.  
+デコレーターは「トップレベルコード」の特殊な場合です。詳細は [main](#317-main)
+の節を参照してください。
+
+Never use `staticmethod` unless forced to in order to integrate with an
+API defined in an existing library. Write a module level function instead.  
+`staticmethod` の利用は禁止です。
+（既存のライブラリーに定義された API と結合するために指定されている場合は除きます）  
+代わりにモジュールレベルの関数を定義してください。
+
+Use `classmethod` only when writing a named constructor or a class-specific
+routine that modifies necessary global state such as a process-wide cache.  
+`classmethod` は名前つきコンストラクターや、
+プロセスワイドなキャッシュのような大域的状態の変更が避けられないクラス固有の処理を定義するときに（のみ）つかいます。
