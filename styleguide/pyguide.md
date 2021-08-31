@@ -7,6 +7,7 @@ Table of Contents
   * [2.2 Imports](#22-imports)
   * [2.3 Packages](#23-packages)
   * [2.4 Exceptions](#24-exceptions)
+  * [2.5 Global variables](#25-global-variables)
 
 ## 1 Background
 
@@ -429,3 +430,58 @@ raised in the `try` block. This is often useful for cleanup, i.e., closing a
 file.  
 `finally` 節は `try` ブロック内での例外の発生如何によらず実行したいコードを書くためにつかいます。
 `finally` はファイルを閉じるといった後片付けに役立ちます。
+
+### 2.5 Global variables
+
+大域変数
+
+Avoid global variables.  
+大域変数はつかいません。
+
+
+#### 2.5.1 Definition
+
+定義
+
+Variables that are declared at the module level or as class attributes.  
+モジュールレベルあるいはクラスの属性として宣言された変数のことです。
+（訳注：クラスの属性はメソッドの外で定義するクラスの変数です）
+
+#### 2.5.2 Pros
+
+利点
+
+Occasionally useful.  
+ときとして便利です。
+
+#### 2.5.3 Cons
+
+欠点
+
+Has the potential to change module behavior during the import, because
+assignments to global variables are done when the module is first imported.  
+インポートの間にモジュールのふるまいを変えてしまうことがあります。
+大域変数はモジュールの初回インポートで代入（設定）されるためです。
+
+#### 2.5.4 Decision
+
+取り決め
+
+Avoid global variables.  
+大域変数はつかいません。
+
+While they are technically variables, module-level constants are permitted
+and encouraged. For example: `_MAX_HOLY_HANDGRENADE_COUNT = 3`. Constants must
+be named using all caps with underscores. See Naming below.  
+技術的には変数ですが、モジュールレベルの定数は積極的につかいましょう。
+たとえば `_MAX_HOLY_HANDGRANADE_COUNT = 3` といったものです。
+定数名はすべて大文字とアンダースコア（キャピタルスネークケース）で構成します。
+あとの[名づけ](#316-naming)も参照してください。
+
+If needed, globals should be declared at the module level and made internal
+to the module by prepending an `_` to the name. External access must be done
+through public module-level functions. See Naming below.  
+つかう場合は、大域変数はモジュールレベルで宣言し、またモジュール内に限定します。
+名前に `_` を前置することでモジュール内部変数とできます。
+外部からこれにアクセスするときはモジュールレベルの公開関数をつかいます。
+[名づけ](#316-naming)も参照してください。
