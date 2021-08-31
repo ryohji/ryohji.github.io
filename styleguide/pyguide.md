@@ -16,6 +16,7 @@ Table of Contents
   * [2.11 Conditional Expressions](#211-conditional-expressions)
   * [2.12 Default Argument Values](#212-default-argument-values)
   * [2.13 Properties](#213-properties)
+  * [2.14 True/False Evaluation](#214-truefalse-evaluations)
 
 ## 1 Background
 
@@ -1076,3 +1077,104 @@ Yes: import math
          def perimeter(self) -> float:
              return self.side * 4
 ```
+
+
+### 2.14 True/False Evaluations
+
+真と偽の評価
+
+Use the “implicit” false if at all possible.  
+可能なところではすべて「暗黙の」 false を使います。
+
+#### 2.14.1 Definition
+
+定義
+
+Python evaluates certain values as `False` when in a boolean context. A quick
+“rule of thumb” is that all “empty” values are considered false, so `0`,
+`None`, `[]`, `{}`, `''` all evaluate as false in a boolean context.  
+Python ではいくつかの値がブール値の文脈で `False` になります。
+大雑把にいうと「空」の値は偽になります。たとえば `0`、 `None`、 `[]`、 `{}` や `’’`
+はブール値として評価すると偽になります。
+
+#### 2.14.2 Pros
+
+利点
+
+Conditions using Python booleans are easier to read and less error-prone.
+In most cases, they’re also faster.  
+Python のブール値による条件式は読みやすく、また間違いを起こしにくくなっています。
+ほとんどの場合、高速でもあります。
+
+#### 2.14.3 Cons
+
+欠点
+
+May look strange to C/C++ developers.  
+C/C++ 開発者には不思議におもえるかもしれません。
+
+#### 2.14.4 Decision
+
+取り決め
+
+Use the “implicit” false if possible, e.g., `if foo:` rather than
+`if foo != []:`. There are a few caveats that you should keep in mind though:  
+可能なところではすべて「暗黙の」 false を使います。たとえば `if foo != []:` でなく
+`if foo:` と書きます。ただしいくつか注意点がありますので覚えておいてください：
+
+* Always use `if foo is None:` (or `is not None`) to check for a `None` value.
+E.g., when testing whether a variable or argument that defaults to None was
+set to some other value. The other value might be a value that’s false in a
+boolean context!  
+None はかならず `if foo is None` （あるいは `is not None`）で確認してください。
+変数や引数のデフォルト値 `None` が別の値かを確かめるときなどです。
+ほかにもブール値として偽と評価される値があります！
+* Never compare a boolean variable to `False` using `==`. Use `if not x:`
+instead. If you need to distinguish `False` from `None` then chain the
+expressions, such as `if not x and x is not None:`.  
+ブール変数を `False` と `==` で比較せず、代わりに `if not x:` とします。
+`False` と `None` を判別するには `if not x and x is not None:`
+のように式をつなぎます。
+* For sequences (strings, lists, tuples), use the fact that empty sequences
+are false, so `if seq:` and `if not seq:` are preferable to `if len(seq):`
+and `if not len(seq):` respectively.  
+並び（文字列、リスト、タプル）では、空の並びが偽であることを利用して `if seq:`
+あるいは `if not seq:` のように書きます。（`if len(seq):` や `if not len(seq):`
+より望ましい書きかたです）
+* When handling integers, implicit false may involve more risk than benefit
+(i.e., accidentally handling `None` as 0). You may compare a value which
+is known to be an integer (and is not the result of `len()`) against the
+integer 0.  
+整数の処理では暗黙の偽への変換は利点にくらべ危険が大きくなります
+（つまり `None` が誤って 0 になる、など）。整数になることが確実な値は 0
+と比較したほうがよいでしょう。（ただし `len()` の結果は除く）
+
+```python
+Yes: if not users:
+         print('no users')
+
+     if foo == 0:
+         self.handle_zero()
+
+     if i % 10 == 0:
+         self.handle_multiple_of_ten()
+
+     def f(x=None):
+         if x is None:
+             x = []
+```
+```python
+No:  if len(users) == 0:
+         print('no users')
+
+     if foo is not None and not foo:
+         self.handle_zero()
+
+     if not i % 10:
+         self.handle_multiple_of_ten()
+
+     def f(x=None):
+         x = x or []
+```
+* Note that `'0'` (i.e., `0` as string) evaluates to true.  
+（数値の `0` でなく文字列の） `'0'` は真になることに注意。
