@@ -14,6 +14,7 @@ Table of Contents
   * [2.9 Generators](#29-generators)
   * [2.10 Lambda Functions](#210-lambda-functions)
   * [2.11 Conditional Expressions](#211-conditional-expressions)
+  * [2.12 Default Argument Values](#212-default-argument-values)
 
 ## 1 Background
 
@@ -544,7 +545,7 @@ They are fine with some caveats. Avoid nested functions or classes except when
 closing over a local value other than `self` or `cls`. Do not nest a function
 just to hide it from users of a module. Instead, prefix its name with an `_`
 at the module level so that it can still be accessed by tests.  
-いくつかの欠点があるもののすばらしいものです。
+いくつか注意は必要ですがすばらしいものです。
 （`self` と `cls` を除く）ローカル変数を閉じこむ以外の目的で関数やクラスを入れ子にしてはいけません。
 関数をモジュールの利用者から隠すために入れ子にしてはいけません。
 この目的ならば `_` を前置してモジュールレベルで定義します（これならテストもできます）。
@@ -892,4 +893,80 @@ No:
                         if some_long_module.some_long_predicate_function(
                             really_long_variable_name)
                         else 'no, false, negative, nay')
+```
+
+### 2.12 Default Argument Values
+
+デフォルト引数
+
+Okay in most cases.  
+おおむね、つかってよいです。
+
+#### 2.12.1 Definition
+
+定義
+
+You can specify values for variables at the end of a function’s parameter list,
+e.g., `def foo(a, b=0):`. If `foo` is called with only one argument, `b` is set
+to 0. If it is called with two arguments, `b` has the value of the second
+argument.  
+たとえば `def foo(a, b=0):` のように関数の引数には値を指定できます（訳注：末尾から順に、間をあけずに）。
+`foo` を引数ひとつで呼びだすと `b` は 0 になります。二引数で呼びだせば `b` はふたつめの値になります。
+
+#### 2.12.2 Pros
+
+利点
+
+Often you have a function that uses lots of default values, but on rare
+occasions you want to override the defaults. Default argument values provide
+an easy way to do this, without having to define lots of functions for the rare
+exceptions. As Python does not support overloaded methods/functions, default
+arguments are an easy way of “faking” the overloading behavior.  
+たくさんの規定値をほとんど変えずに使える関数をつくるとします。
+デフォルト引数はこれを実現する簡単な方法です。
+すなわち、まれな例外ケースのためにたくさんの関数をつくらずに済みます。
+（訳注：引数ひとつ版、一個飛ばし版などのオーバーロードをたくさん定義せずにすむ）  
+Python では関数やメソッドをオーバーロードできませんが、
+デフォルト引数でオーバーロード的なふるまいを実現できます。
+
+#### 2.12.3 Cons
+
+欠点
+
+Default arguments are evaluated once at module load time. This may cause
+problems if the argument is a mutable object such as a list or a dictionary.
+If the function modifies the object (e.g., by appending an item to a list),
+the default value is modified.  
+デフォルト引数はモジュールのロード時に一度だけ評価されます。
+このため引数がリストや辞書のような変更可能なオブジェクトになっていると問題が起きます。
+関数がオブジェクトを変更すると（リストに要素を追加するなど）デフォルト値が変わってしまうのです。
+
+#### 2.12.4 Decision
+
+Okay to use with the following caveat:  
+次の警告にしたがう前提でつかってよいです。
+
+Do not use mutable objects as default values in the function or method
+definition.  
+変更可能なオブジェクトを関数やメソッドの初期値として使わない。
+
+```python
+Yes: def foo(a, b=None):
+         if b is None:
+             b = []
+Yes: def foo(a, b: Optional[Sequence] = None):
+         if b is None:
+             b = []
+Yes: def foo(a, b: Sequence = ()):  # Empty tuple OK since tuples are immutable
+         ...
+```
+```python
+No:  def foo(a, b=[]):
+         ...
+No:  def foo(a, b=time.time()):  # The time the module was loaded???
+         ...
+No:  def foo(a, b=FLAGS.my_thing):  # sys.argv has not yet been parsed...
+         ...
+No:  def foo(a, b: Mapping = {}):  # Could still get passed to unchecked code
+         ...
 ```
