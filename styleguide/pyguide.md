@@ -19,6 +19,7 @@ Table of Contents
   * [2.14 True/False Evaluation](#214-truefalse-evaluations)
   * [2.16 Lexical Scoping](#216-lexical-scoping)
   * [2.17 Function and Method Decorators](#217-function-and-method-decorators)
+  * [2.18 Threading](#218-threading)
 
 ## 1 Background
 
@@ -1360,3 +1361,29 @@ Use `classmethod` only when writing a named constructor or a class-specific
 routine that modifies necessary global state such as a process-wide cache.  
 `classmethod` は名前つきコンストラクターや、
 プロセスワイドなキャッシュのような大域的状態の変更が避けられないクラス固有の処理を定義するときに（のみ）つかいます。
+
+
+### 2.18 Threading
+
+マルチスレッド
+
+Do not rely on the atomicity of built-in types.  
+組み込み型の不可分性にたよらないでください。
+
+While Python’s built-in data types such as dictionaries appear to have
+atomic operations, there are corner cases where they aren’t atomic (e.g. if
+`__hash__` or `__eq__` are implemented as Python methods) and their atomicity
+should not be relied upon. Neither should you rely on atomic variable
+assignment (since this in turn depends on dictionaries).  
+辞書のような Python 組み込みデータ型が不可分操作を提供しているように見えても、
+これらには不可分ではないエッジケースがあります（`__hash__` や `__eq__` が Python
+のメソッドとして実装されている場合など）。そしてその不可分性をあてにしてはならないのです。
+もちろん代入の不可分性もあてにしてはいけません（それが辞書になっていたとしてもです）。
+
+Use the Queue module’s `Queue` data type as the preferred way to communicate
+data between threads. Otherwise, use the threading module and its locking
+primitives. Prefer condition variables and `threading.Condition` instead of
+using lower-level locks.  
+スレッド間でのデータの受けわたしには Queue モジュールの `Queue` データ型をつかいましょう。
+そうでなければ threading モジュールと、これのロック用プリミティブをつかいます。
+その他の低レベルロックでなく条件変数 `threading.Condition` をつかってください。
