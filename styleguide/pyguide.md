@@ -21,6 +21,7 @@ Table of Contents
   * [2.17 Function and Method Decorators](#217-function-and-method-decorators)
   * [2.18 Threading](#218-threading)
   * [2.19 Power Features](#219-power-features)
+  * [2.20 Modern Python: from __future__ imports](#220-modern-python-from-__future__-imports)
 
 ## 1 Background
 
@@ -1442,3 +1443,116 @@ Standard library modules and classes that internally use these features are
 okay to use (for example, `abc.ABCMeta`, `dataclasses`, and `enum`).  
 標準ライブラリー定義のモジュールや、これらを内部的につかうクラスはつかって構いません。
 （たとえば `abc.ABCMeta` や `dataclasses`、 `enum` など）
+
+
+### 2.20 Modern Python: from __future__ imports
+
+Python 新機能: `__future__` インポート
+
+New language version semantic changes may be gated behind a special future
+import to enable them on a per-file basis within earlier runtimes.  
+新バージョンで加わる言語的変更は、それより前バージョンのランタイムでも future
+特殊インポートによりファイル単位で有効にできます。
+
+#### 2.20.1 Definition
+
+定義
+
+Being able to turn on some of the more modern features via
+`from __future__ import` statements allows early use of features from expected
+future Python versions.  
+`from __future__ import` 文で新機能を有効にすると、 Python
+の将来バージョンでの機能を先行してつかえます。
+
+#### 2.20.2 Pros
+
+利点
+
+This has proven to make runtime version upgrades smoother as changes can be
+made on a per-file basis while declaring compatibility and preventing
+regressions within those files. Modern code is more maintainable as it is
+less likely to accumulate technical debt that will be problematic during
+future runtime upgrades.  
+ランタイムを円滑にアップグレードできます。ファイル単位で変更できますし、
+これらファイル中で互換性を定義したりバグを回帰させないよう対策できるためです。
+コードを近代化することで保守性も高まります。
+将来のランタイム更新に禍根を残すだろう技術的負債の蓄積を解消することにもなるからです。
+
+#### 2.20.3 Cons
+
+欠点
+
+Such code may not work on very old interpreter versions prior to the
+introduction of the needed future statement. The need for this is more common
+in projects supporting an extremely wide variety of environments.  
+future 文がつかえるようになる前のはるかに古いインタープリターではつかえません。
+広範な環境をサポートするプロジェクトでは切実な問題です。
+
+#### 2.20.4 Decision
+
+取り決め
+
+##### from __future__ imports
+
+Use of `from __future__ import` statements is encouraged. It allows a given
+source file to start using more modern Python syntax features today. Once
+you no longer need to run on a version where the features are hidden behind
+a `__future__` import, feel free to remove those lines.  
+`from __future__ import` 文を活用してください。そのソースで、その日から近代的な
+Python 文法をつかえます。 `__future__` インポートで機能を上書きするバージョンの対応が不要になったなら、
+ためらわずにこの行の削除してください。
+
+In code that may execute on versions as old as 3.5 rather than >= 3.7,
+import:  
+バージョン 3.7 に満たない 3.5 程度に古い環境で実行するなら次をインポートしてください：
+
+```python
+from __future__ import generator_stop
+```
+
+For legacy code with the burden of continuing to support 2.7, import:  
+2.7 のサポートを続ける重荷を負った古いコードでは次をインポートします：
+
+```python
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+```
+
+For more information read the
+[Python future statement definitions](https://docs.python.org/3/library/__future__.html)
+documentation.  
+さらに詳しくは [Python future 文](https://docs.python.org/3/library/__future__.html)の文書を参照してください。
+
+Please don’t remove these imports until you are confident the code is only
+ever used in a sufficiently modern environment. Even if you do not currently
+use the feature a specific future import enables in your code today, keeping
+it in place in the file prevents later modifications of the code from
+inadvertently depending on the older behavior.  
+上述のインポートは、コードが十二分にあたらしい環境でしか実行されないと確信できるまでは削除しないでください。
+future インポートで有効にした機能をつかっていないとしてもインポートは残してください。
+のちの変更で予期しなかった古い挙動に依存しないようにするためです。
+
+Use other `from __future__ import` statements as you see fit. We did not
+include `unicode_literals` in our recommendations for 2.7 as it was not a
+clear win due to implicit default codec conversion consequences it introduced
+in many places within 2.7. Most dual-version 2-and-3 code was better off with
+explicit use of `b''` and `u''` bytes and unicode string literals where
+necessary.  
+このほかの `from __future__ import` は用途に応じてつかってください。
+なお 2.7 の推奨インポートに `unicode_literals` を含めなかったのは、結果、
+この暗黙の符号変換が 2.7 環境のいたるところで取りこまれるだろうと考えられ、
+しかしこれを正当とする理由が見つけられなかったためです。
+大半のバージョン 2 と 3 両対応のコードは、必要に応じて `b''` と `u''`
+のバイト列とユニコード文字列リテラルを明示的に使いわけるとよいでしょう。
+
+##### The six, future, and past libraries
+
+When your project still needs to support use under both Python 2 and 3, use
+the [six](https://pypi.org/project/six/), [future](https://pypi.org/project/future/),
+and [past](https://pypi.org/project/past/) libraries as you see fit.
+They exist to make your code cleaner and life easier.  
+プロジェクトが Python 2 と 3 の両対応をするなら、 [six](https://pypi.org/project/six/)、
+[future](https://pypi.org/project/future/)、 [past](https://pypi.org/project/past/)
+のいずれか、適切なライブラリーをつかってください。
+これらはコードをきれいに、そして人生を楽にしてくれます。
