@@ -27,6 +27,7 @@ Table of Contents
   * [3.1 Semicolons](#31-semicolons)
   * [3.2 Line length](#32-line-length)
   * [3.3 Parentheses](#33-parentheses)
+  * [3.4 Indentation](#34-indentation)
 
 ## 1 Background
 
@@ -1803,4 +1804,110 @@ No:  if (x):
      if not(x):
          bar()
      return (foo)
+```
+
+
+### 3.4 Indentation
+
+インデント
+
+Indent your code blocks with *4 spaces*.  
+コードブロックは空白４つでインデントします。
+
+Never use tabs or mix tabs and spaces. In cases of implied line continuation,
+you should align wrapped elements either vertically, as per the examples in
+the [line length](#32-line-length) section; or using a hanging indent of 4
+spaces, in which case there should be nothing after the open parenthesis or
+bracket on the first line.  
+タブ文字やタブと空白を混ぜてつかわないでください。意図的に行を継続している場合、
+[行の長さ](#32-line-length)の節で例示したように各要素を縦にそろえてください。
+もしくは４空白のぶらさげインデントをおきます。
+この場合は最初のひらき括弧の後ろにはなにもおかないでください。
+
+```python
+Yes:   # Aligned with opening delimiter
+       # ひらき括弧位置で揃える
+       foo = long_function_name(var_one, var_two,
+                                var_three, var_four)
+       meal = (spam,
+               beans)
+
+       # Aligned with opening delimiter in a dictionary
+       # 辞書でのひらき括弧ぞろえ
+       foo = {
+           'long_dictionary_key': value1 +
+                                  value2,
+           ...
+       }
+
+       # 4-space hanging indent; nothing on first line
+       # ４空白ぶらさげインデント。最初の行にはなにも書かない
+       foo = long_function_name(
+           var_one, var_two, var_three,
+           var_four)
+       meal = (
+           spam,
+           beans)
+
+       # 4-space hanging indent in a dictionary
+       # 辞書での４空白ぶらさげインデント
+       foo = {
+           'long_dictionary_key':
+               long_dictionary_value,
+           ...
+       }
+```
+```python
+No:    # Stuff on first line forbidden
+       # ぶらさげるなら最初の行に要素をいれてはダメ
+       foo = long_function_name(var_one, var_two,
+           var_three, var_four)
+       meal = (spam,
+           beans)
+
+       # 2-space hanging indent forbidden
+       # ぶらさげで２空白はダメ
+       foo = long_function_name(
+         var_one, var_two, var_three,
+         var_four)
+
+       # No hanging indent in a dictionary
+       # ぶらさげインデントのない辞書
+       foo = {
+           'long_dictionary_key':
+           long_dictionary_value,
+           ...
+       }
+```
+
+#### 3.4.1 Trailing commas in sequences of items?
+
+シーケンス末尾のコンマは？
+
+Trailing commas in sequences of items are recommended only when the closing
+container token `]`, `)`, or `}` does not appear on the same line as the final
+element. The presence of a trailing comma is also used as a hint to our Python
+code auto-formatter [YAPF](https://pypi.org/project/yapf/) to direct it to
+auto-format the container of items to one item per line when the `,` after the
+final element is present.  
+項目並びの末尾のコンマは、 `]`、 `)`、 `}` のコンテナ終端トークンが最終要素とおなじ行にないときにつかいます。
+末尾コンマは Python コードの自動整形ツール [YAPF](https://pypi.org/project/yapf/)
+へのヒントにもなっており、末尾コンマはコンテナの要素ごとに１行で整形する指示になります。
+
+```python
+Yes:   golomb3 = [0, 1, 3]
+Yes:   golomb4 = [
+           0,
+           1,
+           4,
+           6,
+       ]
+```
+```python
+No:    golomb4 = [
+           0,
+           1,
+           4,
+           6
+       ]
 ```
