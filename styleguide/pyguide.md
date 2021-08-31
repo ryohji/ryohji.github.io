@@ -12,6 +12,8 @@ Table of Contents
   * [2.7 Comprehensions & Generator Expressions](#27-comprehensions--generator-expressions)
   * [2.8 Default Iterators and Operators](#28-default-iterators-and-operators)
   * [2.9 Generators](#29-generators)
+  * [2.10 Lambda Functions](#210-lambda-functions)
+  * [2.11 Conditional Expressions](#211-conditional-expressions)
 
 ## 1 Background
 
@@ -826,3 +828,68 @@ For common operations like multiplication, use the functions from the
 乗算のような一般的な演算は `operator` モジュール定義の関数をつかってください。
 つまり `lambda x, y: x * y` と書くかわりに `operator.mul` を使います。
 （訳注：たとえば `product` 関数を `product = lambda vs: functools.reduce(operator.mul, vs)` のように定義する）
+
+
+### 2.11 Conditional Expressions
+
+条件式
+
+Okay for simple cases.  
+簡単なものならつかってよいです。
+
+
+#### 2.11.1 Definition
+
+定義
+
+Conditional expressions (sometimes called a “ternary operator”) are mechanisms
+that provide a shorter syntax for if statements. For example:
+`x = 1 if cond else 2`.  
+条件式は（「三項演算子」とも呼ばれます） if 文をより短く書ける記法です。
+たとえば `x = 1 if cond else 2` のようなものです。
+
+#### 2.11.2 Pros
+
+利点
+
+Shorter and more convenient than an if statement.  
+if 文より短く便利です。
+
+#### 2.11.3 Cons
+
+欠点
+
+May be harder to read than an if statement. The condition may be difficult to
+locate if the expression is long.  
+if 文より読みづらくなります。式が長くなると条件を特定するのが難しくなります。
+
+#### 2.11.4 Decision
+
+取り決め
+
+Okay to use for simple cases. Each portion must fit on one line:
+true-expression, if-expression, else-expression. Use a complete if statement
+when things get more complicated.  
+簡単ならつかってよいです。真の式、 if の式、 else の式、それぞれが一行に収まるようにします。
+複雑になるなら if 文を使います。（訳注：先の `x = 1 if cond else 2` で言えば `1` が真の式、
+`if cond` が if の式、 `else 2` が else の式）
+
+```python
+Yes:
+    one_line = 'yes' if predicate(value) else 'no'
+    slightly_split = ('yes' if predicate(value)
+                      else 'no, nein, nyet')
+    the_longest_ternary_style_that_can_be_done = (
+        'yes, true, affirmative, confirmed, correct'
+        if predicate(value)
+        else 'no, false, negative, nay')
+```
+```python
+No:
+    bad_line_breaking = ('yes' if predicate(value) else
+                         'no')
+    portion_too_long = ('yes'
+                        if some_long_module.some_long_predicate_function(
+                            really_long_variable_name)
+                        else 'no, false, negative, nay')
+```
