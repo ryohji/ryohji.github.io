@@ -5,6 +5,7 @@ Table of Contents
 * [2 Python Language Rules](#2-python-language-rules)
   * [2.1 Lint](#21-lint)
   * [2.2 Imports](#22-imports)
+  * [2.3 Packages](#23-packages)
 
 ## 1 Background
 
@@ -206,3 +207,82 @@ importing a package twice.
 相対名でインポートしないでください。
 おなじパッケージ内のモジュールでも完全名をつかいます。
 こうすると気づかずおなじパッケージを二度インポートする愚を避けられます。
+
+### 2.3 Packages
+
+パッケージ
+
+Import each module using the full pathname location of the module.  
+モジュールの完全パス名でインポートします。
+
+#### 2.3.1 Pros
+
+利点
+
+Avoids conflicts in module names or incorrect imports due to the module search
+path not being what the author expected. Makes it easier to find modules.  
+モジュール名の衝突を避けたり（モジュール検索パスが作者の意図とちがうために起きる）不正確なインポートを無くせます。
+また、こうすることでモジュールを探しやすくなります。
+
+#### 2.3.2 Cons
+
+欠点
+
+Makes it harder to deploy code because you have to replicate the package
+hierarchy. Not really a problem with modern deployment mechanisms.  
+パッケージ階層を複製せねばならず、コードを配備しづらくなります。
+とはいえ近年の配備機構があれば、これはさほどの問題ではありません。
+
+#### 2.3.3 Decision
+
+取り決め
+
+All new code should import each module by its full package name.  
+あたらしく書くコードでは、かならずモジュールを完全なパッケージ名でインポートします。
+
+Imports should be as follows:  
+インポートは次のようにします：
+
+Yes:  
+こうです：
+
+```python
+# Reference absl.flags in code with the complete name (verbose).
+# absl.flags の参照はコード中で完全名になります（冗長ですが）。
+import absl.flags
+from doctor.who import jodie
+
+FLAGS = absl.flags.FLAGS
+```
+
+```python
+# Reference flags in code with just the module name (common).
+# flags への参照はコード中でモジュール名だけで済みます（一般的）。
+from absl import flags
+from doctor.who import jodie
+
+FLAGS = flags.FLAGS
+```
+
+No: (assume this file lives in `doctor/who/` where `jodie.py` also exists)  
+こうではありません：（`doctor/who/` の下、 `jodie.py` とおなじ場所のファイルだとして）
+
+```python
+# Unclear what module the author wanted and what will be imported.  The actual
+# import behavior depends on external factors controlling sys.path.
+# Which possible jodie module did the author intend to import?
+# 作者がどのモジュールを期待したか、そして実際になにがインポート
+# されるかが不明瞭。実際のインポートがどう働くかは sys.path を制御する
+# 外部要因で決まります。インポートされうる jodie モジュールは作者が意図した
+# とおりのものでしょうか？
+import jodie
+```
+
+The directory the main binary is located in should not be assumed to be in
+`sys.path` despite that happening in some environments. This being the case,
+code should assume that `import jodie` refers to a third party or top level
+package named `jodie`, not a local `jodie.py`.  
+メインバイナリーが配置されるディレクトリーを、（ある環境ではそうだとしても）
+`sys.path` ディレクトリー内に入るものと仮定してはいけません。
+これは、コードが `import jodie` でサードパーティーの、あるいは最上位パッケージ
+`jodie` を（ローカルにある `jodie.py` でなく）参照するつもりのときに問題になります。
