@@ -17,6 +17,7 @@ Table of Contents
   * [2.12 Default Argument Values](#212-default-argument-values)
   * [2.13 Properties](#213-properties)
   * [2.14 True/False Evaluation](#214-truefalse-evaluations)
+  * [2.16 Lexical Scoping](#216-lexical-scoping)
 
 ## 1 Background
 
@@ -742,7 +743,7 @@ No:   for key in adict.keys(): ...   # 既定の演算子で充分
 Use generators as needed.  
 必要に応じてつかってください。
 
-#### 2.9 Definition
+#### 2.9.1 Definition
 
 定義
 
@@ -1178,3 +1179,82 @@ No:  if len(users) == 0:
 ```
 * Note that `'0'` (i.e., `0` as string) evaluates to true.  
 （数値の `0` でなく文字列の） `'0'` は真になることに注意。
+
+
+### 2.16 Lexical Scoping
+
+文脈スコープ
+
+Okay to use.  
+つかってヨシ！
+
+
+#### 2.16.1 Definition
+
+定義
+
+A nested Python function can refer to variables defined in enclosing functions,
+but cannot assign to them. Variable bindings are resolved using lexical
+scoping, that is, based on the static program text. Any assignment to a name
+in a block will cause Python to treat all references to that name as a local
+variable, even if the use precedes the assignment. If a global declaration
+occurs, the name is treated as a global variable.  
+入れ子の Python 関数はそれを囲む関数の変数を参照できます（ただし代入はできません）。
+変数の束縛は文脈スコープ、つまりプログラムの字面どおりに解決されます。
+ブロック内でのある名前への代入は Python ではローカル変数への参照あつかいになります
+（代入に先行して利用していたとしても）。 global 宣言があるとその名前は大域変数になります。
+（訳注： `global summand1` と宣言すると `summand1` は代入可能な大域変数になる）
+
+An example of the use of this feature is:  
+文脈スコープとは次のようなものです：
+
+```python
+def get_adder(summand1: float) -> Callable[[float], float]:
+    """Returns a function that adds numbers to a given number."""
+    def adder(summand2: float) -> float:
+        return summand1 + summand2
+
+    return adder
+```
+
+#### 2.16.2 Pros
+
+利点
+
+Often results in clearer, more elegant code. Especially comforting to
+experienced Lisp and Scheme (and Haskell and ML and …) programmers.  
+簡潔で洗練されたコードになります。とくに熟練した関数型言語つかい（Lisp や Scheme、 Haskell、 ML など）
+には心地よいでしょう。
+
+#### 2.16.3 Cons
+
+欠点
+
+Can lead to confusing bugs. Such as this example based on
+[PEP-0227](http://www.google.com/url?sa=D&q=http://www.python.org/dev/peps/pep-0227/):  
+見分けづらいバグを生みます。
+以下は [PEP-0227](http://www.google.com/url?sa=D&q=http://www.python.org/dev/peps/pep-0227/) をもとにした例です：
+
+```python
+i = 4
+def foo(x: Iterable[int]):
+    def bar():
+        print(i, end='')
+    # ...
+    # A bunch of code here
+    # ...
+    for i in x:  # Ah, i *is* local to foo, so this is what bar sees
+                 # ここで i が　foo のローカル変数になった。 bar はこれを参照する
+        print(i, end='')
+    bar()
+```
+
+So `foo([1, 2, 3])` will print `1 2 3 3`, not `1 2 3 4`.
+よって `foo([1, 2, 3])` の呼びだしは `1 2 3 3` を表示します。（`1 2 3 4` にはなりません）
+
+#### 2.16.4 Decision
+
+取り決め
+
+Okay to use.
+おつかいください。
