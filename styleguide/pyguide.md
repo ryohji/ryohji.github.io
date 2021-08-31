@@ -15,6 +15,7 @@ Table of Contents
   * [2.10 Lambda Functions](#210-lambda-functions)
   * [2.11 Conditional Expressions](#211-conditional-expressions)
   * [2.12 Default Argument Values](#212-default-argument-values)
+  * [2.13 Properties](#213-properties)
 
 ## 1 Background
 
@@ -969,4 +970,109 @@ No:  def foo(a, b=FLAGS.my_thing):  # sys.argv has not yet been parsed...
          ...
 No:  def foo(a, b: Mapping = {}):  # Could still get passed to unchecked code
          ...
+```
+
+
+### 2.13 Properties
+
+プロパティ
+
+Use properties for accessing or setting data where you would normally
+have used simple, lightweight accessor or setter methods.  
+簡単で軽量な getter/setter をつかってきた場所では、データへのアクセス・設定にプロパティをつかいます。
+
+#### 2.13.1 Definition
+
+定義
+
+A way to wrap method calls for getting and setting an attribute as a
+standard attribute access when the computation is lightweight.  
+（計算時間が軽い）メソッド呼び出しで属性の値の読み出しと設定をするところで、
+これを通常の属性へのアクセスのようにラップする方法です。
+
+#### 2.13.2 Pros
+
+利点
+
+Readability is increased by eliminating explicit get and set method calls
+for simple attribute access. Allows calculations to be lazy. Considered the
+Pythonic way to maintain the interface of a class. In terms of performance,
+allowing properties bypasses needing trivial accessor methods when a direct
+variable access is reasonable. This also allows accessor methods to be added
+in the future without breaking the interface.  
+簡単な属性アクセスの getter/setter メソッド呼び出しをなくせるため可読性が高まります。
+計算を遅らせられます。クラスのインターフェースを維持する Python らしさが考慮されています。
+性能面では、変数への直接アクセスがよさそうなら、些末なアクセッサーメソッドをなくすように実装することもできます。
+将来、インターフェースを壊さずアクセッサーメソッドを追加することもできます。
+
+#### 2.13.3 Cons
+
+欠点
+
+Can hide side-effects much like operator overloading. Can be confusing
+for subclasses.  
+演算子のオーバーロードのように副作用が見えづらくなります。
+サブクラスの実装で混乱するかもしれません。
+
+#### 2.13.4 Decision
+
+取り決め
+
+Use properties in new code to access or set data where you would normally
+have used lightweight accessor or setter methods. Properties should be created
+with the `@property` [decorator](#217-function-and-method-decorators).  
+あたらしく書くコードではデータの読みとり、設定をするときにプロパティをつかいましょう
+（これまでに軽量の getter/setter を書いていたところ）。プロパティは
+`@property` [デコレーター](#217-function-and-method-decorators)で作成します。
+
+Inheritance with properties can be non-obvious if the property itself is
+not overridden. Thus one must make sure that accessor methods are called
+indirectly to ensure methods overridden in subclasses are called by the
+property (using the template method design pattern).  
+プロパティをつかった継承はプロパティそのものをオーバーライドしていないとわかりづらいかもしれません。
+プロパティが、オーバーライドしたアクセッサーメソッドを間接的に呼びだしていないことを確かめなければならないからです
+（テンプレートメソッドのデザインパターンをつかっているときなど）。
+
+```python
+Yes: import math
+
+     class Square:
+         """A square with two properties: a writable area and a read-only perimeter.
+
+         To use:
+         >>> sq = Square(3)
+         >>> sq.area
+         9
+         >>> sq.perimeter
+         12
+         >>> sq.area = 16
+         >>> sq.side
+         4
+         >>> sq.perimeter
+         16
+         """
+
+         def __init__(self, side: float):
+             self.side = side
+
+         @property
+         def area(self) -> float:
+             """Area of the square."""
+             return self._get_area()
+
+         @area.setter
+         def area(self, area: float):
+             self._set_area(area)
+
+         def _get_area(self) -> float:
+             """Indirect accessor to calculate the 'area' property."""
+             return self.side ** 2
+
+         def _set_area(self, area: float):
+             """Indirect setter to set the 'area' property."""
+             self.side = math.sqrt(area)
+
+         @property
+         def perimeter(self) -> float:
+             return self.side * 4
 ```
