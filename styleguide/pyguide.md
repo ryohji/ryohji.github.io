@@ -22,6 +22,7 @@ Table of Contents
   * [2.18 Threading](#218-threading)
   * [2.19 Power Features](#219-power-features)
   * [2.20 Modern Python: from __future__ imports](#220-modern-python-from-__future__-imports)
+  * [2.21 Type Annotated Code](#221-type-annotated-code)
 
 ## 1 Background
 
@@ -1556,3 +1557,92 @@ They exist to make your code cleaner and life easier.
 [future](https://pypi.org/project/future/)、 [past](https://pypi.org/project/past/)
 のいずれか、適切なライブラリーをつかってください。
 これらはコードをきれいに、そして人生を楽にしてくれます。
+
+### 2.21 Type Annotated Code
+
+型注釈つきコード
+
+You can annotate Python 3 code with type hints according to
+[PEP-484](https://www.python.org/dev/peps/pep-0484/), and type-check the
+code at build time with a type checking tool like
+[pytype](https://github.com/google/pytype).  
+Python 3 では [PEP-484](https://www.python.org/dev/peps/pep-0484/)
+にしたがった型ヒントをつけられ、 [pytype](https://github.com/google/pytype)
+などのツールでビルド時に型を確認できます。
+
+Type annotations can be in the source or in a
+[stub pyi file](https://www.python.org/dev/peps/pep-0484/#stub-files).
+Whenever possible, annotations should be in the source. Use pyi files for
+third-party or extension modules.  
+型注釈はソースやスタブの pyi ファイルにつけられます。
+できるかぎりソースで注釈をしてください。
+Pyi ファイルをつかうのはサードパーティー製のモジュールや拡張モジュールの場合です。
+
+#### 2.21.1 Definition
+
+定義
+
+Type annotations (or “type hints”) are for function or method arguments
+and return values:  
+型注釈（あるいは「型ヒント」）は引数や戻り値のある関数・メソッドのためのものです：
+
+```python
+def func(a: int) -> List[int]:
+```
+
+You can also declare the type of a variable using similar
+[PEP-526](https://www.python.org/dev/peps/pep-0526/) syntax:  
+[PEP-526](https://www.python.org/dev/peps/pep-0526/) に類する文法で変数の型も指定できます。
+
+```python
+a: SomeType = some_func()
+```
+
+Or by using a type comment in code that must support legacy Python versions.  
+ふるい Python をサポートするために型コメントにとどめることもあります。
+
+```python
+a = some_func()  # type: SomeType
+```
+
+#### 2.21.2 Pros
+
+利点
+
+Type annotations improve the readability and maintainability of your code.
+The type checker will convert many runtime errors to build-time errors,
+and reduce your ability to use [Power Features](#219-power-features).  
+型注釈はコードの可読性と保守性を高めます。
+型チェックをすると多くの実行時エラーをビルド時に検出できるようになり、
+[上級者向け機能](#219-power-features)にたよる必要も薄れます。
+
+#### 2.21.3 Cons
+
+欠点
+
+You will have to keep the type declarations up to date. You might see type
+errors that you think are valid code. Use of a type checker may reduce
+your ability to use [Power Features](#219-power-features).  
+型の宣言を更新し続ける必要があります。
+ただしいとおもうコードに型エラーがつくこともあるでしょう。
+型チェッカーをつかうと[上級者向け機能](#219-power-features)をつかう能力が衰えるでしょう。
+
+#### 2.21.4 Decision
+
+取り決め
+
+You are strongly encouraged to enable Python type analysis when updating
+code. When adding or modifying public APIs, include type annotations and
+enable checking via pytype in the build system. As static analysis is
+relatively new to Python, we acknowledge that undesired side-effects
+(such as wrongly inferred types) may prevent adoption by some projects.
+In those situations, authors are encouraged to add a comment with a 
+or link to a bug describing the issue(s) currently preventing type
+annotation adoption in the BUILD file or in the code itself as appropriate.  
+コードを更新するときに Python の型解析を有効にすることを強くおすすめします。
+あらたな公開 API の追加や更新の際は型注釈をつけ、ビルドシステムに pytype
+を組みこんでチェックしましょう。静的解析は Python に取りいれられてまだ日が浅いため
+（型推論を誤るなど）望ましくない副作用があり、いくつかのプロジェクトには適さないでしょう。
+こういった場合でも TODO コメントを付したり、
+ビルドファイルやコードそのものに型注釈適用をさまたげているバグチケットのリンクを書いたり、
+適切に対応してください。
