@@ -28,6 +28,7 @@ Table of Contents
   * [3.2 Line length](#32-line-length)
   * [3.3 Parentheses](#33-parentheses)
   * [3.4 Indentation](#34-indentation)
+  * [3.5 Blank Lines](#35-blank-lines)
 
 ## 1 Background
 
@@ -1911,3 +1912,17 @@ No:    golomb4 = [
            6
        ]
 ```
+
+
+### 3.5 Blank Lines
+
+空白行
+
+Two blank lines between top-level definitions, be they function or class
+definitions. One blank line between method definitions and between the `class`
+line and the first method. No blank line following a `def` line. Use single
+blank lines as you judge appropriate within functions or methods.  
+（関数やクラス定義といった）トップレベル定義の間には２行の空行をはさみます。
+メソッド定義の間とクラス宣言行と最初のメソッドの間には１行の空行をいれます。
+`def` 行の後ろには空行をいれません。
+関数やメソッドの途中には適切と感じられるなら１行の空行を入れてください。
