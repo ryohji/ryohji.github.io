@@ -6,6 +6,7 @@ Table of Contents
   * [2.1 Lint](#21-lint)
   * [2.2 Imports](#22-imports)
   * [2.3 Packages](#23-packages)
+  * [2.4 Exceptions](#24-exceptions)
 
 ## 1 Background
 
@@ -286,3 +287,145 @@ package named `jodie`, not a local `jodie.py`.
 `sys.path` ディレクトリー内に入るものと仮定してはいけません。
 これは、コードが `import jodie` でサードパーティーの、あるいは最上位パッケージ
 `jodie` を（ローカルにある `jodie.py` でなく）参照するつもりのときに問題になります。
+
+### 2.4 Exceptions
+
+例外
+
+Exceptions are allowed but must be used carefully.  
+例外はつかって構いませんが注意してください。
+
+
+#### 2.4.1 Definition
+
+定義
+
+Exceptions are a means of breaking out of normal control flow to handle errors
+or other exceptional conditions.  
+例外は通常の制御フローの外に出るために使います。
+そしてエラーの処理や例外状況への対処をします。
+
+
+#### 2.4.2 Pros
+
+利点
+
+The control flow of normal operation code is not cluttered by error-handling
+code. It also allows the control flow to skip multiple frames when a certain
+condition occurs, e.g., returning from N nested functions in one step instead
+of having to plumb error codes through.  
+通常処理の制御フローがエラー処理コードでごちゃごちゃしません。
+また特定条件下で複数のフレームを飛ばすような制御もできます。
+たとえば N 段の関数呼び出しからエラーコードを逐一検査せず１ステップで戻れます。
+
+
+#### 2.4.3 Cons
+
+欠点
+
+May cause the control flow to be confusing. Easy to miss error cases when
+making library calls.  
+制御フローがわかりづらくなります。ライブラリー呼び出しでのエラー処理を忘れがちです。
+
+
+#### 2.4.4 Decision
+
+取り決め
+
+Exceptions must follow certain conditions:  
+例外は次の条件にしたがってください：
+
+* Make use of built-in exception classes when it makes sense. For example,
+raise a `ValueError` to indicate a programming mistake like a violated
+precondition (such as if you were passed a negative number but required a
+positive one). Do not use `assert` statements for validating argument values
+of a public API. `assert` is used to ensure internal correctness, not to
+enforce correct usage nor to indicate that some unexpected event occurred.
+If an exception is desired in the latter cases, use a raise statement. For
+example:  
+組み込みの例外は、その意味が生きるときにつかいます。たとえば `ValueError`
+は間違ったコードで事前条件が満たされないときにつかえます（正の値が必要な処理で負の値を受けとったなど）。
+公開 API で引数を確認するためには `assert` をつかいません。 `assert` は内部的なただしさを確認するためにつかい、
+ただしい利用方法を強制したり不測の事態を知らせるためにつかってはいけません。
+不測の事態をつたえるために例外が望ましいならば raise 文を使います。たとえば：
+```python
+Yes:
+  def connect_to_next_port(self, minimum: int) -> int:
+    """Connects to the next available port.
+
+    Args:
+      minimum: A port value greater or equal to 1024.
+
+    Returns:
+      The new minimum port.
+
+    Raises:
+      ConnectionError: If no available port is found.
+    """
+    if minimum < 1024:
+      # Note that this raising of ValueError is not mentioned in the doc
+      # string's "Raises:" section because it is not appropriate to
+      # guarantee this specific behavioral reaction to API misuse.
+      # ValueError を送出することは docstring の Raises セクションに
+      # 書いていない。これは API を誤って使われたときのふるまいを
+      # 特に保証するのは不適当だからである。
+      raise ValueError(f'Min. port must be at least 1024, not {minimum}.')
+    port = self._find_next_open_port(minimum)
+    if not port:
+      raise ConnectionError(
+          f'Could not connect to service on port {minimum} or higher.')
+    assert port >= minimum, (
+        f'Unexpected port {port} when minimum was {minimum}.')
+    return port
+```
+```python
+No:
+  def connect_to_next_port(self, minimum: int) -> int:
+    """Connects to the next available port.
+
+    Args:
+      minimum: A port value greater or equal to 1024.
+
+    Returns:
+      The new minimum port.
+    """
+    assert minimum >= 1024, 'Minimum port must be at least 1024.'
+    port = self._find_next_open_port(minimum)
+    assert port is not None
+    return port
+```
+* Libraries or packages may define their own exceptions. When doing so they
+must inherit from an existing exception class. Exception names should end in
+`Error` and should not introduce stutter (`foo.FooError`).  
+ライブラリーやパッケージで独自の例外を定義できます。このときは既存の例外クラスを継承します。
+例外名は `Error` で終わるようにします。また `foo.FooError` のような冗長な繰り返しは避けます。
+* Never use catch-all `except:` statements, or catch `Exception` or
+`StandardError`, unless you are  
+すべてを飲み込む `except:` 文や `Exception` や `StandardError` の捕捉は決してつかわないこと。
+ただし、
+  * re-raising the exception, or  
+  その例外を再送出する場合や、
+  * creating an isolation point in the program where exceptions are not
+  propagated but are recorded and suppressed instead, such as protecting a
+  thread from crashing by guarding its outermost block.  
+  例外を伝播せず記録して抑止するようなプログラムの隔離場所をつくるとき
+  （たとえばスレッドの最外ブロックでクラッシュを防止する）は除きます。  
+Python is very tolerant in this regard and `except:` will really catch
+everything including misspelled names, sys.exit() calls, Ctrl+C interrupts,
+unittest failures and all kinds of other exceptions that you simply don’t
+want to catch.  
+Python はこのような例外捕捉に従順なうえ `except:` はあらゆるものを捕まえてしまいます。
+たとえば名前の間違い、 sys.exit() 呼び出し、 Ctrl+C による割り込み、ユニットテストの失敗、
+その他よもや捕まえようとはおもわないあらゆる例外を、です。
+* Minimize the amount of code in a `try`/`except` block. The larger the body
+of the `try`, the more likely that an exception will be raised by a line of
+code that you didn’t expect to raise an exception. In those cases, the
+`try`/`except` block hides a real error.  
+`try`/`except` ブロックで囲むコードをできるだけ短くしてください。
+`try` の本文が大きくなるほど、望まなかったコード行までが例外を投げるようになります。
+こうなると `try`/`except` ブロックが本当のエラーを隠してしまいます。
+* Use the `finally` clause to execute code whether or not an exception is
+raised in the `try` block. This is often useful for cleanup, i.e., closing a
+file.  
+`finally` 節は `try` ブロック内での例外の発生如何によらず実行したいコードを書くためにつかいます。
+`finally` はファイルを閉じるといった後片付けに役立ちます。
