@@ -10,6 +10,7 @@ Table of Contents
   * [2.5 Global variables](#25-global-variables)
   * [2.6 Nested/Local/Inner Classes and Functions](#26-nestedlocalinner-classes-and-functions)
   * [2.7 Comprehensions & Generator Expressions](#27-comprehensions--generator-expressions)
+  * [2.8 Default Iterators and Operators](#28-default-iterators-and-operators)
 
 ## 1 Background
 
@@ -657,4 +658,72 @@ No:
   return ((x, y, z)
           for x, y, z in itertools.product(range(5), range(5), range(5))
           if x != y and y != z)
+```
+
+
+### 2.8 Default Iterators and Operators
+
+デフォルトイテレーターと演算子
+
+Use default iterators and operators for types that support them, like lists,
+dictionaries, and files.  
+リストや辞書、ファイルなど、型に用意されている既定のイテレーターや演算子を使いましょう。
+
+
+#### 2.8.1 Definition
+
+定義
+
+Container types, like dictionaries and lists, define default iterators and
+membership test operators (“in” and “not in”).  
+コンテナ型（辞書やリストなど）は既定のイテレーターや包含確認演算（“in” や
+“not in”）を定義しています。
+
+#### 2.8.2 Pros
+
+利点
+
+The default iterators and operators are simple and efficient. They express
+the operation directly, without extra method calls. A function that uses
+default operators is generic. It can be used with any type that supports the
+operation.  
+規定のイテレーターや演算子は単純で効率的です。
+これらは操作そのものを表現しており、あらためてメソッド呼び出す必要はありません。
+既定の演算子で書いた関数は汎用的です。その演算子をもつ型すべてにつかえるのです。
+
+#### 2.8.3 Cons
+
+欠点
+
+You can’t tell the type of objects by reading the method names (e.g.
+`has_key()` means a dictionary). This is also an advantage.  
+メソッド名からだけではオブジェクトの型がわかりません（`has_key()`
+は辞書を暗示するだけです）。これは利点でもあります。
+
+#### 2.8.4 Decision
+
+取り決め
+
+Use default iterators and operators for types that support them, like lists,
+dictionaries, and files. The built-in types define iterator methods, too.
+Prefer these methods to methods that return lists, except that you should
+not mutate a container while iterating over it.  
+リストや辞書、ファイルなど、型に用意されている既定のイテレーターや演算子をつかいましょう。
+組み込み型はイテレーターメソッドも定義しています。リストを返すメソッドでなく、
+これらイテレーターを返すメソッドをつかってください。
+ただし巡回中にコンテナを変更しないことを示すためにリストメソッドをつかうのはよいでしょう。
+
+```python
+Yes:  for key in adict: ...
+      if key not in adict: ...
+      if obj in alist: ...
+      for line in afile: ...
+      for k, v in adict.items(): ...
+      for k, v in six.iteritems(adict): ...
+```
+```python
+No:   for key in adict.keys(): ...   # 既定の演算子で充分
+      if not adict.has_key(key): ...  # if key not in adict: で確認可能
+      for line in afile.readlines(): ...  # for line in afile: で OK
+      for k, v in dict.iteritems(): ...  # Python 3 以降 items() をつかう
 ```
