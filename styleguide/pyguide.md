@@ -9,6 +9,7 @@ Table of Contents
   * [2.4 Exceptions](#24-exceptions)
   * [2.5 Global variables](#25-global-variables)
   * [2.6 Nested/Local/Inner Classes and Functions](#26-nestedlocalinner-classes-and-functions)
+  * [2.7 Comprehensions & Generator Expressions](#27-comprehensions--generator-expressions)
 
 ## 1 Background
 
@@ -543,3 +544,117 @@ at the module level so that it can still be accessed by tests.
 （`self` と `cls` を除く）ローカル変数を閉じこむ以外の目的で関数やクラスを入れ子にしてはいけません。
 関数をモジュールの利用者から隠すために入れ子にしてはいけません。
 この目的ならば `_` を前置してモジュールレベルで定義します（これならテストもできます）。
+
+
+### 2.7 Comprehensions & Generator Expressions
+
+内包表記とジェネレーター
+
+Okay to use for simple cases.
+簡単なつかいかたなら構いません。
+
+#### 2.7.1 Definition
+
+定義
+
+List, Dict, and Set comprehensions as well as generator expressions provide a
+concise and efficient way to create container types and iterators without
+resorting to the use of traditional loops, `map()`, `filter()`, or `lambda`.  
+リストや辞書、集合の内包表記とジェネレーター式をつかうと、ループや `map()`、
+`filter()`、 `lambda` をつかう従来の方法より、
+わかりやすく効率的にコンテナ型やイテレーターを作成できます。
+
+#### 2.7.2 Pros
+
+利点
+
+Simple comprehensions can be clearer and simpler than other dict, list, or
+set creation techniques. Generator expressions can be very efficient, since
+they avoid the creation of a list entirely.  
+単純な内包表記は、 dict や list、 set のこれ以外の作成法より明瞭で簡明になります。
+ジェネレーター式はリスト全体を生成せずにすむため効率的でもあります。
+
+
+#### 2.7.3 Cons
+
+欠点
+
+Complicated comprehensions or generator expressions can be hard to read.  
+複雑な内包表記やジェネレーター式は読みづらくなります。
+
+#### 2.7.4 Decision
+
+取り決め
+
+Okay to use for simple cases. Each portion must fit on one line: mapping
+expression, `for` clause, filter expression. Multiple `for` clauses or filter
+expressions are not permitted. Use loops instead when things get more
+complicated.  
+単純ならつかってよいです。
+変換部、 `for` 節、 filter 式のそれぞれが一行に収まるようにしてください。
+複数の `for` 節や filter 式を使ってはいけません。複雑になるようならループを使います。
+
+```python
+Yes:
+  # 全体が一行に収まっている
+  result = [mapping_expr for value in iterable if filter_expr]
+
+  # 変換部と for 節が一行目、 filter 式が二行目
+  result = [{'key': value} for value in iterable
+            if a_long_filter_expression(value)]
+
+  result = [complicated_transform(x)
+            for x in iterable if predicate(x)]
+
+  descriptive_name = [
+      transform({'key': key, 'value': value}, color='black')
+      for key, value in generate_iterable(some_input)
+      if complicated_condition_is_met(key, value)
+  ]
+
+  # for が複数になるならループに開く
+  result = []
+  for x in range(10):
+      for y in range(5):
+          if x * y > 10:
+              result.append((x, y))
+
+  # 辞書を内包表記で生成
+  return {x: complicated_transform(x)
+          for x in long_generator_function(parameter)
+          if x is not None}
+
+  # ジェネレーター式の例
+  squares_generator = (x**2 for x in range(10))
+
+  # set 生成の内包表記
+  unique_names = {user.name for user in users if user is not None}
+
+  # eat 関数にジェネレーターを渡す
+  eat(jelly_bean for jelly_bean in jelly_beans
+      if jelly_bean.color == 'black')
+```
+```python
+No:
+  # 変換部が二行に渡っている
+  result = [complicated_transform(
+                x, some_argument=x+1)
+            for x in iterable if predicate(x)]
+
+  # for 節が二重になっている
+  result = [(x, y) for x in range(10) for y in range(5) if x * y > 10]
+
+  # for 節が三重になっている上に filter 式もふたつ
+  return ((x, y, z)
+          for x in range(5)
+          for y in range(5)
+          if x != y
+          for z in range(5)
+          if y != z)
+```
+```python
+  # （訳注：これだったら OK？）
+  return ((x, y, z)
+          for x, y, z in itertools.product(range(5), range(5), range(5))
+          if x != y and y != z)
+```
