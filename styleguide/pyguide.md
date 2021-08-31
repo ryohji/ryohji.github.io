@@ -4,6 +4,7 @@ Table of Contents
 * [1 Background](#1-background)
 * [2 Python Language Rules](#2-python-language-rules)
   * [2.1 Lint](#21-lint)
+  * [2.2 Imports](#22-imports)
 
 ## 1 Background
 
@@ -132,3 +133,76 @@ that the arguments are actually unused.
 を前置したり ‘`_`’ に代入するなどです。
 これら方法をつかってもかまいませんがお勧めしません。
 これらの方法は引数名を指定した呼びだしを壊しますし、引数がつかわれないことも保証できません。
+
+### 2.2 Imports
+
+インポート
+
+Use `import` statements for packages and modules only, not for individual
+classes or functions. Imports from the
+[typing module](https://google.github.io/styleguide/pyguide.html#typing-imports),
+[typing_extensions module](https://github.com/python/typing/tree/master/typing_extensions),
+and the [six.moves module](https://six.readthedocs.io/#module-six.moves) are
+exempt from this rule.  
+`import` 文はパッケージとモジュールのためだけに使い、個々のクラスや関数を取り込むためには使いません。
+ただし [typing モジュール](https://google.github.io/styleguide/pyguide.html#typing-imports)、
+[typing_extensions モジュール](https://github.com/python/typing/tree/master/typing_extensions)、
+そして [six.moves モジュール](https://six.readthedocs.io/#module-six.moves)は例外とします。
+
+#### 2.2.1 Definition
+
+定義
+
+Reusability mechanism for sharing code from one module to another.  
+あるモジュールから別モジュールへコードを共有する、再利用の仕組みです。
+
+#### 2.2.2 Pros
+
+利点
+
+The namespace management convention is simple. The source of each identifier
+is indicated in a consistent way; `x.Obj` says that object `Obj` is defined in
+module `x`.  
+名前空間を管理する規約は単純です。各識別子に対応するソースは一貫した方法で示されます。
+たとえば `x.Obj` はオブジェクト `Obj` はモジュール `x` で定義されているといった具合です。
+
+#### 2.2.3 Cons
+
+欠点
+
+Module names can still collide. Some module names are inconveniently long.  
+モジュール名が衝突することがあります。つかいづらいほど長い名前のモジュールもあります。
+
+#### 2.2.4 Decision
+
+取り決め
+
+* Use `import x` for importing packages and modules.  
+`import x` はパッケージあるいはモジュールのインポートに使います。
+* Use `from x import y` where `x` is the package prefix and `y` is the module
+name with no prefix.  
+`from x import y` は前置されるパッケージ名 `x` に対しモジュール名 `y` を前置なしで
+参照するために使います。
+* Use `from x import y as z` if two modules named `y` are to be imported or if
+`y` is an inconveniently long name.  
+`from x import y as z` は同名のモジュール `y` をインポートするとき、あるいは
+`y` が不必要に長いときに使います。
+* Use `import y as z` only when `z` is a standard abbreviation (e.g., `np` for
+`numpy`).  
+`import y as z` は `z` が標準的な略語のときに使います。（たとえば `numpy` に対する `np`）
+
+For example the module `sound.effects.echo` may be imported as follows:  
+たとえば `sound.effects.echo` モジュールは次のようにインポートします：
+
+```python
+from sound.effects import echo
+...
+echo.EchoFilter(input, output, delay=0.7, atten=4)
+```
+
+Do not use relative names in imports. Even if the module is in the same
+package, use the full package name. This helps prevent unintentionally
+importing a package twice.  
+相対名でインポートしないでください。
+おなじパッケージ内のモジュールでも完全名をつかいます。
+こうすると気づかずおなじパッケージを二度インポートする愚を避けられます。
