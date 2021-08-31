@@ -560,7 +560,7 @@ at the module level so that it can still be accessed by tests.
 
 内包表記とジェネレーター
 
-Okay to use for simple cases.
+Okay to use for simple cases.  
 簡単なつかいかたなら構いません。
 
 #### 2.7.1 Definition
@@ -867,7 +867,7 @@ if 文より短く便利です。
 
 May be harder to read than an if statement. The condition may be difficult to
 locate if the expression is long.  
-if 文より読みづらくなります。式が長くなると条件を特定するのが難しくなります。
+if 文より読みづらくなります。式が長くなると条件を特定しづらくなります。
 
 #### 2.11.4 Decision
 
@@ -953,7 +953,7 @@ Okay to use with the following caveat:
 
 Do not use mutable objects as default values in the function or method
 definition.  
-変更可能なオブジェクトを関数やメソッドの初期値として使わない。
+変更可能なオブジェクトを関数やメソッドの初期値にしない。
 
 ```python
 Yes: def foo(a, b=None):
@@ -1258,7 +1258,7 @@ So `foo([1, 2, 3])` will print `1 2 3 3`, not `1 2 3 4`.
 
 取り決め
 
-Okay to use.
+Okay to use.  
 おつかいください。
 
 
