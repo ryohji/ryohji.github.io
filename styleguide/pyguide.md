@@ -8,6 +8,7 @@ Table of Contents
   * [2.3 Packages](#23-packages)
   * [2.4 Exceptions](#24-exceptions)
   * [2.5 Global variables](#25-global-variables)
+  * [2.6 Nested/Local/Inner Classes and Functions](#26-nestedlocalinner-classes-and-functions)
 
 ## 1 Background
 
@@ -485,3 +486,60 @@ through public module-level functions. See Naming below.
 名前に `_` を前置することでモジュール内部変数とできます。
 外部からこれにアクセスするときはモジュールレベルの公開関数をつかいます。
 [名づけ](#316-naming)も参照してください。
+
+
+### 2.6 Nested/Local/Inner Classes and Functions
+
+入れ子の/ローカルの/内部のクラスと関数
+
+Nested local functions or classes are fine when used to close over a local
+variable. Inner classes are fine.  
+ローカル変数を閉じこむために利用する入れ子のローカル関数やクラスはすばらしい。
+内部クラスも最高です。（訳注： closure は関数呼び出し時点の「環境（変数とその値のペア）」
+を閉じこむテクニック。時間のかかる計算を閉じこんでおき、あとで実行するなど）
+
+
+#### 2.6.1 Definition
+
+定義
+
+A class can be defined inside of a method, function, or class. A function can
+be defined inside a method or function. Nested functions have read-only access
+to variables defined in enclosing scopes.  
+クラスはメソッドや関数、クラスの中で定義できます。関数もメソッドや関数の中で定義できます。
+入れ子の関数は、その関数の外のスコープの変数を読むこと（だけ）ができます。
+
+#### 2.6.2 Pros
+
+利点
+
+Allows definition of utility classes and functions that are only used inside
+of a very limited scope. Very
+[ADT](http://www.google.com/url?sa=D&q=http://en.wikipedia.org/wiki/Abstract_data_type)-y.
+Commonly used for implementing decorators.  
+限定されたスコープの中でだけつかえる補助クラスや関数を定義できます。非常に
+[ADT](http://www.google.com/url?sa=D&q=http://en.wikipedia.org/wiki/Abstract_data_type)
+らしさがあります。（訳注：ADT は抽象データ型のこと。ひとそろいの操作としてデータを表現する）  
+[デコレーター](#217-function-and-method-decorators)を定義するためによくつかわれます。
+
+#### 2.6.3 Cons
+
+欠点
+
+Nested functions and classes cannot be directly tested. Nesting can make the
+outer function longer and less readable.  
+入れ子の関数やクラスは直接テストできません。入れ子にすることで外側の関数は長くなり、
+そのぶん読みにくくなります。
+
+#### 2.6.4 Decision
+
+取り決め
+
+They are fine with some caveats. Avoid nested functions or classes except when
+closing over a local value other than `self` or `cls`. Do not nest a function
+just to hide it from users of a module. Instead, prefix its name with an `_`
+at the module level so that it can still be accessed by tests.  
+いくつかの欠点があるもののすばらしいものです。
+（`self` と `cls` を除く）ローカル変数を閉じこむ以外の目的で関数やクラスを入れ子にしてはいけません。
+関数をモジュールの利用者から隠すために入れ子にしてはいけません。
+この目的ならば `_` を前置してモジュールレベルで定義します（これならテストもできます）。
