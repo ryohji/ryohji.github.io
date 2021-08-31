@@ -29,6 +29,7 @@ Table of Contents
   * [3.3 Parentheses](#33-parentheses)
   * [3.4 Indentation](#34-indentation)
   * [3.5 Blank Lines](#35-blank-lines)
+  * [3.6 Whitespace](#36-whitespace)
 
 ## 1 Background
 
@@ -1926,3 +1927,118 @@ blank lines as you judge appropriate within functions or methods.
 メソッド定義の間とクラス宣言行と最初のメソッドの間には１行の空行をいれます。
 `def` 行の後ろには空行をいれません。
 関数やメソッドの途中には適切と感じられるなら１行の空行を入れてください。
+
+
+### 3.6 Whitespace
+
+空白文字類
+
+Follow standard typographic rules for the use of spaces around punctuation.  
+句読点の前後にいれる空白は、標準的な書きかたルールにしたがってください。
+
+No whitespace inside parentheses, brackets or braces.  
+括弧の内側には空白をいれないようにします。
+
+```python
+Yes: spam(ham[1], {'eggs': 2}, [])
+```
+```python
+No:  spam( ham[ 1 ], { 'eggs': 2 }, [ ] )
+```
+
+No whitespace before a comma, semicolon, or colon. Do use whitespace
+after a comma, semicolon, or colon, except at the end of the line.  
+コンマ、セミコロン、コロンの前には空白をおきません。コンマ、セミコロン、
+コロンの後ろには空白をいれます。（ただし行末は除きます）
+
+```python
+Yes: if x == 4:
+         print(x, y)
+     x, y = y, x
+```
+```python
+No:  if x == 4 :
+         print(x , y)
+     x , y = y , x
+```
+
+No whitespace before the open paren/bracket that starts an argument list,
+indexing or slicing.  
+引数リスト、インデックス、スライスを指定する開き括弧の前には空白をおきません。
+
+```python
+Yes: spam(1)
+```
+```python
+No:  spam (1)
+```
+```python
+Yes: dict['key'] = list[index]
+```
+```python
+No:  dict ['key'] = list [index]
+```
+
+No trailing whitespace.  
+行末には空白をおきません。
+
+Surround binary operators with a single space on either side for assignment
+(`=`), comparisons (`==`, `<`, `>`, `!=`, `<>`, `<=`, `>=`, `in`, `not in`,
+`is`, `is not`), and Booleans (`and`, `or`, `not`). Use your better judgment
+for the insertion of spaces around arithmetic operators (`+`, `-`, `*`, `/`,
+`//`, `%`, `**`, `@`).  
+二項演算子の両側に空白をひとつずつおきます。代入（`=`）、比較（`==`, `<`, `>`,
+`!=`, `<>`, `<=`, `>=`, `in`, `not in`, `is`, `is not`）、ブール演算（`and`,
+`or`, `not`）などです（訳注： `not` は単項演算子）。
+数値演算子の周囲にいれる空白は読者のよりよい判断におまかせします（`+`, `-`, `*`,
+`/`, `//`, `%`, `**`, `@`）。（訳注： `@` 演算子がなにかは不明）
+
+```python
+Yes: x == 1
+```
+```python
+No:  x<1
+```
+
+Never use spaces around `=` when passing keyword arguments or defining a
+default parameter value, with one exception:
+[when a type annotation](#3194-default-values) is present, *do* use spaces
+around the `=` for the default parameter value.  
+キーワード引数とパラメーターの規定値を定義する `=` の両端には空白をおきません。
+唯一の例外は[規定値つきの型注釈](#3194-default-values)をしているときで、
+規定値定義の `=` の両端に空白をいれます。
+
+```python
+Yes: def complex(real, imag=0.0): return Magic(r=real, i=imag)
+Yes: def complex(real, imag: float = 0.0): return Magic(r=real, i=imag)
+```
+```python
+No:  def complex(real, imag = 0.0): return Magic(r = real, i = imag)
+No:  def complex(real, imag: float=0.0): return Magic(r = real, i = imag)
+```
+
+Don’t use spaces to vertically align tokens on consecutive lines, since
+it becomes a maintenance burden (applies to `:`, `#`, `=`, etc.):  
+複数行でトークンの桁をそろえるために空白をつかってはいけません。
+のちの保守の重荷になるからです。（`:`, `#`, `=` などでの桁ぞろえも同様に不可です）
+
+```python
+Yes:
+  foo = 1000  # comment
+  long_name = 2  # comment that should not be aligned
+
+  dictionary = {
+      'foo': 1,
+      'long_name': 2,
+  }
+```
+```python
+No:
+  foo       = 1000  # comment
+  long_name = 2     # comment that should not be aligned
+
+  dictionary = {
+      'foo'      : 1,
+      'long_name': 2,
+  }
+```
