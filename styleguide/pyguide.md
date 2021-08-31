@@ -772,3 +772,57 @@ Fine. Use “Yields:” rather than “Returns:” in the docstring for generato
 functions.  
 すばらしい。
 ジェネレーター関数の docstring では “Returns:” でなく “Yields:” をつかいます。
+
+
+### 2.10 Lambda Functions
+
+無名関数
+
+Okay for one-liners. Prefer generator expressions over `map()` or `filter()`
+with a `lambda`.  
+一行に収まるならつかってよいです。
+無名関数を `map()` や `filter()` とともにつかうよりジェネレーター式を使ってください。
+
+#### 2.10.1 Definition
+
+定義
+
+Lambdas define anonymous functions in an expression, as opposed to a
+statement.  
+ラムダは文でなく式として無名関数を定義します。
+
+#### 2.10.2 Pros
+
+利点
+
+Convenient.  
+便利です。
+
+
+#### 2.10.3 Cons
+
+欠点
+
+Harder to read and debug than local functions. The lack of names means stack
+traces are more difficult to understand. Expressiveness is limited because
+the function may only contain an expression.  
+ローカル関数定義にくらべ読みづらく、デバッグしづらくなります。（関数に）名前がつかないため、
+スタックトレースを理解しづらくなります。
+（無名関数内に）ただひとつの式しか書けないため表現できるコードに限界があります。
+
+#### 2.10.4 Decision
+
+取り決め
+
+Okay to use them for one-liners. If the code inside the lambda function is
+longer than 60-80 chars, it’s probably better to define it as a regular
+[nested function](#216-lexical-scoping).  
+一行に収まるならつかってよいです。無名関数内が 60 ～ 80 文字をこえるならば、
+おそらく[入れ子の関数](#216-lexical-scoping)をつかうとよいでしょう。
+
+For common operations like multiplication, use the functions from the
+`operator` module instead of lambda functions. For example, prefer
+`operator.mul` to `lambda x, y: x * y`.  
+乗算のような一般的な演算は `operator` モジュール定義の関数をつかってください。
+つまり `lambda x, y: x * y` と書くかわりに `operator.mul` を使います。
+（訳注：たとえば `product` 関数を `product = lambda vs: functools.reduce(operator.mul, vs)` のように定義する）
