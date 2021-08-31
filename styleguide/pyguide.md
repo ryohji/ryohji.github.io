@@ -23,6 +23,8 @@ Table of Contents
   * [2.19 Power Features](#219-power-features)
   * [2.20 Modern Python: from __future__ imports](#220-modern-python-from-__future__-imports)
   * [2.21 Type Annotated Code](#221-type-annotated-code)
+* [3 Python Style Rules](#3-python-style-rules)
+  * [3.1 Semicolons](#31-semicolons)
 
 ## 1 Background
 
@@ -1646,3 +1648,18 @@ annotation adoption in the BUILD file or in the code itself as appropriate.
 こういった場合でも TODO コメントを付したり、
 ビルドファイルやコードそのものに型注釈適用をさまたげているバグチケットのリンクを書いたり、
 適切に対応してください。
+
+
+## 3 Python Style Rules
+
+Python 整形にかかわる規則
+
+### 3.1 Semicolons
+
+セミコロン
+
+Do not terminate your lines with semicolons, and do not use semicolons
+to put two statements on the same line.  
+行末にセミコロンをおいてはいけません。
+ふたつの文を一行にまとめるためにセミコロンをつかってもいけません。
+
