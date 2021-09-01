@@ -182,7 +182,7 @@ classes or functions. Imports from the
 [typing_extensions module](https://github.com/python/typing/tree/master/typing_extensions),
 and the [six.moves module](https://six.readthedocs.io/#module-six.moves) are
 exempt from this rule.  
-`import` 文はパッケージとモジュールのためだけに使い、個々のクラスや関数を取り込むためには使いません。
+`import` 文はパッケージとモジュールのためだけにつかい、個々のクラスや関数を取り込むためにはつかいません。
 ただし [typing モジュール](#31912-imports-for-typing)、
 [typing_extensions モジュール](https://github.com/python/typing/tree/master/typing_extensions)、
 そして [six.moves モジュール](https://six.readthedocs.io/#module-six.moves)は例外とします。
@@ -216,18 +216,18 @@ Module names can still collide. Some module names are inconveniently long.
 取り決め
 
 * Use `import x` for importing packages and modules.  
-`import x` はパッケージあるいはモジュールのインポートに使います。
+`import x` はパッケージあるいはモジュールのインポートにつかいます。
 * Use `from x import y` where `x` is the package prefix and `y` is the module
 name with no prefix.  
 `from x import y` は前置されるパッケージ名 `x` に対しモジュール名 `y` を前置なしで
-参照するために使います。
+参照するためにつかいます。
 * Use `from x import y as z` if two modules named `y` are to be imported or if
 `y` is an inconveniently long name.  
 `from x import y as z` は同名のモジュール `y` をインポートするとき、あるいは
-`y` が不必要に長いときに使います。
+`y` が不必要に長いときにつかいます。
 * Use `import y as z` only when `z` is a standard abbreviation (e.g., `np` for
 `numpy`).  
-`import y as z` は `z` が標準的な略語のときに使います。（たとえば `numpy` に対する `np`）
+`import y as z` は `z` が標準的な略語のときにつかいます。（たとえば `numpy` に対する `np`）
 
 For example the module `sound.effects.echo` may be imported as follows:  
 たとえば `sound.effects.echo` モジュールは次のようにインポートします：
@@ -338,7 +338,7 @@ Exceptions are allowed but must be used carefully.
 
 Exceptions are a means of breaking out of normal control flow to handle errors
 or other exceptional conditions.  
-例外は通常の制御フローの外に出るために使います。
+例外は通常の制御フローの外に出るためにつかいます。
 そしてエラーの処理や例外状況への対処をします。
 
 
@@ -385,7 +385,7 @@ Exceptions must follow certain conditions:
     公開 API で引数を確認するためには `assert` をつかいません。 `assert`
     は内部的なただしさを確認するためにつかい、
     ただしい利用方法を強制したり不測の事態を知らせるためにつかってはいけません。
-    不測の事態をつたえるために例外が望ましいならば raise 文を使います。たとえば：
+    不測の事態をつたえるために例外が望ましいならば raise 文をつかいます。たとえば：
 
     ```python
     Yes:
@@ -406,7 +406,7 @@ Exceptions must follow certain conditions:
           # string's "Raises:" section because it is not appropriate to
           # guarantee this specific behavioral reaction to API misuse.
           # ValueError を送出することは docstring の Raises セクションに
-          # 書いていない。これは API を誤って使われたときのふるまいを
+          # 書いていない。これは API を誤ってつかわれたときのふるまいを
           # 特に保証するのは不適当だからである。
           raise ValueError(f'Min. port must be at least 1024, not {minimum}.')
         port = self._find_next_open_port(minimum)
@@ -636,7 +636,7 @@ expressions are not permitted. Use loops instead when things get more
 complicated.  
 単純ならつかってよいです。
 変換部、 `for` 節、 filter 式のそれぞれが一行に収まるようにしてください。
-複数の `for` 節や filter 式を使ってはいけません。複雑になるようならループを使います。
+複数の `for` 節や filter 式をつかってはいけません。複雑になるようならループにします。
 
 ```python
 Yes:
@@ -710,7 +710,7 @@ No:
 
 Use default iterators and operators for types that support them, like lists,
 dictionaries, and files.  
-リストや辞書、ファイルなど、型に用意されている既定のイテレーターや演算子を使いましょう。
+リストや辞書、ファイルなど、型に用意されている既定のイテレーターや演算子をつかいましょう。
 
 
 #### 2.8.1 Definition
@@ -823,7 +823,7 @@ functions.
 Okay for one-liners. Prefer generator expressions over `map()` or `filter()`
 with a `lambda`.  
 一行に収まるならつかってよいです。
-無名関数を `map()` や `filter()` とともにつかうよりジェネレーター式を使ってください。
+`map()` や `filter()` で無名関数をつかうよりジェネレーター式をつかってください。
 
 #### 2.10.1 Definition
 
@@ -866,7 +866,7 @@ For common operations like multiplication, use the functions from the
 `operator` module instead of lambda functions. For example, prefer
 `operator.mul` to `lambda x, y: x * y`.  
 乗算のような一般的な演算は `operator` モジュール定義の関数をつかってください。
-つまり `lambda x, y: x * y` と書くかわりに `operator.mul` を使います。
+つまり `lambda x, y: x * y` と書くかわりに `operator.mul` をつかいます。
 （訳注：たとえば `product` 関数を `product = lambda vs: functools.reduce(operator.mul, vs)` のように定義する）
 
 
@@ -911,7 +911,7 @@ Okay to use for simple cases. Each portion must fit on one line:
 true-expression, if-expression, else-expression. Use a complete if statement
 when things get more complicated.  
 簡単ならつかってよいです。真の式、 if の式、 else の式、それぞれが一行に収まるようにします。
-複雑になるなら if 文を使います。（訳注：先の `x = 1 if cond else 2` で言えば `1` が真の式、
+複雑になるなら if 文にします。（訳注：先の `x = 1 if cond else 2` で言えば `1` が真の式、
 `if cond` が if の式、 `else 2` が else の式）
 
 ```python
@@ -961,7 +961,7 @@ occasions you want to override the defaults. Default argument values provide
 an easy way to do this, without having to define lots of functions for the rare
 exceptions. As Python does not support overloaded methods/functions, default
 arguments are an easy way of “faking” the overloading behavior.  
-たくさんの規定値をほとんど変えずに使える関数をつくるとします。
+たくさんの規定値をほとんど変えずに呼べる関数をつくるとします。
 デフォルト引数はこれを実現する簡単な方法です。
 すなわち、まれな例外ケースのためにたくさんの関数をつくらずに済みます。
 （訳注：引数ひとつ版、一個飛ばし版などのオーバーロードをたくさん定義せずにすむ）  
@@ -1121,7 +1121,7 @@ Yes: import math
 真と偽の評価
 
 Use the “implicit” false if at all possible.  
-可能なところではすべて「暗黙の」 false を使います。
+可能なところではすべて「暗黙の」 false をつかいます。
 
 #### 2.14.1 Definition
 
@@ -1156,7 +1156,7 @@ C/C++ 開発者には不思議におもえるかもしれません。
 
 Use the “implicit” false if possible, e.g., `if foo:` rather than
 `if foo != []:`. There are a few caveats that you should keep in mind though:  
-可能なところではすべて「暗黙の」 false を使います。たとえば `if foo != []:` でなく
+可能なところではすべて「暗黙の」 false をつかいます。たとえば `if foo != []:` でなく
 `if foo:` と書きます。ただしいくつか注意点がありますので覚えておいてください：
 
 * Always use `if foo is None:` (or `is not None`) to check for a `None` value.
@@ -1576,7 +1576,7 @@ necessary.
 この暗黙の符号変換が 2.7 環境のいたるところで取りこまれるだろうと考えられ、
 しかしこれを正当とする理由が見つけられなかったためです。
 大半のバージョン 2 と 3 両対応のコードは、必要に応じて `b''` と `u''`
-のバイト列とユニコード文字列リテラルを明示的に使いわけるとよいでしょう。
+のバイト列とユニコード文字列リテラルを明示的につかいわけるとよいでしょう。
 
 ##### The six, future, and past libraries
 
@@ -2136,7 +2136,7 @@ BSD, LGPL, GPL)
 
 Files should start with a docstring describing the contents and usage of
 the module.  
-ファイルは docstring ではじめます。これにはモジュールの内容と使いかたを書きます。
+ファイルは docstring ではじめます。これにはモジュールの内容と利用法を書きます。
 
 ```python
 """A one line summary of the module or program, terminated by a period.
@@ -2150,7 +2150,7 @@ examples.
 公開するクラスや関数の簡単な説明や使用例を書いてもよいでしょう。
 
   Typical usage example:
-  代表的な使いかた：
+  代表的なつかいかた：
 
   foo = ClassFoo()
   bar = foo.FunctionBar()
@@ -2265,8 +2265,8 @@ docstring で理解するに足りるなら、これらセクションは省略�
     (because this would paradoxically make behavior under violation of the API
     part of the API).  
     インターフェースにかかわる例外を列挙し説明します。 *Args:* と同様、例外名 + コロン + 空白か改行、
-    そして字下げの書式を使います。 Docstring の API 仕様に違反したことで発生する例外は書きません。
-    （逆説的に API の誤った使いかたまでも API の仕様として定義することになります）
+    そして字下げの書式をつかいます。 Docstring の API 仕様に違反したことで発生する例外は書きません。
+    （逆説的に API の誤ったつかいかたまでも API の仕様として定義することになります）
 
 ```python
 def fetch_smalltable_rows(table_handle: smalltable.Table,
@@ -2434,7 +2434,7 @@ Comments should be as readable as narrative text, with proper capitalization and
 punctuation. In many cases, complete sentences are more readable than sentence
 fragments. Shorter comments, such as comments at the end of a line of code, can
 sometimes be less formal, but you should be consistent with your style.  
-コメントは適切に大文字・小文字、句読点が使われ、ナレーションのように読みやすくあるべきです。
+コメントは適切に大文字・小文字、句読点をつかい、ナレーションのように読みやすくあるべきです。
 ほとんどの場合、断片の羅列より完全な一文であるほうが読みやすくなります。
 コード行末に付すような短いコメントは時としてくだけがちですが、とにかく一貫性を保ってください。
 
@@ -2700,7 +2700,7 @@ fashion. To name only a few examples, this also includes
 [mmap](https://docs.python.org/3/library/mmap.html) mappings,
 [h5py File objects](https://docs.h5py.org/en/stable/high/file.html), and
 [matplotlib.pyplot figure windows](https://matplotlib.org/2.1.0/api/_as_gen/matplotlib.pyplot.close.html).  
-使いおえたファイルやソケットは明示的に閉じます。
+つかいおえたファイルやソケットは明示的に閉じます。
 これはデータベース接続のように内部でソケットをつかうような「閉じうる」リソース全般、
 同様の方法で使用後に閉じる必要があるリソースでも守ってください。わずかですが名前をあげると、
 [mmap](https://docs.python.org/3/library/mmap.html) マッピング、
@@ -2983,7 +2983,7 @@ If an accessor function would be trivial, you should use public variables
 instead of accessor functions to avoid the extra cost of function calls in
 Python. When more functionality is added you can use `property` to keep the
 syntax consistent.  
-アクセス用関数がささいな実装になるなら、アクセス用関数でなく公開変数を使います
+アクセス用関数がささいな実装になるなら、アクセス用関数でなく公開変数をつかいます
 （これにより Python の関数呼びだしコストをなくします）。
 より多くの機能をくわえるなら `property` にして文法的な一貫性を維持します。
 
@@ -3089,7 +3089,7 @@ Always use a `.py` filename extension. Never use dashes.
     discouraged because it's confusing when the module happens to be named after
     a class. ("wait -- did I write `import StringIO` or `from StringIO import
     StringIO`?")  
-    クラス名にはキャメルケースを使い、モジュール名にはスネークケースを使います。
+    クラス名にはキャメルケースをつかい、モジュール名にはスネークケースをつかいます。
     古いモジュールにキャメルケース名がありますが現在は非推奨です。
     クラス名にちなんで名づけられたモジュール名がとくにまぎらわしいからです。
     （「あれ、 `import StringIO` としたっけ、それとも `from StringIO import StringIO`？」）
@@ -3099,7 +3099,7 @@ Always use a `.py` filename extension. Never use dashes.
     CapWords. One possible pattern is `test<MethodUnderTest>_<state>`; for
     example `testPop_EmptyStack` is okay. There is no One Correct Way to name
     test methods.  
-    ユニットテストの test 前置のメソッド名にアンダースコアをいくつか使うことがあります。
+    `test` を前置する *ユニットテスト* のメソッド名にアンダースコアをつかうことがあります。
     これはテスト名にふくまれる論理コンポーネント（これら名前がキャメルケースで識別できるとしても）
     を分割するためです。 `test<MethodUnderTest>_<state> `といったパターン、たとえば
     `testPop_EmptyStack` は OK です。テストメソッド名には「唯一絶対の正解」はありません。
@@ -3114,7 +3114,7 @@ accessible without the extension, use a symbolic link or a simple bash wrapper
 containing `exec "$0.py" "$@"`.  
 Python のファイル名は `.py` 拡張子をつけダッシュ（`-`）を含まないものとします。
 こうすることでインポートでき、ユニットテストもできます。拡張子なしの実行形式は、
-シンボリックリンクを張るか、 `exec "$0.py" "$@"` と定義した bash ラッパーを使います。
+シンボリックリンクを張るか、 `exec "$0.py" "$@"` と定義した bash ラッパーをつかいます。
 
 #### 3.16.4 Guidelines derived from [Guido](https://en.wikipedia.org/wiki/Guido_van_Rossum)'s Recommendations
 
@@ -3312,7 +3312,7 @@ the function into smaller and more manageable pieces.
     メソッドでは、適切な型情報が必要なときに限り `self` や `cls` を注釈する。
     たとえば `@classmethod def create(cls: Type[T]) -> T: return cls()`
 *   If any other variable or a returned type should not be expressed, use `Any`.  
-    型情報を与えない変数や戻り値には `Any` を使う。
+    型情報を与えない変数や戻り値には `Any` をつかう。
 *   You are not required to annotate all the functions in a module.  
     モジュール内関数すべてを注釈しなくてよい。
     -   At least annotate your public APIs.  
@@ -3443,9 +3443,9 @@ def my_function(
 If you need to use a class name from the same module that is not yet defined --
 for example, if you need the class inside the class declaration, or if you use a
 class that is defined below -- use a string for the class name.  
-おなじモジュール内でまだ定義を終えていないクラス名を使うとき、
-（たとえばクラスの宣言の中でそのクラスが必要になったり、あとで定義するクラスを使うときなど）
-クラス名の文字列を使います。
+おなじモジュール内でまだ定義を終えていないクラスが必要なら、
+（たとえばクラスの定義中にそのクラスが必要になるとか、あとで定義するクラスをつかうときなど）
+クラス名の文字列をつかいます。
 
 ```python
 class MyClass:
@@ -3487,8 +3487,8 @@ purposes, `None` is an alias for `NoneType`. If an argument can be `None`, it
 has to be declared! You can use `Union`, but if there is only one other type,
 use `Optional`.  
 Python の型システムにおいて `NoneType` は「一級」の型で、 `None` はその別名です。
-引数が `None` になりうるなら、そのように宣言しましょう！ `Union` も使えますが、
-それ以外の型がただひとつなら `Optional` を使います。
+引数が `None` になりうるなら、そのように宣言しましょう！ `Union` もつかえますが、
+それ以外の型がただひとつなら `Optional` をつかいます。
 
 Use explicit `Optional` instead of implicit `Optional`. Earlier versions of PEP
 484 allowed `a: str = None` to be interpreted as `a: Optional[str] = None`, but
@@ -3520,7 +3520,7 @@ def implicit_optional(a: str = None) -> str:
 You can declare aliases of complex types. The name of an alias should be
 CapWorded. If the alias is used only in this module, it should be \_Private.  
 複雑な型に別名（エイリアス）をつけられます。エイリアス名はキャメルケースにしてください。
-エイリアスをモジュール内だけで使うときは必ず `_` を前置します。
+エイリアスをモジュール内だけでつかうときは必ず `_` を前置します。
 
 For example, if the name of the module together with the name of the type is too
 long:  
@@ -3585,8 +3585,8 @@ Typed lists can only contain objects of a single type. Typed tuples can either
 have a single repeated type or a set number of elements with different types.
 The latter is commonly used as the return type from a function.  
 型つきのリストは特定の型のオブジェクトだけを要素にもちます。
-型つきのタプルは特定の型の繰り返しとしても、異なる型の要素の組み合わせとしても使えます。
-後者は関数の戻り値の型としてよく使われます。
+型つきのタプルは特定の型の繰り返しとしても、異なる型の要素の組み合わせとしてもつかえます。
+後者は関数の戻り値の型としてよくつかわれます。
 
 ```python
 a = [1, 2, 3]  # type: List[int]
@@ -3628,7 +3628,7 @@ A common predefined type variable in the `typing` module is `AnyStr`. Use it for
 multiple annotations that can be `bytes` or `unicode` and must all be the same
 type.  
 `typing` モジュールで定義されている、おなじみの型変数 `AnyStr` があります。
-`bytes` もしくは `unicode` で、いずれか一方であるという複数個所を注釈するために使います。
+`bytes` もしくは `unicode` で、いずれか一方であるという複数個所を注釈するためにつかいます。
 
 ```python
 from typing import AnyStr
@@ -3644,7 +3644,7 @@ def check_length(x: AnyStr) -> AnyStr:
 
 The proper type for annotating strings depends on what versions of Python the
 code is intended for.  
-文字列の注釈に使う型は、プログラムがどのバージョンの Python 向けかで異なります。
+文字列の注釈につかう型は、プログラムがどのバージョンの Python 向けかで異なります。
 
 Prefer to use `str`, though `Text` is also acceptable. Be consistent in using
 one or the other. For code that deals with binary data, use `bytes`. For Python
@@ -3754,7 +3754,7 @@ TYPE_CHECKING:` block.
 -   Only entities that are used solely for typing should be defined here; this
     includes aliases. Otherwise it will be a runtime error, as the module will
     not be imported at runtime.  
-    型づけのためにだけ使う対象をここに定義する（エイリアスも含む）。
+    型づけのためにだけつかう対象をここに定義する（エイリアスも含む）。
     そうしなければ実行時エラーとなり、実行時にモジュールがインポートされなくなる。
 -   The block should be right after all the normal imports.  
     このブロックはすべての通常のインポート文の直後に配置する。
@@ -3790,7 +3790,7 @@ this module (any attribute of Any is Any). Alias definitions should be separated
 from the last import by one line.  
 循環依存を引きおこすモジュールを `Any` のインポートに置きかえます。
 意味のある名前で別名（[エイリアス](#3196-type-aliases)）を定義し、
-このモジュールから取りこむ実名を使います（`Any` のあらゆる属性の型は `Any` です）。
+このモジュールから取りこむ実名にします（`Any` のあらゆる属性の型は `Any` です）。
 別名定義はただ一行、最後のインポートだけで隔離できます。
 
 ```python
