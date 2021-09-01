@@ -2994,3 +2994,218 @@ complexity.
 既存の実装がプロパティ経由のアクセスを公開していたなら、
 あらたに追加するアクセス用関数をプロパティと結びつけてはいけません。
 古い方法で変数をつかおうとするコードははっきりと壊れ、結果、複雑さによる変更に気づけます。
+
+
+### 3.16 Naming
+
+名づけ
+
+`module_name`, `package_name`, `ClassName`, `method_name`, `ExceptionName`,
+`function_name`, `GLOBAL_CONSTANT_NAME`, `global_var_name`, `instance_var_name`,
+`function_parameter_name`, `local_var_name`.
+
+
+Function names, variable names, and filenames should be descriptive; eschew
+abbreviation. In particular, do not use abbreviations that are ambiguous or
+unfamiliar to readers outside your project, and do not abbreviate by deleting
+letters within a word.  
+関数名、変数名、ファイル名は叙述的にし、省略（頭字語）は避けます。
+とくに頭字語はつかわないようにします。プロジェクト外の読者にはあいまいな上、不親切です。
+また単語中の文字を削るのもやめましょう。
+
+Always use a `.py` filename extension. Never use dashes.  
+ファイル拡張子はつねに `.py` とします。ダッシュはつかいません。
+
+#### 3.16.1 Names to Avoid 
+
+避けるべき名前
+
+-   single character names, except for specifically allowed cases:  
+    １文字の名前。ただし以下特例を除く：
+
+    -   counters or iterators (e.g. `i`, `j`, `k`, `v`, et al.)  
+        カウンターや列挙名
+    -   `e` as an exception identifier in `try/except` statements.  
+        `try/except` 文中での例外 `e`
+    -   `f` as a file handle in `with` statements  
+        `with` 文中でのファイルハンドル `f`
+
+    Please be mindful not to abuse single-character naming. Generally speaking,
+    descriptiveness should be proportional to the name's scope of visibility.
+    For example, `i` might be a fine name for 5-line code block but within
+    multiple nested scopes, it is likely too vague.  
+    一文字名を誤用しないよう配慮してください。一般的に、
+    名前の可視スコープに応じて名前を詳しくします。たとえば５行のコードブロック内での
+    `i` はよくても、多段の入れ子スコープではあいまいすぎるでしょう。
+
+-   dashes (`-`) in any package/module name  
+    パッケージ・モジュール名にふくまれるダッシュ（`-`）
+
+-   `__double_leading_and_trailing_underscore__` names (reserved by Python)  
+    先頭と末尾にふたつのアンダースコア `_` をつけた名前（Python の予約語）
+
+-   offensive terms  
+    罵倒語
+
+-   names that needlessly include the type of the variable (for example:
+    `id_to_name_dict`)  
+    不要な型情報をふくむ名前（たとえば `id_to_name_dict`）
+
+#### 3.16.2 Naming Conventions
+
+命名規則
+
+-   "Internal" means internal to a module, or protected or private within a
+    class.  
+    「内部用」はモジュール内のみ、あるいはクラス内の protect、 private。
+
+-   Prepending a single underscore (`_`) has some support for protecting module
+    variables and functions (linters will flag protected member access).  
+    アンダースコアを一つ前置することで、モジュール変数、
+    モジュール関数としてある種の保護が受けられる（lint ツールがプロテクトメンバー用にマークしてくれる）
+
+-   Prepending a double underscore (`__` aka "dunder") to an instance variable
+    or method effectively makes the variable or method private to its class
+    (using name mangling); we discourage its use as it impacts readability and
+    testability, and isn't *really* private. Prefer a single underscore.  
+    アンダースコアをふたつインスタンス変数やメソッドに前置する（“dunder” ともいう `__`）
+    と、（名前修飾として）変数やメソッドがそのクラスの private という意味になります。
+    しかしつかわないように。読みづらく、テストしづらく、そして *実際のところ* private
+    でもない。アンダースコアはひとつにしましょう。
+
+-   Place related classes and top-level functions together in a
+    module.
+    Unlike Java, there is no need to limit yourself to one class per module.  
+    関連するクラス群とトップレベル関数群はおなじモジュールに入れましょう。
+    Java とは違い１モジュール１クラスの制限はありません。
+
+-   Use CapWords for class names, but lower\_with\_under.py for module names.
+    Although there are some old modules named CapWords.py, this is now
+    discouraged because it's confusing when the module happens to be named after
+    a class. ("wait -- did I write `import StringIO` or `from StringIO import
+    StringIO`?")  
+    クラス名にはキャメルケースを使い、モジュール名にはスネークケースを使います。
+    古いモジュールにキャメルケース名がありますが現在は非推奨です。
+    クラス名にちなんで名づけられたモジュール名がとくにまぎらわしいからです。
+    （「あれ、 `import StringIO` としたっけ、それとも `from StringIO import StringIO`？」）
+
+-   Underscores may appear in *unittest* method names starting with `test` to
+    separate logical components of the name, even if those components use
+    CapWords. One possible pattern is `test<MethodUnderTest>_<state>`; for
+    example `testPop_EmptyStack` is okay. There is no One Correct Way to name
+    test methods.  
+    ユニットテストの test 前置のメソッド名にアンダースコアをいくつか使うことがあります。
+    これはテスト名にふくまれる論理コンポーネント（これら名前がキャメルケースで識別できるとしても）
+    を分割するためです。 `test<MethodUnderTest>_<state> `といったパターン、たとえば
+    `testPop_EmptyStack` は OK です。テストメソッド名には「唯一絶対の正解」はありません。
+
+#### 3.16.3 File Naming
+
+ファイル名
+
+Python filenames must have a `.py` extension and must not contain dashes (`-`).
+This allows them to be imported and unittested. If you want an executable to be
+accessible without the extension, use a symbolic link or a simple bash wrapper
+containing `exec "$0.py" "$@"`.  
+Python のファイル名は `.py` 拡張子をつけダッシュ（`-`）を含まないものとします。
+こうすることでインポートでき、ユニットテストもできます。拡張子なしの実行形式は、
+シンボリックリンクを張るか、 `exec "$0.py" "$@"` と定義した bash ラッパーを使います。
+
+#### 3.16.4 Guidelines derived from [Guido](https://en.wikipedia.org/wiki/Guido_van_Rossum)'s Recommendations
+
+Guido のおすすめから作成したガイドライン
+
+<table rules="all" border="1" summary="Guidelines from Guido's Recommendations"
+       cellspacing="2" cellpadding="2">
+
+  <tr>
+    <th>Type （種別）</th>
+    <th>Public （公開）</th>
+    <th>Internal （内部用）</th>
+  </tr>
+
+  <tr>
+    <td>Packages</td>
+    <td><code>lower_with_under</code></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td>Modules</td>
+    <td><code>lower_with_under</code></td>
+    <td><code>_lower_with_under</code></td>
+  </tr>
+
+  <tr>
+    <td>Classes</td>
+    <td><code>CapWords</code></td>
+    <td><code>_CapWords</code></td>
+  </tr>
+
+  <tr>
+    <td>Exceptions</td>
+    <td><code>CapWords</code></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td>Functions</td>
+    <td><code>lower_with_under()</code></td>
+    <td><code>_lower_with_under()</code></td>
+  </tr>
+
+  <tr>
+    <td>Global/Class Constants</td>
+    <td><code>CAPS_WITH_UNDER</code></td>
+    <td><code>_CAPS_WITH_UNDER</code></td>
+  </tr>
+
+  <tr>
+    <td>Global/Class Variables</td>
+    <td><code>lower_with_under</code></td>
+    <td><code>_lower_with_under</code></td>
+  </tr>
+
+  <tr>
+    <td>Instance Variables</td>
+    <td><code>lower_with_under</code></td>
+    <td><code>_lower_with_under</code> (protected)</td>
+  </tr>
+
+  <tr>
+    <td>Method Names</td>
+    <td><code>lower_with_under()</code></td>
+    <td><code>_lower_with_under()</code> (protected)</td>
+  </tr>
+
+  <tr>
+    <td>Function/Method Parameters</td>
+    <td><code>lower_with_under</code></td>
+    <td></td>
+  </tr>
+
+  <tr>
+    <td>Local Variables</td>
+    <td><code>lower_with_under</code></td>
+    <td></td>
+  </tr>
+
+</table>
+
+#### 3.16.5 Mathematical Notation
+
+数学的記法
+
+For mathematically heavy code, short variable names that would otherwise violate
+the style guide are preferred when they match established notation in a
+reference paper or algorithm. When doing so, reference the source of all naming
+conventions in a comment or docstring or, if the source is not accessible,
+clearly document the naming conventions. Prefer PEP8-compliant
+`descriptive_names` for public APIs, which are much more likely to be
+encountered out of context.  
+数式重視のコードではスタイルガイドに反してでも、
+論文やアルゴリズムで確立された記法にそって短い変数名をつかってください。
+この場合、参照したソースすべての名前規約をコメントや docstring に書くか、
+ソースが非公開なら命名規則を明瞭に文書化します。
+公開 API は `descriptive_names` のような PEP8 形式の名前にしてください。
+（数式の文脈を離れたらこれがよくある形式でしょう）
