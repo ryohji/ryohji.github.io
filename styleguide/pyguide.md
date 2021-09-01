@@ -31,6 +31,7 @@ Table of Contents
   * [3.5 Blank Lines](#35-blank-lines)
   * [3.6 Whitespace](#36-whitespace)
   * [3.7 Shebang Line](#37-shebang-line)
+  * [3.8 Comments and Docstrings](#38-comments-and-docstrings)
 
 ## 1 Background
 
@@ -340,7 +341,7 @@ condition occurs, e.g., returning from N nested functions in one step instead
 of having to plumb error codes through.  
 通常処理の制御フローがエラー処理コードでごちゃごちゃしません。
 また特定条件下で複数のフレームを飛ばすような制御もできます。
-たとえば N 段の関数呼び出しからエラーコードを逐一検査せず１ステップで戻れます。
+たとえば N 段の関数呼びだしからエラーコードを逐一検査せず１ステップで戻れます。
 
 
 #### 2.4.3 Cons
@@ -349,7 +350,7 @@ of having to plumb error codes through.
 
 May cause the control flow to be confusing. Easy to miss error cases when
 making library calls.  
-制御フローがわかりづらくなります。ライブラリー呼び出しでのエラー処理を忘れがちです。
+制御フローがわかりづらくなります。ライブラリー呼びだしでのエラー処理を忘れがちです。
 
 
 #### 2.4.4 Decision
@@ -359,100 +360,111 @@ making library calls.
 Exceptions must follow certain conditions:  
 例外は次の条件にしたがってください：
 
-* Make use of built-in exception classes when it makes sense. For example,
-raise a `ValueError` to indicate a programming mistake like a violated
-precondition (such as if you were passed a negative number but required a
-positive one). Do not use `assert` statements for validating argument values
-of a public API. `assert` is used to ensure internal correctness, not to
-enforce correct usage nor to indicate that some unexpected event occurred.
-If an exception is desired in the latter cases, use a raise statement. For
-example:  
-組み込みの例外は、その意味が生きるときにつかいます。たとえば `ValueError`
-は間違ったコードで事前条件が満たされないときにつかえます（正の値が必要な処理で負の値を受けとったなど）。
-公開 API で引数を確認するためには `assert` をつかいません。 `assert` は内部的なただしさを確認するためにつかい、
-ただしい利用方法を強制したり不測の事態を知らせるためにつかってはいけません。
-不測の事態をつたえるために例外が望ましいならば raise 文を使います。たとえば：
-```python
-Yes:
-  def connect_to_next_port(self, minimum: int) -> int:
-    """Connects to the next available port.
+-   Make use of built-in exception classes when it makes sense. For example,
+    raise a `ValueError` to indicate a programming mistake like a violated
+    precondition (such as if you were passed a negative number but required a
+    positive one). Do not use `assert` statements for validating argument values
+    of a public API. `assert` is used to ensure internal correctness, not to
+    enforce correct usage nor to indicate that some unexpected event occurred.
+    If an exception is desired in the latter cases, use a raise statement. For
+    example:  
+    組み込みの例外は、その意味が生きるときにつかいます。たとえば `ValueError`
+    は間違ったコードで事前条件が満たされないときにつかえます
+    （正の値が必要な処理で負の値を受けとったなど）。
+    公開 API で引数を確認するためには `assert` をつかいません。 `assert`
+    は内部的なただしさを確認するためにつかい、
+    ただしい利用方法を強制したり不測の事態を知らせるためにつかってはいけません。
+    不測の事態をつたえるために例外が望ましいならば raise 文を使います。たとえば：
 
-    Args:
-      minimum: A port value greater or equal to 1024.
+    ```python
+    Yes:
+      def connect_to_next_port(self, minimum: int) -> int:
+        """Connects to the next available port.
 
-    Returns:
-      The new minimum port.
+        Args:
+          minimum: A port value greater or equal to 1024.
 
-    Raises:
-      ConnectionError: If no available port is found.
-    """
-    if minimum < 1024:
-      # Note that this raising of ValueError is not mentioned in the doc
-      # string's "Raises:" section because it is not appropriate to
-      # guarantee this specific behavioral reaction to API misuse.
-      # ValueError を送出することは docstring の Raises セクションに
-      # 書いていない。これは API を誤って使われたときのふるまいを
-      # 特に保証するのは不適当だからである。
-      raise ValueError(f'Min. port must be at least 1024, not {minimum}.')
-    port = self._find_next_open_port(minimum)
-    if not port:
-      raise ConnectionError(
-          f'Could not connect to service on port {minimum} or higher.')
-    assert port >= minimum, (
-        f'Unexpected port {port} when minimum was {minimum}.')
-    return port
-```
-```python
-No:
-  def connect_to_next_port(self, minimum: int) -> int:
-    """Connects to the next available port.
+        Returns:
+          The new minimum port.
 
-    Args:
-      minimum: A port value greater or equal to 1024.
+        Raises:
+          ConnectionError: If no available port is found.
+        """
+        if minimum < 1024:
+          # Note that this raising of ValueError is not mentioned in the doc
+          # string's "Raises:" section because it is not appropriate to
+          # guarantee this specific behavioral reaction to API misuse.
+          # ValueError を送出することは docstring の Raises セクションに
+          # 書いていない。これは API を誤って使われたときのふるまいを
+          # 特に保証するのは不適当だからである。
+          raise ValueError(f'Min. port must be at least 1024, not {minimum}.')
+        port = self._find_next_open_port(minimum)
+        if not port:
+          raise ConnectionError(
+              f'Could not connect to service on port {minimum} or higher.')
+        assert port >= minimum, (
+            f'Unexpected port {port} when minimum was {minimum}.')
+        return port
+    ```
 
-    Returns:
-      The new minimum port.
-    """
-    assert minimum >= 1024, 'Minimum port must be at least 1024.'
-    port = self._find_next_open_port(minimum)
-    assert port is not None
-    return port
-```
-* Libraries or packages may define their own exceptions. When doing so they
-must inherit from an existing exception class. Exception names should end in
-`Error` and should not introduce stutter (`foo.FooError`).  
-ライブラリーやパッケージで独自の例外を定義できます。このときは既存の例外クラスを継承します。
-例外名は `Error` で終わるようにします。また `foo.FooError` のような冗長な繰り返しは避けます。
-* Never use catch-all `except:` statements, or catch `Exception` or
-`StandardError`, unless you are  
-すべてを飲み込む `except:` 文や `Exception` や `StandardError` の捕捉は決してつかわないこと。
-ただし、
-  * re-raising the exception, or  
-  その例外を再送出する場合や、
-  * creating an isolation point in the program where exceptions are not
-  propagated but are recorded and suppressed instead, such as protecting a
-  thread from crashing by guarding its outermost block.  
-  例外を伝播せず記録して抑止するようなプログラムの隔離場所をつくるとき
-  （たとえばスレッドの最外ブロックでクラッシュを防止する）は除きます。  
-Python is very tolerant in this regard and `except:` will really catch
-everything including misspelled names, sys.exit() calls, Ctrl+C interrupts,
-unittest failures and all kinds of other exceptions that you simply don’t
-want to catch.  
-Python はこのような例外捕捉に従順なうえ `except:` はあらゆるものを捕まえてしまいます。
-たとえば名前の間違い、 sys.exit() 呼び出し、 Ctrl+C による割り込み、ユニットテストの失敗、
-その他よもや捕まえようとはおもわないあらゆる例外を、です。
-* Minimize the amount of code in a `try`/`except` block. The larger the body
-of the `try`, the more likely that an exception will be raised by a line of
-code that you didn’t expect to raise an exception. In those cases, the
-`try`/`except` block hides a real error.  
-`try`/`except` ブロックで囲むコードをできるだけ短くしてください。
-`try` の本文が大きくなるほど、望まなかったコード行までが例外を投げるようになります。
-こうなると `try`/`except` ブロックが本当のエラーを隠してしまいます。
-* Use the `finally` clause to execute code whether or not an exception is
-raised in the `try` block. This is often useful for cleanup, i.e., closing a
-file.  
-`finally` 節は `try` ブロック内での例外の発生如何によらず実行したいコードを書くためにつかいます。
-`finally` はファイルを閉じるといった後片付けに役立ちます。
+    ```python
+    No:
+      def connect_to_next_port(self, minimum: int) -> int:
+        """Connects to the next available port.
+
+        Args:
+          minimum: A port value greater or equal to 1024.
+
+        Returns:
+          The new minimum port.
+        """
+        assert minimum >= 1024, 'Minimum port must be at least 1024.'
+        port = self._find_next_open_port(minimum)
+        assert port is not None
+        return port
+    ```
+
+-   Libraries or packages may define their own exceptions. When doing so they
+    must inherit from an existing exception class. Exception names should end in
+    `Error` and should not introduce stutter (`foo.FooError`).  
+    ライブラリーやパッケージで独自の例外を定義できます。このときは既存の例外クラスを継承します。
+    例外名は `Error` で終わるようにします。また `foo.FooError` のような冗長な繰り返しは避けます。
+
+-   Never use catch-all `except:` statements, or catch `Exception` or
+    `StandardError`, unless you are  
+    すべてを飲み込む `except:` 文や `Exception` や `StandardError`
+    の捕捉は決してつかわないこと。ただし、
+
+    -   re-raising the exception, or  
+        その例外を再送出する場合や、
+    -   creating an isolation point in the program where exceptions are not
+        propagated but are recorded and suppressed instead, such as protecting a
+        thread from crashing by guarding its outermost block.  
+        例外を伝播せず記録して抑止するようなプログラムの隔離場所をつくるとき
+        （たとえばスレッドの最外ブロックでクラッシュを防止する）は除きます。  
+
+    Python is very tolerant in this regard and `except:` will really catch
+    everything including misspelled names, sys.exit() calls, Ctrl+C interrupts,
+    unittest failures and all kinds of other exceptions that you simply don't
+    want to catch.  
+    Python はこのような例外捕捉に従順なうえ `except:` はあらゆるものを捕まえてしまいます。
+    たとえば名前の間違い、 sys.exit() 呼びだし、 Ctrl+C による割り込み、ユニットテストの失敗、
+    その他よもや捕まえようとはおもわないあらゆる例外を、です。
+
+-   Minimize the amount of code in a `try`/`except` block. The larger the body
+    of the `try`, the more likely that an exception will be raised by a line of
+    code that you didn't expect to raise an exception. In those cases, the
+    `try`/`except` block hides a real error.  
+    `try`/`except` ブロックで囲むコードをできるだけ短くしてください。
+    `try` の本文が大きくなるほど、望まなかったコード行までが例外を投げるようになります。
+    こうなると `try`/`except` ブロックが本当のエラーを隠してしまいます。
+
+-   Use the `finally` clause to execute code whether or not an exception is
+    raised in the `try` block. This is often useful for cleanup, i.e., closing a
+    file.  
+    `finally` 節は `try` ブロック内での例外の発生如何によらず実行したいコードを書くためにつかいます。
+    `finally` はファイルを閉じるといった後片付けに役立ちます。
+
 
 ### 2.5 Global variables
 
@@ -517,7 +529,7 @@ through public module-level functions. See Naming below.
 Nested local functions or classes are fine when used to close over a local
 variable. Inner classes are fine.  
 ローカル変数を閉じこむために利用する入れ子のローカル関数やクラスはすばらしい。
-内部クラスも最高です。（訳注： closure は関数呼び出し時点の「環境（変数とその値のペア）」
+内部クラスも最高です。（訳注： closure は関数呼びだし時点の「環境（変数とその値のペア）」
 を閉じこむテクニック。時間のかかる計算を閉じこんでおき、あとで実行するなど）
 
 
@@ -773,7 +785,7 @@ the generator function is suspended until the next value is needed.
 Simpler code, because the state of local variables and control flow are
 preserved for each call. A generator uses less memory than a function that
 creates an entire list of values at once.  
-呼び出しのたびにローカル変数と実行位置（訳注：原文は controll flow）の状態が保存されるため、
+呼びだしのたびにローカル変数と実行位置（訳注：原文は controll flow）の状態が保存されるため、
 コードが簡単になります。リスト全体を生成する関数とくらべて、ジェネレーターはメモリーを消費しません。
 
 #### 2.9.3 Cons
@@ -1002,7 +1014,7 @@ have used simple, lightweight accessor or setter methods.
 
 A way to wrap method calls for getting and setting an attribute as a
 standard attribute access when the computation is lightweight.  
-（計算時間が軽い）メソッド呼び出しで属性の値の読み出しと設定をするところで、
+（計算時間が軽い）メソッド呼びだしで属性の値の読み出しと設定をするところで、
 これを通常の属性へのアクセスのようにラップする方法です。
 
 #### 2.13.2 Pros
@@ -1015,7 +1027,7 @@ Pythonic way to maintain the interface of a class. In terms of performance,
 allowing properties bypasses needing trivial accessor methods when a direct
 variable access is reasonable. This also allows accessor methods to be added
 in the future without breaking the interface.  
-簡単な属性アクセスの getter/setter メソッド呼び出しをなくせるため可読性が高まります。
+簡単な属性アクセスの getter/setter メソッド呼びだしをなくせるため可読性が高まります。
 計算を遅らせられます。クラスのインターフェースを維持する Python らしさが考慮されています。
 性能面では、変数への直接アクセスがよさそうなら、些末なアクセッサーメソッドをなくすように実装することもできます。
 将来、インターフェースを壊さずアクセッサーメソッドを追加することもできます。
@@ -2064,3 +2076,361 @@ be executed directly.
 この行はカーネルが Python インタープリターを見つけるためにつかうもので、
 Python がモジュールをインポートするときにはこれを無視します。
 これは直接実行する想定のファイルでのみ必要です。
+
+
+### 3.8 Comments and Docstrings
+
+コメントと docstring
+
+Be sure to use the right style for module, function, method docstrings
+and inline comments.  
+モジュール、関数、メソッドの docstring やコード内コメントをただしく整形しましょう。
+
+#### 3.8.1 Docstrings
+
+docstring
+
+Python uses docstrings to document code. A docstring is a string that is the
+first statement in a package, module, class or function. These strings can be
+extracted automatically through the `__doc__` member of the object and are
+used by `pydoc`. (Try running `pydoc` on your module to see how it looks.)
+Always use the three double-quote `"""` format for docstrings (per
+[PEP 257](https://www.google.com/url?sa=D&q=http://www.python.org/dev/peps/pep-0257/)).
+A docstring should be organized as a summary line (one physical line not
+exceeding 80 characters) terminated by a period, question mark, or exclamation
+point. When writing more (encouraged), this must be followed by a blank line,
+followed by the rest of the docstring starting at the same cursor position as
+the first quote of the first line. There are more formatting guidelines for
+docstrings below.  
+Python はコードのドキュメントに docstring をつかいます。 Docstring はパッケージ、
+モジュール、クラスや関数の一番はじめの「文字列」です。この文字列は対象の `__doc__`
+メンバーとして自動抽出され、これを `pydoc` がつかいます（どんな感じか自分のモジュールで
+`pydoc` を試してみてください）。
+Docstring は [PEP 257](https://www.google.com/url?sa=D&q=http://www.python.org/dev/peps/pep-0257/)
+にしたがいダブルクォート三つ `"""` で囲みます。まずサマリー行からはじめます（行が
+80 桁を超えないように）。サマリー行は句点、疑問符、感嘆符のいずれかで止めます。
+さらに続けるときは（ぜひ書いてください）まず空行を入れます。
+そしてサマリー行の開始引用符のカーソル位置にあわせて続きを書きます。
+docstring 整形のガイドラインをつづけて紹介します。
+
+#### 3.8.2 Modules
+
+モジュール
+
+Every file should contain license boilerplate. Choose the appropriate
+boilerplate for the license used by the project (for example, Apache 2.0,
+BSD, LGPL, GPL)  
+すべてのファイルにライセンスのボイラープレートを入れてください。
+プロジェクトに適したボイラープレートを選びます。（Apache 2.0、 BSD、 LGPL、 GPL など）
+
+Files should start with a docstring describing the contents and usage of
+the module.  
+ファイルは docstring ではじめます。これにはモジュールの内容と使いかたを書きます。
+
+```python
+"""A one line summary of the module or program, terminated by a period.
+モジュールやプログラムの説明を一行で。末尾の句点を忘れずに。
+
+Leave one blank line.  The rest of this docstring should contain an
+overall description of the module or program.  Optionally, it may also
+contain a brief description of exported classes and functions and/or usage
+examples.
+一行あける。そしてモジュール（プログラム）全体を説明します。
+公開するクラスや関数の簡単な説明や使用例を書いてもよいでしょう。
+
+  Typical usage example:
+  代表的な使いかた：
+
+  foo = ClassFoo()
+  bar = foo.FunctionBar()
+"""
+```
+
+#### 3.8.3 Functions and Methods
+
+関数とメソッド
+
+In this section, “function” means a method, function, or generator.  
+この節では「関数」はメソッド、関数、ジェネレーターすべてを指します。
+
+A function must have a docstring, unless it meets all of the following
+criteria:  
+関数にはすべて docstring を書きます。ただし以下の三つは例外とします:
+* not externally visible  
+外部には非公開
+* very short  
+ごく短い
+* obvious  
+単純明快
+
+A docstring should give enough information to write a call to the function
+without reading the function’s code. The docstring should describe the
+function’s calling syntax and its semantics, but generally not its
+implementation details, unless those details are relevant to how the function
+is to be used. For example, a function that mutates one of its arguments as a
+side effect should note that in its docstring. Otherwise, subtle but important
+details of a function’s implementation that are not relevant to the caller are
+better expressed as comments alongside the code than within the function’s
+docstring.  
+Docstring にはコードを読まずとも関数の呼びだしを書けるよう十分な情報を書きます。
+呼びだしの文法、そしてその意味（なにが起きるか）は必ず書きます。
+関数の利用法に関係しなければ実装の詳細を省略するのが通例です。
+呼びだしの副作用として引数を変更するような関数は、これを注記すべきです。
+関数の呼びだし元には関係しないけれど、重要でしかし気づきにくい実装の詳細は関数の
+docstring でなくコードのコメントとして書くのがよいでしょう。
+
+The docstring should be descriptive-style
+(`"""Fetches rows from a Bigtable."""`) rather than imperative-style
+(`"""Fetch rows from a Bigtable."""`). The docstring for a `@property` data
+descriptor should use the same style as the docstring for an attribute or a
+[function argument](#doc-function-args) (`"""The Bigtable path."""`,
+rather than `"""Returns the Bigtable path."""`).  
+Docstring は命令形（`"""Bigtable から複数行を取得せよ。"""`）でなく叙述的
+（`"""Bigtable から複数行を取得する。"""`）に書きます。 `@property` の docstring
+は属性や[関数引数](#doc-function-args)のように書きます
+（`"""Bigtable パスを返す。"""` でなく `"""Bigtable パス。"""`）。
+
+A method that overrides a method from a base class may have a simple docstring
+sending the reader to its overridden method's docstring, such as
+`"""See base class."""`. The rationale is that there is no need to repeat in
+many places documentation that is already present in the base method's
+docstring. However, if the overriding method's behavior is substantially
+different from the overridden method, or details need to be provided (e.g.,
+documenting additional side effects), a docstring with at least those
+differences is required on the overriding method.  
+基底クラスの実装をオーバーライドしたメソッドは、オーバーライドした実装の docstring
+を参照するよう（`"""基底クラスを参照。"""` のように）簡単に書いてかまいません。
+基底クラスの docstring で説明ずみの内容をあちこちで繰りかえさなくてよかろうという理由です。
+ただしオーバーライド元とは違った動きをするだとか、細かな捕捉が必要
+（たとえば新たな副作用を説明する）だとかいうときには、 docstring にこういった違いを書いてください。
+
+Certain aspects of a function should be documented in special sections, listed
+below. Each section begins with a heading line, which ends with a colon. All
+sections other than the heading should maintain a hanging indent of two or four
+spaces (be consistent within a file). These sections can be omitted in cases
+where the function's name and signature are informative enough that it can be
+aptly described using a one-line docstring.  
+以下に挙げたとおり、特にセクションをつくって説明すべき箇所があります。
+各セクションは見出しではじめます（行末はコロン）。見出しの次からのセクションは２字、
+あるいは４字分字下げしてください（字下げ幅はファイル内で統一）。関数名やその署名から一行の
+docstring で理解するに足りるなら、これらセクションは省略してかまいません。
+
+<a id="doc-function-args"></a>
+[*Args:*](#doc-function-args)
+:   List each parameter by name. A description should follow the name, and be
+    separated by a colon followed by either a space or newline. If the
+    description is too long to fit on a single 80-character line, use a hanging
+    indent of 2 or 4 spaces more than the parameter name (be consistent with the
+    rest of the docstrings in the file). The description should include required
+    type(s) if the code does not contain a corresponding type annotation. If a
+    function accepts `*foo` (variable length argument lists) and/or `**bar`
+    (arbitrary keyword arguments), they should be listed as `*foo` and `**bar`.  
+    名前でパラメーターを列挙します。名前に続けてコロンで区切りを入れ、一字あけるか改行して説明を書きます。
+    説明が一行 80 文字に収まらないならパラメーター名より後ろになるよう２字あるいは４字ぶん字下げします
+    （以降、ファイル内の docstring で統一）。対応する引数に型注釈を入れていないなら、
+    説明に型情報を入れます。関数が `*foo` （可変長引数リスト）や `**bar` （任意のキーワード引数）
+    を取るなら、これらも `*foo` や `**bar` の名前で列挙します。
+
+<a id="doc-function-returns"></a>
+[*Returns:* (or *Yields:* for generators)](#doc-function-returns)
+:   Describe the type and semantics of the return value. If the function only
+    returns None, this section is not required. It may also be omitted if the
+    docstring starts with Returns or Yields (e.g. `"""Returns row from Bigtable
+    as a tuple of strings."""`) and the opening sentence is sufficient to
+    describe return value.  
+    戻り値の型と意味を書きます。 None しか返さない関数ではこのセクションは不要です。
+    返す（Returns）や生む（Yields）で docstring が終わる場合、
+    そして戻り値を十分に説明しているときも省略してかまいません
+    （`"""Bigtable から行を文字列の組として「返す」。"""`）。  
+    （訳注： Returns や Yields ではじまる場合も、が原文。
+    セクション名に相当するから省略可能ということだろう。日本語では省略不可としたほうがよさそう）
+
+<a id="doc-function-raises"></a>
+[*Raises:*](#doc-function-raises)
+:   List all exceptions that are relevant to the interface followed by a
+    description. Use a similar exception name + colon + space or newline and
+    hanging indent style as described in *Args:*. You should not document
+    exceptions that get raised if the API specified in the docstring is violated
+    (because this would paradoxically make behavior under violation of the API
+    part of the API).  
+    インターフェースにかかわる例外を列挙し説明します。 *Args:* と同様、例外名 + コロン + 空白か改行、
+    そして字下げの書式を使います。 Docstring の API 仕様に違反したことで発生する例外は書きません。
+    （逆説的に API の誤った使いかたまでも API の仕様として定義することになります）
+
+```python
+def fetch_smalltable_rows(table_handle: smalltable.Table,
+                          keys: Sequence[Union[bytes, str]],
+                          require_all_keys: bool = False,
+) -> Mapping[bytes, Tuple[str]]:
+    """Fetches rows from a Smalltable.
+
+    Retrieves rows pertaining to the given keys from the Table instance
+    represented by table_handle.  String keys will be UTF-8 encoded.
+
+    Args:
+        table_handle: An open smalltable.Table instance.
+        keys: A sequence of strings representing the key of each table
+          row to fetch.  String keys will be UTF-8 encoded.
+        require_all_keys: Optional; If require_all_keys is True only
+          rows with values set for all keys will be returned.
+
+    Returns:
+        A dict mapping keys to the corresponding table row data
+        fetched. Each row is represented as a tuple of strings. For
+        example:
+
+        {b'Serak': ('Rigel VII', 'Preparer'),
+         b'Zim': ('Irk', 'Invader'),
+         b'Lrrr': ('Omicron Persei 8', 'Emperor')}
+
+        Returned keys are always bytes.  If a key from the keys argument is
+        missing from the dictionary, then that row was not found in the
+        table (and require_all_keys must have been False).
+
+    Raises:
+        IOError: An error occurred accessing the smalltable.
+    """
+```
+
+Similarly, this variation on `Args:` with a line break is also allowed:  
+以下のように `Args:` を改行してもかまいません。
+
+```python
+def fetch_smalltable_rows(table_handle: smalltable.Table,
+                          keys: Sequence[Union[bytes, str]],
+                          require_all_keys: bool = False,
+) -> Mapping[bytes, Tuple[str]]:
+    """Fetches rows from a Smalltable.
+
+    Retrieves rows pertaining to the given keys from the Table instance
+    represented by table_handle.  String keys will be UTF-8 encoded.
+
+    Args:
+      table_handle:
+        An open smalltable.Table instance.
+      keys:
+        A sequence of strings representing the key of each table row to
+        fetch.  String keys will be UTF-8 encoded.
+      require_all_keys:
+        Optional; If require_all_keys is True only rows with values set
+        for all keys will be returned.
+
+    Returns:
+      A dict mapping keys to the corresponding table row data
+      fetched. Each row is represented as a tuple of strings. For
+      example:
+
+      {b'Serak': ('Rigel VII', 'Preparer'),
+       b'Zim': ('Irk', 'Invader'),
+       b'Lrrr': ('Omicron Persei 8', 'Emperor')}
+
+      Returned keys are always bytes.  If a key from the keys argument is
+      missing from the dictionary, then that row was not found in the
+      table (and require_all_keys must have been False).
+
+    Raises:
+      IOError: An error occurred accessing the smalltable.
+    """
+```
+
+#### 3.8.4 Classes
+
+クラス
+
+Classes should have a docstring below the class definition describing the class.
+If your class has public attributes, they should be documented here in an
+`Attributes` section and follow the same formatting as a
+[function's `Args`](#doc-function-args) section.  
+クラスにはクラス定義の直後にクラスを説明する docstring を与えます。公開する属性があるなら
+`Attributes` セクションを設けここに書きます。書式は[関数引数](#doc-function-args)と同様です。
+
+```python
+class SampleClass:
+    """Summary of class here.
+
+    Longer class information....
+    Longer class information....
+
+    Attributes:
+        likes_spam: A boolean indicating if we like SPAM or not.
+        eggs: An integer count of the eggs we have laid.
+    """
+
+    def __init__(self, likes_spam: bool = False):
+        """Inits SampleClass with blah."""
+        self.likes_spam = likes_spam
+        self.eggs = 0
+
+    def public_method(self):
+        """Performs operation blah."""
+```
+
+#### 3.8.5 Block and Inline Comments
+
+ブロックコメントとインラインコメント
+
+The final place to have comments is in tricky parts of the code. If you're going
+to have to explain it at the next [code review](http://en.wikipedia.org/wiki/Code_review),
+you should comment it now. Complicated operations get a few lines of comments
+before the operations commence. Non-obvious ones get comments at the end of the
+line.  
+コメントをどこに残すかは難しい問題です。
+次回の[コードレビュー](https://ja.wikipedia.org/wiki/%E3%82%B3%E3%83%BC%E3%83%89%E3%83%AC%E3%83%93%E3%83%A5%E3%83%BC)で説明せねばならないなら、
+いまここに書くのがよいでしょう。複雑な操作は、それをはじめる前に数行のコメントを付します。
+不明瞭な操作なら行末にコメントをつけます。
+
+```python
+# We use a weighted dictionary search to find out where i is in
+# the array.  We extrapolate position based on the largest num
+# in the array and the array size and then do binary search to
+# get the exact number.
+# 重みつき辞書をつかって i が配列のどこにあるかを探す。配列サイズと
+# 配列中の最大値で位置を推定し、二分探索して正確な位置を求める。
+
+if i & (i-1) == 0:  # True if i is 0 or a power of 2.
+                    # 0 か 2 のべき乗なら真。
+```
+
+To improve legibility, these comments should start at least 2 spaces away from
+the code with the comment character `#`, followed by at least one space before
+the text of the comment itself.  
+可読性のため、このような（行末）コメントはコードから最低でも二文字離してコメント文字
+`#` を置きます。そしてコメント文と一文字ぶん空けます。
+
+On the other hand, never describe the code. Assume the person reading the code
+knows Python (though not what you're trying to do) better than you do.  
+一方で、決してコードを説明しないでください。コードを読んでいる人はあなたよりも Python
+に詳しいとおもってください。（あなたが Python でしようとしていることはともかく）  
+（訳注：つまり「やりたいこと」をコメントする。「やっていること」は説明しない）
+
+```python
+# BAD COMMENT: Now go through the b array and make sure whenever i occurs
+# the next element is i+1
+# 拙いコメント： ここから配列 b を舐めて i の次の要素が i+1 であると確かめる。
+```
+
+<!-- The next section is copied from the C++ style guide. -->
+
+#### 3.8.6 Punctuation, Spelling, and Grammar
+
+句読点、綴り、文法
+
+Pay attention to punctuation, spelling, and grammar; it is easier to read
+well-written comments than badly written ones.  
+句読点、綴り、文法に注意してください。よく書けたコメントは不出来なものより読みやすい。
+
+Comments should be as readable as narrative text, with proper capitalization and
+punctuation. In many cases, complete sentences are more readable than sentence
+fragments. Shorter comments, such as comments at the end of a line of code, can
+sometimes be less formal, but you should be consistent with your style.  
+コメントは適切に大文字・小文字、句読点が使われ、ナレーションのように読みやすくあるべきです。
+ほとんどの場合、断片の羅列より完全な一文であるほうが読みやすくなります。
+コード行末に付すような短いコメントは時としてくだけがちですが、とにかく一貫性を保ってください。
+
+Although it can be frustrating to have a code reviewer point out that you are
+using a comma when you should be using a semicolon, it is very important that
+source code maintain a high level of clarity and readability. Proper
+punctuation, spelling, and grammar help with that goal.  
+セミコロンであるべきところがコンマになっているとレビュアーに指摘されるのは腹立たしいでしょう。
+けれどソースコードを高いレベルで明晰に、そして可読性を高く保つことは何にもまして重要です。
+適切な句読点、綴り、文法はこの目的に沿うものです。
