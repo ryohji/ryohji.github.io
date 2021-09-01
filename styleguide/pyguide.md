@@ -1,6 +1,10 @@
 # Google Python Style Guide
 
-Table of Contents
+<!-- markdown="1" is required for GitHub Pages to render the TOC properly. -->
+
+<details markdown="1">
+  <summary>Table of Contents</summary>
+
 * [1 Background](#1-background)
 * [2 Python Language Rules](#2-python-language-rules)
   * [2.1 Lint](#21-lint)
@@ -44,14 +48,16 @@ Table of Contents
   * [3.19 Type Annotations](#319-type-annotations)
 * [4 Parting Words](#4-parting-words)
 
+</details>
+
 ## 1 Background
 
 背景
 
 Python is the main dynamic language used at Google.
-This style guide is a list of dos and don’ts for Python programs.  
+This style guide is a list of *dos and don'ts* for Python programs.  
 Python は Google の主要な動的言語です。
-このスタイルガイドは Python プログラムですべきこと、してはいけないことを挙げたものです。
+このスタイルガイドは Python プログラムで *すべきこと、してはいけないこと* を挙げたものです。
 
 
 To help you format code correctly, we’ve created a
