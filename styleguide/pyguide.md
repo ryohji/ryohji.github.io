@@ -32,6 +32,7 @@ Table of Contents
   * [3.6 Whitespace](#36-whitespace)
   * [3.7 Shebang Line](#37-shebang-line)
   * [3.8 Comments and Docstrings](#38-comments-and-docstrings)
+  * [3.10 Strings](#310-strings)
 
 ## 1 Background
 
@@ -2434,3 +2435,245 @@ punctuation, spelling, and grammar help with that goal.
 セミコロンであるべきところがコンマになっているとレビュアーに指摘されるのは腹立たしいでしょう。
 けれどソースコードを高いレベルで明晰に、そして可読性を高く保つことは何にもまして重要です。
 適切な句読点、綴り、文法はこの目的に沿うものです。
+
+
+### 3.10 Strings
+
+文字列
+
+Use an
+[f-string](https://docs.python.org/3/reference/lexical_analysis.html#f-strings),
+the `%` operator, or the `format` method for formatting strings, even when the
+parameters are all strings. Use your best judgment to decide between `+` and `%`
+(or `format`) though. Do not use `%` or the `format` method for pure
+concatenation.  
+文字列補間（[f 文字列](https://docs.python.org/3/reference/lexical_analysis.html#f-strings)）、
+`%` 演算子、あるいは `format` メソッドで文字列を整形してください。（引数がすべて文字列だとしても）  
+`+` と `%` （か `format`）のいずれをつかうかは理性を働かせてください。
+単純な連結には `%` や `format` メソッドをつかわないでください。
+
+```python
+Yes: x = a + b
+     x = '%s, %s!' % (imperative, expletive)
+     x = '{}, {}'.format(first, second)
+     x = 'name: %s; score: %d' % (name, n)
+     x = 'name: {}; score: {}'.format(name, n)
+     x = f'name: {name}; score: {n}'
+```
+
+```python
+No: x = '%s%s' % (a, b)  # use + in this case
+    x = '{}{}'.format(a, b)  # use + in this case
+    x = first + ', ' + second
+    x = 'name: ' + name + '; score: ' + str(n)
+```
+
+Avoid using the `+` and `+=` operators to accumulate a string within a loop. In
+some conditions, accumulating a string with addition can lead to quadratic
+rather than linear running time. Although common accumulations of this sort may
+be optimized on CPython, that is an implementation detail. The conditions under
+which an optimization applies are not easy to predict and may change. Instead,
+add each substring to a list and `''.join` the list after the loop terminates,
+or write each substring to an `io.StringIO` buffer. These techniques
+consistently have amortized-linear run time complexity.  
+ループ中では `+` や `+=` で連結しないようにします。文字列の繰り返し連結したところ、
+線形時間でなく二乗で遅くなった例もありました。この類の連結は CPython
+で最適化されたりもするでしょうけれど、実装詳細に過ぎます。
+最適化が効く条件は簡単に予測できませんし条件は変わりえます。
+代わりに各部分文字列をリストに追加してループ終了時に `''.join` したり、
+あるいは `io.StringIO` バッファーに逐次書きこんだりできます。
+これらの実行時間複雑性は定数償却時間です。
+
+```python
+Yes: items = ['<table>']
+     for last_name, first_name in employee_list:
+         items.append('<tr><td>%s, %s</td></tr>' % (last_name, first_name))
+     items.append('</table>')
+     employee_table = ''.join(items)
+```
+
+```python
+No: employee_table = '<table>'
+    for last_name, first_name in employee_list:
+        employee_table += '<tr><td>%s, %s</td></tr>' % (last_name, first_name)
+    employee_table += '</table>'
+```
+
+Be consistent with your choice of string quote character within a file. Pick `'`
+or `"` and stick with it. It is okay to use the other quote character on a
+string to avoid the need to `\\ ` escape within the string.  
+文字列の引用符はファイル内で統一します。 `'` か `"` 一方を選びます。
+文字列中での `\\` エスケープを避けるためにもう一方の引用符をつかうのは問題ありません。
+
+```python
+Yes:
+  Python('Why are you hiding your eyes?')
+  Gollum("I'm scared of lint errors.")
+  Narrator('"Good!" thought a happy Python reviewer.')
+```
+
+```python
+No:
+  Python("Why are you hiding your eyes?")
+  Gollum('The lint. It burns. It burns us.')
+  Gollum("Always the great lint. Watching. Watching.")
+```
+
+Prefer `"""` for multi-line strings rather than `'''`. Projects may choose to
+use `'''` for all non-docstring multi-line strings if and only if they also use
+`'` for regular strings. Docstrings must use `"""` regardless.  
+複数行文字列では `"""` をつかってください。
+通常の文字列に `'` を使用するプロジェクトでは複数行文字列での `'''` 利用を認めますが、
+docstring では例外なく `"""` をつかいます。
+
+Multi-line strings do not flow with the indentation of the rest of the program.
+If you need to avoid embedding extra space in the string, use either
+concatenated single-line strings or a multi-line string with
+[`textwrap.dedent()`](https://docs.python.org/3/library/textwrap.html#textwrap.dedent)
+to remove the initial space on each line:  
+複数行文字列がプログラムのインデントを乱さないようにしてください。
+文字列内に余計な空白をいれたくないなら、一行の文字列を連結するか
+[`textwrap.dedent()`](https://docs.python.org/3/library/textwrap.html#textwrap.dedent)
+で各行の先頭空白を取りのぞきます。
+
+```python
+  No:
+  long_string = """This is pretty ugly.
+Don't do this.
+"""
+```
+
+```python
+  Yes:
+  long_string = """This is fine if your use case can accept
+      extraneous leading spaces."""
+```
+
+```python
+  Yes:
+  long_string = ("And this is fine if you cannot accept\n" +
+                 "extraneous leading spaces.")
+```
+
+```python
+  Yes:
+  long_string = ("And this too is fine if you cannot accept\n"
+                 "extraneous leading spaces.")
+```
+
+```python
+  Yes:
+  import textwrap
+
+  long_string = textwrap.dedent("""\
+      This is also fine, because textwrap.dedent()
+      will collapse common leading spaces in each line.""")
+```
+
+#### 3.10.1 Logging
+
+ログ出力
+
+For logging functions that expect a pattern-string (with %-placeholders) as
+their first argument: Always call them with a string literal (not an f-string!)
+as their first argument with pattern-parameters as subsequent arguments. Some
+logging implementations collect the unexpanded pattern-string as a queryable
+field. It also prevents spending time rendering a message that no logger is
+configured to output.  
+（% プレースホルダー用の）パターン文字列を第一引数で受けとるログ出力関数では、
+かならず文字列リテラル（f 文字列ではなく！）を一つ目に、そしてパターン引数をつづけて与えます。
+クエリーフィールドとしてパターン文字列を展開せずに収集するログ実装もあります。
+これによりログを出力しないよう設定しているときにメッセージを整形する時間を浪費せずに済みます。
+
+```python
+  Yes:
+  import tensorflow as tf
+  logger = tf.get_logger()
+  logger.info('TensorFlow Version is: %s', tf.__version__)
+```
+
+```python
+  Yes:
+  import os
+  from absl import logging
+
+  logging.info('Current $PAGER is: %s', os.getenv('PAGER', default=''))
+
+  homedir = os.getenv('HOME')
+  if homedir is None or not os.access(homedir, os.W_OK):
+    logging.error('Cannot write to home directory, $HOME=%r', homedir)
+```
+
+```python
+  No:
+  import os
+  from absl import logging
+
+  logging.info('Current $PAGER is:')
+  logging.info(os.getenv('PAGER', default=''))
+
+  homedir = os.getenv('HOME')
+  if homedir is None or not os.access(homedir, os.W_OK):
+    logging.error(f'Cannot write to home directory, $HOME={homedir!r}')
+```
+
+#### 3.10.2 Error Messages
+
+エラーメッセージ
+
+Error messages (such as: message strings on exceptions like `ValueError`, or
+messages shown to the user) should follow three guidelines:  
+（`ValueError` などの例外にふくむメッセージや、ユーザーに表示するメッセージなどの）
+エラーメッセージは次の三つのガイドラインに沿うようにします：
+
+1.  The message needs to precisely match the actual error condition.  
+    メッセージが実際のエラー条件に正確に一致すること
+
+2.  Interpolated pieces need to always be clearly identifiable as such.  
+    補間された項目がはっきりと識別できること
+
+3.  They should allow simple automated processing (e.g. grepping).  
+    単純な自動処理（grep など）でつかえること
+
+```python
+  Yes:
+  if not 0 <= p <= 1:
+    raise ValueError(f'Not a probability: {p!r}')
+
+  try:
+    os.rmdir(workdir)
+  except OSError as error:
+    logging.warning('Could not remove directory (reason: %r): %r',
+                    error, workdir)
+```
+
+```python
+  No:
+  if p < 0 or p > 1:  # PROBLEM: also false for float('nan')!
+                      # 問題点: float('nan') も偽になる！
+    raise ValueError(f'Not a probability: {p!r}')
+
+  try:
+    os.rmdir(workdir)
+  except OSError:
+    # PROBLEM: Message makes an assumption that might not be true:
+    # Deletion might have failed for some other reason, misleading
+    # whoever has to debug this.
+    # 問題点: メッセージでかならずしも真でない仮定をしている。削除は別の
+    # 原因でも失敗するため、デバッグする人を誤誘導してしまう。
+    logging.warning('Directory already was deleted: %s', workdir)
+
+  try:
+    os.rmdir(workdir)
+  except OSError:
+    # PROBLEM: The message is harder to grep for than necessary, and
+    # not universally non-confusing for all possible values of `workdir`.
+    # Imagine someone calling a library function with such code
+    # using a name such as workdir = 'deleted'. The warning would read:
+    # "The deleted directory could not be deleted."
+    # 問題点: grep しづらいメッセージ。さらに `workdir` の取りうる
+    # 値すべてに対して誤解なく読み取れない。このように書かれたライブラリーを
+    # workdir = 'deleted' で呼びだすと警告はこうなる：
+    # 「削除されたディレクトリーは削除できません。」
+    logging.warning('The %s directory could not be deleted.', workdir)
+```
