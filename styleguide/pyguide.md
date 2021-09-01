@@ -36,6 +36,7 @@ Table of Contents
   * [3.11 Files, Sockets, and similar Stateful Resources](#311-files-sockets-and-similar-stateful-resources)
   * [3.12 TODO Comments](#312-todo-comments)
   * [3.13 Imports formatting](#313-imports-formatting)
+  * [3.14 Statements](#314-statements)
 
 ## 1 Background
 
@@ -2929,4 +2930,40 @@ from otherproject.ai import soul
 # 古いスタイルガイドではこのあとで myproject をインポートするよう勧めていた：
 #from myproject.backend.hgwells import time_machine
 #from myproject.backend.state_machine import main_loop
+```
+
+
+### 3.14 Statements
+
+文
+
+Generally only one statement per line.  
+１行に１文を書きます。
+
+However, you may put the result of a test on the same line as the test only if
+the entire statement fits on one line. In particular, you can never do so with
+`try`/`except` since the `try` and `except` can't both fit on the same line, and
+you can only do so with an `if` if there is no `else`.  
+ただ、１行にすべてが収まるなら検査と実行をまとめてもかまいません。
+もちろん `try`/`except` は対象外です。というのも `try` と `except` は一行に書けないためです。
+また `else` 節をもつ `if` 文も対象外です。
+
+```python
+Yes:
+
+  if foo: bar(foo)
+```
+
+```python
+No:
+
+  if foo: bar(foo)
+  else:   baz(foo)
+
+  try:               bar(foo)
+  except ValueError: baz(foo)
+
+  try:
+      bar(foo)
+  except ValueError: baz(foo)
 ```
