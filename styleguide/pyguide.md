@@ -33,6 +33,8 @@ Table of Contents
   * [3.7 Shebang Line](#37-shebang-line)
   * [3.8 Comments and Docstrings](#38-comments-and-docstrings)
   * [3.10 Strings](#310-strings)
+  * [3.11 Files, Sockets, and similar Stateful Resources](#311-files-sockets-and-similar-stateful-resources)
+  * [3.12 TODO Comments](#312-todo-comments)
 
 ## 1 Background
 
@@ -2770,3 +2772,39 @@ with contextlib.closing(urllib.urlopen("http://www.python.org/")) as front_page:
 In rare cases where context-based resource management is infeasible, code
 documentation must explain clearly how resource lifetime is managed.  
 文脈でのリソース管理がつかえない場合は、コードの文書でそのライフ管理を明快に説明してください。
+
+
+### 3.12 TODO Comments
+
+TODO コメント
+
+Use `TODO` comments for code that is temporary, a short-term solution, or
+good-enough but not perfect.  
+`TODO` コメントは一時的なコード、短期的解決方法、十分だが完全ではない箇所につけます。
+
+A `TODO` comment begins with the string `TODO` in all caps and a parenthesized
+name, e-mail address, or other identifier
+of the person or issue with the best context about the problem. This is followed
+by an explanation of what there is to do.  
+`TODO` コメントはすべて大文字で `TODO` と書き、丸カッコでくくって名前やメールアドレス、
+個人もしくは問題をよくあらわす課題を付します。これにつづけて、なにをすべきかを説明します。
+
+The purpose is to have a consistent `TODO` format that can be searched to find
+out how to get more details. A `TODO` is not a commitment that the person
+referenced will fix the problem. Thus when you create a
+`TODO`, it is almost always your name
+that is given.  
+`TODO` の形式をそろえておけば、詳細情報の入手方法を探しやすくなります。
+`TODO` は問題を修正する人の指定ではありません。
+とどのつまり、あなたが作成する `TODO` にはあなたの名前を書きます。
+
+```python
+# TODO(kl@gmail.com): Use a "*" here for string repetition.  文字の繰り返しは "*" で。
+# TODO(Zeke) Change this to use relations.  「関係」をつかうよう変える。
+```
+
+If your `TODO` is of the form "At a future date do something" make sure that you
+either include a very specific date ("Fix by November 2009") or a very specific
+event ("Remove this code when all clients can handle XML responses.").  
+`TODO` が「いつかなにがしをする」という形にする場合、日時（「2009年11月までに修正」）
+あるいは状況（「全クライアントが XML 応答を処理できるようになったら削除」）を特定してください。
