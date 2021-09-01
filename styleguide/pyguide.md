@@ -37,6 +37,7 @@ Table of Contents
   * [3.12 TODO Comments](#312-todo-comments)
   * [3.13 Imports formatting](#313-imports-formatting)
   * [3.14 Statements](#314-statements)
+  * [3.15 Accessors](#315-accessors)
 
 ## 1 Background
 
@@ -2967,3 +2968,29 @@ No:
       bar(foo)
   except ValueError: baz(foo)
 ```
+
+
+### 3.15 Accessors
+
+アクセス用関数（アクセッサー）
+
+If an accessor function would be trivial, you should use public variables
+instead of accessor functions to avoid the extra cost of function calls in
+Python. When more functionality is added you can use `property` to keep the
+syntax consistent.  
+アクセス用関数がささいな実装になるなら、アクセス用関数でなく公開変数を使います
+（これにより Python の関数呼びだしコストをなくします）。
+より多くの機能をくわえるなら `property` にして文法的な一貫性を維持します。
+
+On the other hand, if access is more complex, or the cost of accessing the
+variable is significant, you should use function calls (following the
+[Naming](#316-naming) guidelines) such as `get_foo()` and `set_foo()`. If the
+past behavior allowed access through a property, do not bind the new accessor
+functions to the property. Any code still attempting to access the variable by
+the old method should break visibly so they are made aware of the change in
+complexity.  
+一方でアクセスが複雑だったり変数のアクセスコストが無視できないなら、
+（[名づけ](#316-naming)ガイドラインにしたがって） `get_foo()` や `set_foo()` のような関数呼びだしにします。
+既存の実装がプロパティ経由のアクセスを公開していたなら、
+あらたに追加するアクセス用関数をプロパティと結びつけてはいけません。
+古い方法で変数をつかおうとするコードははっきりと壊れ、結果、複雑さによる変更に気づけます。
