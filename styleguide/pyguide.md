@@ -35,6 +35,7 @@ Table of Contents
   * [3.10 Strings](#310-strings)
   * [3.11 Files, Sockets, and similar Stateful Resources](#311-files-sockets-and-similar-stateful-resources)
   * [3.12 TODO Comments](#312-todo-comments)
+  * [3.13 Imports formatting](#313-imports-formatting)
 
 ## 1 Background
 
@@ -170,12 +171,12 @@ that the arguments are actually unused.
 
 Use `import` statements for packages and modules only, not for individual
 classes or functions. Imports from the
-[typing module](https://google.github.io/styleguide/pyguide.html#typing-imports),
+[typing module](#31912-imports-for-typing),
 [typing_extensions module](https://github.com/python/typing/tree/master/typing_extensions),
 and the [six.moves module](https://six.readthedocs.io/#module-six.moves) are
 exempt from this rule.  
 `import` 文はパッケージとモジュールのためだけに使い、個々のクラスや関数を取り込むためには使いません。
-ただし [typing モジュール](https://google.github.io/styleguide/pyguide.html#typing-imports)、
+ただし [typing モジュール](#31912-imports-for-typing)、
 [typing_extensions モジュール](https://github.com/python/typing/tree/master/typing_extensions)、
 そして [six.moves モジュール](https://six.readthedocs.io/#module-six.moves)は例外とします。
 
@@ -2808,3 +2809,124 @@ either include a very specific date ("Fix by November 2009") or a very specific
 event ("Remove this code when all clients can handle XML responses.").  
 `TODO` が「いつかなにがしをする」という形にする場合、日時（「2009年11月までに修正」）
 あるいは状況（「全クライアントが XML 応答を処理できるようになったら削除」）を特定してください。
+
+
+### 3.13 Imports formatting
+
+インポートの整形
+
+Imports should be on separate lines; there are
+[exceptions for `typing` imports](#31912-imports-for-typing).  
+インポートごとに行をわけます。
+（[typing からのインポートは例外](#31912-imports-for-typing)です）
+
+E.g.:  
+すなわち：
+
+```python
+Yes: import os
+     import sys
+     from typing import Mapping, Sequence
+```
+
+```python
+No:  import os, sys
+```
+
+
+Imports are always put at the top of the file, just after any module comments
+and docstrings and before module globals and constants. Imports should be
+grouped from most generic to least generic:  
+インポートはファイルの先頭に書きます。インポートに先行するのはモジュールコメントと
+docstring で、モジュールの大域変数と定数はインポートの後に配します。
+インポートは一般的なものから順にグループ化します。
+
+1.  Python future import statements. For example:  
+    Python future インポート文からはじめます。
+
+    ```python
+    from __future__ import absolute_import
+    from __future__ import division
+    from __future__ import print_function
+    ```
+
+    See [above](#220-modern-python-from-__future__-imports) for more
+    information about those.  
+    詳しくは[前の節](#220-modern-python-from-__future__-imports)を参照してください。
+
+2.  Python standard library imports. For example:  
+    Python 標準ライブラリーインポート。
+
+    ```python
+    import sys
+    ```
+
+3.  [third-party](https://pypi.org/) module
+    or package imports. For example:  
+    [サードパーティ製](https://pypi.org/)のモジュールやパッケージのインポート。
+
+    
+    ```python
+    import tensorflow as tf
+    ```
+
+4.  Code repository
+    sub-package imports. For example:  
+    コードリポジトリーに配されたサブパッケージのインポート。
+
+    
+    ```python
+    from otherproject.ai import mind
+    ```
+
+5.  **Deprecated:** application-specific imports that are part of the same
+    top level
+    sub-package as this file. For example:  
+    **廃止**: おなじトップレベル階層を共有するアプリケーション固有のインポート。
+
+    
+    ```python
+    from myproject.backend.hgwells import time_machine
+    ```
+
+    You may find older Google Python Style code doing this, but it is no longer
+    required. **New code is encouraged not to bother with this.** Simply treat
+    application-specific sub-package imports the same as other sub-package
+    imports.  
+    古い Google Python Style Guide で勧めていましたが不要です。
+    **新しいコードでは気にしないように。**
+    アプリケーション固有サブパッケージのインポートは、ほかのサブパッケージのインポートと同様に扱ってください。
+
+    
+Within each grouping, imports should be sorted lexicographically, ignoring case,
+according to each module's full package path (the `path` in `from path import
+...`). Code may optionally place a blank line between import sections.  
+各グループで、インポートは（大文字小文字を区別せず）辞書順にソートしてください。
+またモジュールの完全パッケージパスにしたがうよう注意してください
+（`from path import ...` なら `path` からの辞書順にします）。
+インポートのグループごとに空行を入れてもかまいません。
+
+```python
+import collections
+import queue
+import sys
+
+from absl import app
+from absl import flags
+import bs4
+import cryptography
+import tensorflow as tf
+
+from book.genres import scifi
+from myproject.backend import huxley
+from myproject.backend.hgwells import time_machine
+from myproject.backend.state_machine import main_loop
+from otherproject.ai import body
+from otherproject.ai import mind
+from otherproject.ai import soul
+
+# Older style code may have these imports down here instead:
+# 古いスタイルガイドではこのあとで myproject をインポートするよう勧めていた：
+#from myproject.backend.hgwells import time_machine
+#from myproject.backend.state_machine import main_loop
+```
