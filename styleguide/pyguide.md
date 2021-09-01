@@ -3260,3 +3260,34 @@ should not be executed when the file is being `pydoc`ed.
 トップレベルのコードはモジュールがインポートされたときに実行されます。
 ファイルを `pydoc` するときに不要な、関数の呼びだしやオブジェクトの作成、
 その他の操作を実行しないよう注意してください。
+
+
+### 3.18 Function length
+
+関数の長さ
+
+Prefer small and focused functions.  
+小さく対象をしぼった関数を書きます。
+
+We recognize that long functions are sometimes appropriate, so no hard limit is
+placed on function length. If a function exceeds about 40 lines, think about
+whether it can be broken up without harming the structure of the program.  
+長い関数が適切な場合もあるので関数の長さは物理的に制限しません。
+ただ 40 行を超えるようなら、プログラムの構造を害することなく分割できないか考えてみてください。
+
+Even if your long function works perfectly now, someone modifying it in a few
+months may add new behavior. This could result in bugs that are hard to find.
+Keeping your functions short and simple makes it easier for other people to read
+and modify your code.  
+現時点で長い関数が完璧に動いているとしても、数か月後に誰かが書きかえて別のふるまいを追加します。
+これは探しにくいバグを生みます。関数が短く簡潔ならば、ほかの人も読みやすく書きかえやすくなります。
+
+You could find long and complicated functions when working with some
+code. Do not be intimidated by modifying existing code: if working with such a
+function proves to be difficult, you find that errors are hard to debug, or you
+want to use a piece of it in several different contexts, consider breaking up
+the function into smaller and more manageable pieces.  
+コードを書いていれば長く複雑な関数に行きつくことがあるでしょう。
+既存コードを書きかえることを恐れないでください。そういった関数の利用が難しいとわかったら、
+エラーをデバッグしづらいなら、違った環境で一部分だけつかってみたいなら、
+関数を小わけにして扱いやすくしましょう。
