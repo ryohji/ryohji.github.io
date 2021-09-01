@@ -38,6 +38,9 @@ Table of Contents
   * [3.13 Imports formatting](#313-imports-formatting)
   * [3.14 Statements](#314-statements)
   * [3.15 Accessors](#315-accessors)
+  * [3.16 Naming](#316-naming)
+  * [3.17 Main](#317-main)
+  * [3.18 Function length](#318-function-length)
 
 ## 1 Background
 
@@ -3209,3 +3212,51 @@ encountered out of context.
 ソースが非公開なら命名規則を明瞭に文書化します。
 公開 API は `descriptive_names` のような PEP8 形式の名前にしてください。
 （数式の文脈を離れたらこれがよくある形式でしょう）
+
+
+### 3.17 Main
+
+main 関数
+
+In Python, `pydoc` as well as unit tests require modules to be importable. If a
+file is meant to be used as an executable, its main functionality should be in a
+`main()` function, and your code should always check `if __name__ == '__main__'`
+before executing your main program, so that it is not executed when the module
+is imported.  
+Python では `pydoc` やユニットテストをつかうために、モジュールはインポートできなくてはなりません。
+ファイルを実行可能にするなら、その主要機能は `main()` 関数に書きます。
+そしてモジュールのインポート時には動作しないよう` if __name__ == '__main__'`
+を確認してから主プログラムを実行します。
+
+When using [absl](https://github.com/abseil/abseil-py), use `app.run`:  
+[absl](https://github.com/abseil/abseil-py) をつかっているなら `app.run` で起動します：
+
+```python
+from absl import app
+...
+
+def main(argv: Sequence[str]):
+    # process non-flag arguments
+    ...
+
+if __name__ == '__main__':
+    app.run(main)
+```
+
+Otherwise, use:  
+そうでなければこう書きます：
+
+```python
+def main():
+    ...
+
+if __name__ == '__main__':
+    main()
+```
+
+All code at the top level will be executed when the module is imported. Be
+careful not to call functions, create objects, or perform other operations that
+should not be executed when the file is being `pydoc`ed.  
+トップレベルのコードはモジュールがインポートされたときに実行されます。
+ファイルを `pydoc` するときに不要な、関数の呼びだしやオブジェクトの作成、
+その他の操作を実行しないよう注意してください。
