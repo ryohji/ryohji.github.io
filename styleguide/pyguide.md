@@ -25,7 +25,7 @@
   * [2.17 Function and Method Decorators](#217-function-and-method-decorators)
   * [2.18 Threading](#218-threading)
   * [2.19 Power Features](#219-power-features)
-  * [2.20 Modern Python: from __future__ imports](#220-modern-python-from-__future__-imports)
+  * [2.20 Modern Python: from \_\_future\_\_ imports](#220-modern-python-from-__future__-imports)
   * [2.21 Type Annotated Code](#221-type-annotated-code)
 * [3 Python Style Rules](#3-python-style-rules)
   * [3.1 Semicolons](#31-semicolons)
@@ -50,32 +50,33 @@
 
 </details>
 
+<a id="background"></a>
 ## 1 Background
 
 背景
 
-Python is the main dynamic language used at Google.
-This style guide is a list of *dos and don'ts* for Python programs.  
-Python は Google の主要な動的言語です。
+Python is the main dynamic language used at Google. This style guide is a list
+of *dos and don'ts* for Python programs.  
 このスタイルガイドは Python プログラムで *すべきこと、してはいけないこと* を挙げたものです。
+Python は Google の主要な動的言語です。
 
-
-To help you format code correctly, we’ve created a
+To help you format code correctly, we've created a
 [settings file for Vim](https://google.github.io/styleguide/google_python_style.vim).
 For Emacs, the default settings should be fine.  
 コードをただしく整形するために [Vim 設定ファイル](https://google.github.io/styleguide/google_python_style.vim)を用意しました。
 Emacs は初期設定で充分です。
-
 
 Many teams use the [yapf](https://github.com/google/yapf/)
 auto-formatter to avoid arguing over formatting.  
 たいていのチームは yapf 自動整形ツールをつかって、整形で紛糾しないようにしています。
 
 
+<a id="python-language-rules"></a>
 ## 2 Python Language Rules
 
 Python 言語に関わる規則
 
+<a id="lint"></a>
 ### 2.1 Lint
 
 Run `pylint` over your code using this [pylintrc](https://google.github.io/styleguide/pylintrc).  
@@ -85,9 +86,10 @@ Run `pylint` over your code using this [pylintrc](https://google.github.io/style
 
 定義
 
-`pylint` is a tool for finding bugs and style problems in Python source code.
-It finds problems that are typically caught by a compiler for less dynamic
-languages like C and C++. Because of the dynamic nature of Python, some
+`pylint`
+is a tool for finding bugs and style problems in Python source code. It finds
+problems that are typically caught by a compiler for less dynamic languages like
+C and C++. Because of the dynamic nature of Python, some
 warnings may be incorrect; however, spurious warnings should be fairly
 infrequent.  
 `pylint` は Python ソースコードにひそむバグや書式の問題をみつけるツールです。
@@ -105,8 +107,9 @@ Catches easy-to-miss errors like typos, using-vars-before-assignment, etc.
 
 欠点
 
-`pylint` isn’t perfect. To take advantage of it, sometimes we’ll need to write
-around it, suppress its warnings or fix it.  
+`pylint`
+isn't perfect. To take advantage of it, sometimes we'll need to write around it,
+suppress its warnings or fix it.  
 `pylint` は完璧ではありません。
 結果を得るためには書き加えたり抑止したり修正したりといった作業が必要です。
 
@@ -114,7 +117,9 @@ around it, suppress its warnings or fix it.
 
 取り決め
 
-Make sure you run pylint on your code.  
+Make sure you run
+`pylint`
+on your code.  
 かならず `pylint` をコードに適用してください。
 
 Suppress warnings if they are inappropriate so that other issues are not hidden.
@@ -126,7 +131,8 @@ To suppress warnings, you can set a line-level comment:
 dict = 'something awful'  # Bad Idea... pylint: disable=redefined-builtin
 ```
 
-`pylint` warnings are each identified by symbolic name (`empty-docstring`)
+`pylint`
+warnings are each identified by symbolic name (`empty-docstring`)
 Google-specific warnings start with `g-`.  
 `pylint` 警告には固有のシンボル名があります（`empty-docstring` など）。
 Google が定義した警告名は `g-` ではじまります。
@@ -139,17 +145,19 @@ Suppressing in this way has the advantage that we can easily search for
 suppressions and revisit them.  
 このように抑止していくことで抑止した箇所を探しやすく、そして再チェックしやすくなります。
 
-You can get a list of `pylint` warnings by doing:  
+You can get a list of
+`pylint`
+warnings by doing:  
 `pylint` 警告はつぎのようにして一覧できます：
 
-```
+```shell
 pylint --list-msgs
 ```
 
 To get more information on a particular message, use:  
 より詳細に知りたい場合は次のようにします：
 
-```
+```shell
 pylint --help-msg=C6409
 ```
 
@@ -158,7 +166,7 @@ Prefer `pylint: disable` to the deprecated older form `pylint: disable-msg`.
 
 Unused argument warnings can be suppressed by deleting the variables at the
 beginning of the function. Always include a comment explaining why you are
-deleting it. “Unused.” is sufficient. For example:  
+deleting it. "Unused." is sufficient. For example:  
 未使用の引数の警告には関数冒頭で削除して対応してください。
 削除理由もあわせてコメントしてください。「未使用」で充分です。たとえば：
 
@@ -168,9 +176,9 @@ def viking_cafe_order(spam: str, beans: str, eggs: Optional[str] = None) -> str:
     return spam + spam + spam
 ```
 
-Other common forms of suppressing this warning include using ‘`_`’ as the
+Other common forms of suppressing this warning include using '`_`' as the
 identifier for the unused argument or prefixing the argument name with
-‘`unused_`’, or assigning them to ‘`_`’. These forms are allowed but no longer
+'`unused_`', or assigning them to '`_`'. These forms are allowed but no longer
 encouraged. These break callers that pass arguments by name and do not enforce
 that the arguments are actually unused.  
 警告に対応するその他の方法もあります。変数名を ‘`_`’ にしたり引数名に ‘`unused_`’
@@ -178,18 +186,20 @@ that the arguments are actually unused.
 これら方法をつかってもかまいませんがお勧めしません。
 これらの方法は引数名を指定した呼びだしを壊しますし、引数がつかわれないことも保証できません。
 
+
+<a id="imports"></a>
 ### 2.2 Imports
 
 インポート
 
 Use `import` statements for packages and modules only, not for individual
-classes or functions. Imports from the
-[typing module](#31912-imports-for-typing),
+classes or functions. Imports from the [typing module](#typing-imports),
 [typing_extensions module](https://github.com/python/typing/tree/master/typing_extensions),
-and the [six.moves module](https://six.readthedocs.io/#module-six.moves) are
-exempt from this rule.  
+and the
+[six.moves module](https://six.readthedocs.io/#module-six.moves)
+are exempt from this rule.  
 `import` 文はパッケージとモジュールのためだけにつかい、個々のクラスや関数を取り込むためにはつかいません。
-ただし [typing モジュール](#31912-imports-for-typing)、
+ただし [typing モジュール](#typing-imports)、
 [typing_extensions モジュール](https://github.com/python/typing/tree/master/typing_extensions)、
 そして [six.moves モジュール](https://six.readthedocs.io/#module-six.moves)は例外とします。
 
@@ -204,8 +214,8 @@ Reusability mechanism for sharing code from one module to another.
 
 利点
 
-The namespace management convention is simple. The source of each identifier
-is indicated in a consistent way; `x.Obj` says that object `Obj` is defined in
+The namespace management convention is simple. The source of each identifier is
+indicated in a consistent way; `x.Obj` says that object `Obj` is defined in
 module `x`.  
 名前空間を管理する規約は単純です。各識別子に対応するソースは一貫した方法で示されます。
 たとえば `x.Obj` はオブジェクト `Obj` はモジュール `x` で定義されているといった具合です。
@@ -221,19 +231,26 @@ Module names can still collide. Some module names are inconveniently long.
 
 取り決め
 
-* Use `import x` for importing packages and modules.  
-`import x` はパッケージあるいはモジュールのインポートにつかいます。
-* Use `from x import y` where `x` is the package prefix and `y` is the module
+*   Use `import x` for importing packages and modules.  
+    `import x` はパッケージあるいはモジュールのインポートにつかいます。
+*   Use `from x import y` where `x` is the package prefix and `y` is the module
+    name with no prefix.  
 name with no prefix.  
-`from x import y` は前置されるパッケージ名 `x` に対しモジュール名 `y` を前置なしで
-参照するためにつかいます。
-* Use `from x import y as z` if two modules named `y` are to be imported or if
+    name with no prefix.  
+    `from x import y` は前置されるパッケージ名 `x` に対しモジュール名 `y`
+    を前置なしで参照するためにつかいます。
+*   Use `from x import y as z` if two modules named `y` are to be imported or if
+    `y` is an inconveniently long name.  
 `y` is an inconveniently long name.  
-`from x import y as z` は同名のモジュール `y` をインポートするとき、あるいは
-`y` が不必要に長いときにつかいます。
-* Use `import y as z` only when `z` is a standard abbreviation (e.g., `np` for
+    `y` is an inconveniently long name.  
+    `from x import y as z` は同名のモジュール `y` をインポートするとき、あるいは
+    `y` が不必要に長いときにつかいます。
+*   Use `import y as z` only when `z` is a standard abbreviation (e.g., `np` for
+    `numpy`).
 `numpy`).  
-`import y as z` は `z` が標準的な略語のときにつかいます。（たとえば `numpy` に対する `np`）
+    `numpy`).
+    `import y as z` は `z` が標準的な略語のときにつかいます。（たとえば `numpy`
+    に対する `np`）
 
 For example the module `sound.effects.echo` may be imported as follows:  
 たとえば `sound.effects.echo` モジュールは次のようにインポートします：
@@ -244,13 +261,15 @@ from sound.effects import echo
 echo.EchoFilter(input, output, delay=0.7, atten=4)
 ```
 
-Do not use relative names in imports. Even if the module is in the same
-package, use the full package name. This helps prevent unintentionally
-importing a package twice.  
+Do not use relative names in imports. Even if the module is in the same package,
+use the full package name. This helps prevent unintentionally importing a
+package twice.  
 相対名でインポートしないでください。
 おなじパッケージ内のモジュールでも完全名をつかいます。
 こうすると気づかずおなじパッケージを二度インポートする愚を避けられます。
 
+
+<a id="packages"></a>
 ### 2.3 Packages
 
 パッケージ
@@ -264,8 +283,8 @@ Import each module using the full pathname location of the module.
 
 Avoids conflicts in module names or incorrect imports due to the module search
 path not being what the author expected. Makes it easier to find modules.  
-モジュール名の衝突を避けたり（モジュール検索パスが作者の意図とちがうために起きる）不正確なインポートを無くせます。
-また、こうすることでモジュールを探しやすくなります。
+モジュール名の衝突を避けたり（モジュール検索パスが作者の意図とちがうために起きる）
+不正確なインポートを無くせます。また、こうすることでモジュールを探しやすくなります。
 
 #### 2.3.2 Cons
 
@@ -307,8 +326,8 @@ from doctor.who import jodie
 FLAGS = flags.FLAGS
 ```
 
-No: (assume this file lives in `doctor/who/` where `jodie.py` also exists)  
-こうではありません：（`doctor/who/` の下、 `jodie.py` とおなじ場所のファイルだとして）
+No: _(assume this file lives in `doctor/who/` where `jodie.py` also exists)_  
+こうではありません：_（`doctor/who/` の下、 `jodie.py` とおなじ場所のファイルだとして）_
 
 ```python
 # Unclear what module the author wanted and what will be imported.  The actual
@@ -330,6 +349,8 @@ package named `jodie`, not a local `jodie.py`.
 これは、コードが `import jodie` でサードパーティーの、あるいは最上位パッケージ
 `jodie` を（ローカルにある `jodie.py` でなく）参照するつもりのときに問題になります。
 
+
+<a id="exceptions"></a>
 ### 2.4 Exceptions
 
 例外
@@ -354,8 +375,8 @@ or other exceptional conditions.
 
 The control flow of normal operation code is not cluttered by error-handling
 code. It also allows the control flow to skip multiple frames when a certain
-condition occurs, e.g., returning from N nested functions in one step instead
-of having to plumb error codes through.  
+condition occurs, e.g., returning from N nested functions in one step instead of
+having to plumb error codes through.  
 通常処理の制御フローがエラー処理コードでごちゃごちゃしません。
 また特定条件下で複数のフレームを飛ばすような制御もできます。
 たとえば N 段の関数呼びだしからエラーコードを逐一検査せず１ステップで戻れます。
@@ -365,8 +386,8 @@ of having to plumb error codes through.
 
 欠点
 
-May cause the control flow to be confusing. Easy to miss error cases when
-making library calls.  
+May cause the control flow to be confusing. Easy to miss error cases when making
+library calls.  
 制御フローがわかりづらくなります。ライブラリー呼びだしでのエラー処理を忘れがちです。
 
 
@@ -483,6 +504,7 @@ Exceptions must follow certain conditions:
     `finally` はファイルを閉じるといった後片付けに役立ちます。
 
 
+<a id="global-variables"></a>
 ### 2.5 Global variables
 
 大域変数
@@ -522,23 +544,24 @@ assignments to global variables are done when the module is first imported.
 Avoid global variables.  
 大域変数はつかいません。
 
-While they are technically variables, module-level constants are permitted
-and encouraged. For example: `_MAX_HOLY_HANDGRENADE_COUNT = 3`. Constants must
-be named using all caps with underscores. See Naming below.  
+While they are technically variables, module-level constants are permitted and
+encouraged. For example: `_MAX_HOLY_HANDGRENADE_COUNT = 3`. Constants must be
+named using all caps with underscores. See [Naming](#316-naming) below.  
 技術的には変数ですが、モジュールレベルの定数は積極的につかいましょう。
 たとえば `_MAX_HOLY_HANDGRANADE_COUNT = 3` といったものです。
 定数名はすべて大文字とアンダースコア（キャピタルスネークケース）で構成します。
 あとの[名づけ](#316-naming)も参照してください。
 
-If needed, globals should be declared at the module level and made internal
-to the module by prepending an `_` to the name. External access must be done
-through public module-level functions. See Naming below.  
+If needed, globals should be declared at the module level and made internal to
+the module by prepending an `_` to the name. External access must be done
+through public module-level functions. See [Naming](#316-naming) below.  
 つかう場合は、大域変数はモジュールレベルで宣言し、またモジュール内に限定します。
 名前に `_` を前置することでモジュール内部変数とできます。
 外部からこれにアクセスするときはモジュールレベルの公開関数をつかいます。
 [名づけ](#316-naming)も参照してください。
 
 
+<a id="nested-classes-functions"></a>
 ### 2.6 Nested/Local/Inner Classes and Functions
 
 入れ子の/ローカルの/内部のクラスと関数
@@ -554,9 +577,9 @@ variable. Inner classes are fine.
 
 定義
 
-A class can be defined inside of a method, function, or class. A function can
-be defined inside a method or function. Nested functions have read-only access
-to variables defined in enclosing scopes.  
+A class can be defined inside of a method, function, or class. A function can be
+defined inside a method or function. Nested functions have read-only access to
+variables defined in enclosing scopes.  
 クラスはメソッドや関数、クラスの中で定義できます。関数もメソッドや関数の中で定義できます。
 入れ子の関数は、その関数の外のスコープの変数を読むこと（だけ）ができます。
 
@@ -564,12 +587,12 @@ to variables defined in enclosing scopes.
 
 利点
 
-Allows definition of utility classes and functions that are only used inside
-of a very limited scope. Very
-[ADT](http://www.google.com/url?sa=D&q=http://en.wikipedia.org/wiki/Abstract_data_type)-y.
+Allows definition of utility classes and functions that are only used inside of
+a very limited scope. Very
+[ADT](https://en.wikipedia.org/wiki/Abstract_data_type)-y.
 Commonly used for implementing decorators.  
 限定されたスコープの中でだけつかえる補助クラスや関数を定義できます。非常に
-[ADT](http://www.google.com/url?sa=D&q=http://en.wikipedia.org/wiki/Abstract_data_type)
+[ADT](https://en.wikipedia.org/wiki/Abstract_data_type)
 らしさがあります。（訳注：ADT は抽象データ型のこと。ひとそろいの操作としてデータを表現する）  
 [デコレーター](#217-function-and-method-decorators)を定義するためによくつかわれます。
 
@@ -588,14 +611,15 @@ outer function longer and less readable.
 
 They are fine with some caveats. Avoid nested functions or classes except when
 closing over a local value other than `self` or `cls`. Do not nest a function
-just to hide it from users of a module. Instead, prefix its name with an `_`
-at the module level so that it can still be accessed by tests.  
+just to hide it from users of a module. Instead, prefix its name with an \_ at
+the module level so that it can still be accessed by tests.  
 いくつか注意は必要ですがすばらしいものです。
 （`self` と `cls` を除く）ローカル変数を閉じこむ以外の目的で関数やクラスを入れ子にしてはいけません。
 関数をモジュールの利用者から隠すために入れ子にしてはいけません。
-この目的ならば `_` を前置してモジュールレベルで定義します（これならテストもできます）。
+この目的ならば \_ を前置してモジュールレベルで定義します（これならテストもできます）。
 
 
+<a id="comprehensions"></a>
 ### 2.7 Comprehensions & Generator Expressions
 
 内包表記とジェネレーター
@@ -618,9 +642,9 @@ resorting to the use of traditional loops, `map()`, `filter()`, or `lambda`.
 
 利点
 
-Simple comprehensions can be clearer and simpler than other dict, list, or
-set creation techniques. Generator expressions can be very efficient, since
-they avoid the creation of a list entirely.  
+Simple comprehensions can be clearer and simpler than other dict, list, or set
+creation techniques. Generator expressions can be very efficient, since they
+avoid the creation of a list entirely.  
 単純な内包表記は、 dict や list、 set のこれ以外の作成法より明瞭で簡明になります。
 ジェネレーター式はリスト全体を生成せずにすむため効率的でもあります。
 
@@ -710,6 +734,7 @@ No:
 ```
 
 
+<a id="default-iterators-operators"></a>
 ### 2.8 Default Iterators and Operators
 
 デフォルトイテレーターと演算子
@@ -724,7 +749,7 @@ dictionaries, and files.
 定義
 
 Container types, like dictionaries and lists, define default iterators and
-membership test operators (“in” and “not in”).  
+membership test operators ("in" and "not in").  
 コンテナ型（辞書やリストなど）は既定のイテレーターや包含確認演算（“in” や
 “not in”）を定義しています。
 
@@ -732,10 +757,9 @@ membership test operators (“in” and “not in”).
 
 利点
 
-The default iterators and operators are simple and efficient. They express
-the operation directly, without extra method calls. A function that uses
-default operators is generic. It can be used with any type that supports the
-operation.  
+The default iterators and operators are simple and efficient. They express the
+operation directly, without extra method calls. A function that uses default
+operators is generic. It can be used with any type that supports the operation.  
 規定のイテレーターや演算子は単純で効率的です。
 これらは操作そのものを表現しており、あらためてメソッド呼び出す必要はありません。
 既定の演算子で書いた関数は汎用的です。その演算子をもつ型すべてにつかえるのです。
@@ -744,8 +768,8 @@ operation.
 
 欠点
 
-You can’t tell the type of objects by reading the method names (e.g.
-`has_key()` means a dictionary). This is also an advantage.  
+You can't tell the type of objects by reading the method names (e.g. `has_key()`
+means a dictionary). This is also an advantage.  
 メソッド名からだけではオブジェクトの型がわかりません（`has_key()`
 は辞書を暗示するだけです）。これは利点でもあります。
 
@@ -754,9 +778,9 @@ You can’t tell the type of objects by reading the method names (e.g.
 取り決め
 
 Use default iterators and operators for types that support them, like lists,
-dictionaries, and files. The built-in types define iterator methods, too.
-Prefer these methods to methods that return lists, except that you should
-not mutate a container while iterating over it.  
+dictionaries, and files. The built-in types define iterator methods, too. Prefer
+these methods to methods that return lists, except that you should not mutate a
+container while iterating over it.  
 リストや辞書、ファイルなど、型に用意されている既定のイテレーターや演算子をつかいましょう。
 組み込み型はイテレーターメソッドも定義しています。リストを返すメソッドでなく、
 これらイテレーターを返すメソッドをつかってください。
@@ -778,6 +802,7 @@ No:   for key in adict.keys(): ...   # 既定の演算子で充分
 ```
 
 
+<a id="generators"></a>
 ### 2.9 Generators
 
 ジェネレーター
@@ -790,8 +815,8 @@ Use generators as needed.
 定義
 
 A generator function returns an iterator that yields a value each time it
-executes a `yield` statement. After it yields a value, the runtime state of
-the generator function is suspended until the next value is needed.  
+executes a yield statement. After it yields a value, the runtime state of the
+generator function is suspended until the next value is needed.  
 ジェネレーター関数は `yield` 文を実行するたびに値を生成するイテレーターを返します。
 関数は値を生成すると、次の値が要求されるまでそこで一旦停止状態になります。
 
@@ -816,12 +841,13 @@ None.
 
 取り決め
 
-Fine. Use “Yields:” rather than “Returns:” in the docstring for generator
+Fine. Use "Yields:" rather than "Returns:" in the docstring for generator
 functions.  
 すばらしい。
 ジェネレーター関数の docstring では “Returns:” でなく “Yields:” をつかいます。
 
 
+<a id="lambdas"></a>
 ### 2.10 Lambda Functions
 
 無名関数
@@ -835,8 +861,7 @@ with a `lambda`.
 
 定義
 
-Lambdas define anonymous functions in an expression, as opposed to a
-statement.  
+Lambdas define anonymous functions in an expression, as opposed to a statement.  
 ラムダは文でなく式として無名関数を定義します。
 
 #### 2.10.2 Pros
@@ -846,14 +871,13 @@ statement.
 Convenient.  
 便利です。
 
-
 #### 2.10.3 Cons
 
 欠点
 
 Harder to read and debug than local functions. The lack of names means stack
-traces are more difficult to understand. Expressiveness is limited because
-the function may only contain an expression.  
+traces are more difficult to understand. Expressiveness is limited because the
+function may only contain an expression.  
 ローカル関数定義にくらべ読みづらく、デバッグしづらくなります。（関数に）名前がつかないため、
 スタックトレースを理解しづらくなります。
 （無名関数内に）ただひとつの式しか書けないため表現できるコードに限界があります。
@@ -863,19 +887,20 @@ the function may only contain an expression.
 取り決め
 
 Okay to use them for one-liners. If the code inside the lambda function is
-longer than 60-80 chars, it’s probably better to define it as a regular
-[nested function](#216-lexical-scoping).  
+longer than 60-80 chars, it's probably better to define it as a regular
+[nested function](#lexical-scoping).  
 一行に収まるならつかってよいです。無名関数内が 60 ～ 80 文字をこえるならば、
-おそらく[入れ子の関数](#216-lexical-scoping)をつかうとよいでしょう。
+おそらく[入れ子の関数](#lexical-scoping)をつかうとよいでしょう。
 
-For common operations like multiplication, use the functions from the
-`operator` module instead of lambda functions. For example, prefer
-`operator.mul` to `lambda x, y: x * y`.  
+For common operations like multiplication, use the functions from the `operator`
+module instead of lambda functions. For example, prefer `operator.mul` to
+`lambda x, y: x * y`.  
 乗算のような一般的な演算は `operator` モジュール定義の関数をつかってください。
 つまり `lambda x, y: x * y` と書くかわりに `operator.mul` をつかいます。
 （訳注：たとえば `product` 関数を `product = lambda vs: functools.reduce(operator.mul, vs)` のように定義する）
 
 
+<a id="conditional-expressions"></a>
 ### 2.11 Conditional Expressions
 
 条件式
@@ -883,14 +908,13 @@ For common operations like multiplication, use the functions from the
 Okay for simple cases.  
 簡単なものならつかってよいです。
 
-
 #### 2.11.1 Definition
 
 定義
 
 Conditional expressions (sometimes called a “ternary operator”) are mechanisms
-that provide a shorter syntax for if statements. For example:
-`x = 1 if cond else 2`.  
+that provide a shorter syntax for if statements. For example: `x = 1 if cond
+else 2`.  
 条件式は（「三項演算子」とも呼ばれます） if 文をより短く書ける記法です。
 たとえば `x = 1 if cond else 2` のようなものです。
 
@@ -940,6 +964,8 @@ No:
                         else 'no, false, negative, nay')
 ```
 
+
+<a id="default-arguments"></a>
 ### 2.12 Default Argument Values
 
 デフォルト引数
@@ -951,7 +977,7 @@ Okay in most cases.
 
 定義
 
-You can specify values for variables at the end of a function’s parameter list,
+You can specify values for variables at the end of a function's parameter list,
 e.g., `def foo(a, b=0):`. If `foo` is called with only one argument, `b` is set
 to 0. If it is called with two arguments, `b` has the value of the second
 argument.  
@@ -963,10 +989,10 @@ argument.
 利点
 
 Often you have a function that uses lots of default values, but on rare
-occasions you want to override the defaults. Default argument values provide
-an easy way to do this, without having to define lots of functions for the rare
+occasions you want to override the defaults. Default argument values provide an
+easy way to do this, without having to define lots of functions for the rare
 exceptions. As Python does not support overloaded methods/functions, default
-arguments are an easy way of “faking” the overloading behavior.  
+arguments are an easy way of "faking" the overloading behavior.  
 たくさんの規定値をほとんど変えずに呼べる関数をつくるとします。
 デフォルト引数はこれを実現する簡単な方法です。
 すなわち、まれな例外ケースのためにたくさんの関数をつくらずに済みます。
@@ -979,9 +1005,9 @@ Python では関数やメソッドをオーバーロードできませんが、
 欠点
 
 Default arguments are evaluated once at module load time. This may cause
-problems if the argument is a mutable object such as a list or a dictionary.
-If the function modifies the object (e.g., by appending an item to a list),
-the default value is modified.  
+problems if the argument is a mutable object such as a list or a dictionary. If
+the function modifies the object (e.g., by appending an item to a list), the
+default value is modified.  
 デフォルト引数はモジュールのロード時に一度だけ評価されます。
 このため引数がリストや辞書のような変更可能なオブジェクトになっていると問題が起きます。
 関数がオブジェクトを変更すると（リストに要素を追加するなど）デフォルト値が変わってしまうのです。
@@ -1017,20 +1043,21 @@ No:  def foo(a, b: Mapping = {}):  # Could still get passed to unchecked code
 ```
 
 
+<a id="properties"></a>
 ### 2.13 Properties
 
 プロパティ
 
-Use properties for accessing or setting data where you would normally
-have used simple, lightweight accessor or setter methods.  
+Use properties for accessing or setting data where you would normally have used
+simple, lightweight accessor or setter methods.  
 簡単で軽量な getter/setter をつかってきた場所では、データへのアクセス・設定にプロパティをつかいます。
 
 #### 2.13.1 Definition
 
 定義
 
-A way to wrap method calls for getting and setting an attribute as a
-standard attribute access when the computation is lightweight.  
+A way to wrap method calls for getting and setting an attribute as a standard
+attribute access when the computation is lightweight.  
 （計算時間が軽い）メソッド呼びだしで属性の値の読み出しと設定をするところで、
 これを通常の属性へのアクセスのようにラップする方法です。
 
@@ -1038,12 +1065,12 @@ standard attribute access when the computation is lightweight.
 
 利点
 
-Readability is increased by eliminating explicit get and set method calls
-for simple attribute access. Allows calculations to be lazy. Considered the
-Pythonic way to maintain the interface of a class. In terms of performance,
-allowing properties bypasses needing trivial accessor methods when a direct
-variable access is reasonable. This also allows accessor methods to be added
-in the future without breaking the interface.  
+Readability is increased by eliminating explicit get and set method calls for
+simple attribute access. Allows calculations to be lazy. Considered the Pythonic
+way to maintain the interface of a class. In terms of performance, allowing
+properties bypasses needing trivial accessor methods when a direct variable
+access is reasonable. This also allows accessor methods to be added in the
+future without breaking the interface.  
 簡単な属性アクセスの getter/setter メソッド呼びだしをなくせるため可読性が高まります。
 計算を遅らせられます。クラスのインターフェースを維持する Python らしさが考慮されています。
 性能面では、変数への直接アクセスがよさそうなら、些末なアクセッサーメソッドをなくすように実装することもできます。
@@ -1053,8 +1080,8 @@ in the future without breaking the interface.
 
 欠点
 
-Can hide side-effects much like operator overloading. Can be confusing
-for subclasses.  
+Can hide side-effects much like operator overloading. Can be confusing for
+subclasses.  
 演算子のオーバーロードのように副作用が見えづらくなります。
 サブクラスの実装で混乱するかもしれません。
 
@@ -1062,20 +1089,20 @@ for subclasses.
 
 取り決め
 
-Use properties in new code to access or set data where you would normally
-have used lightweight accessor or setter methods. Properties should be created
-with the `@property` [decorator](#217-function-and-method-decorators).  
+Use properties in new code to access or set data where you would normally have
+used lightweight accessor or setter methods. Properties should be created with
+the `@property` [decorator](#217-function-and-method-decorators).  
 あたらしく書くコードではデータの読みとり、設定をするときにプロパティをつかいましょう
 （これまでに軽量の getter/setter を書いていたところ）。プロパティは
 `@property` [デコレーター](#217-function-and-method-decorators)で作成します。
 
-Inheritance with properties can be non-obvious if the property itself is
-not overridden. Thus one must make sure that accessor methods are called
-indirectly to ensure methods overridden in subclasses are called by the
-property (using the template method design pattern).  
+Inheritance with properties can be non-obvious if the property itself is not
+overridden. Thus one must make sure that accessor methods are called indirectly
+to ensure methods overridden in subclasses are called by the property (using the
+[template method design pattern](https://en.wikipedia.org/wiki/Template_method_pattern)).  
 プロパティをつかった継承はプロパティそのものをオーバーライドしていないとわかりづらいかもしれません。
 プロパティが、オーバーライドしたアクセッサーメソッドを間接的に呼びだしていないことを確かめなければならないからです
-（テンプレートメソッドのデザインパターンをつかっているときなど）。
+（[デザインパターンのテンプレートメソッド](https://en.wikipedia.org/wiki/Template_method_pattern)をつかっているときなど）。
 
 ```python
 Yes: import math
@@ -1122,11 +1149,12 @@ Yes: import math
 ```
 
 
+<a id="truefalse-evaluations"></a>
 ### 2.14 True/False Evaluations
 
 真と偽の評価
 
-Use the “implicit” false if at all possible.  
+Use the "implicit" false if at all possible.  
 可能なところではすべて「暗黙の」 false をつかいます。
 
 #### 2.14.1 Definition
@@ -1134,8 +1162,8 @@ Use the “implicit” false if at all possible.
 定義
 
 Python evaluates certain values as `False` when in a boolean context. A quick
-“rule of thumb” is that all “empty” values are considered false, so `0`,
-`None`, `[]`, `{}`, `''` all evaluate as false in a boolean context.  
+"rule of thumb" is that all "empty" values are considered false, so `0`, `None`,
+`[]`, `{}`, `''` all evaluate as false in a boolean context.  
 Python ではいくつかの値がブール値の文脈で `False` になります。
 大雑把にいうと「空」の値は偽になります。たとえば `0`、 `None`、 `[]`、 `{}` や `’’`
 はブール値として評価すると偽になります。
@@ -1144,8 +1172,8 @@ Python ではいくつかの値がブール値の文脈で `False` になりま�
 
 利点
 
-Conditions using Python booleans are easier to read and less error-prone.
-In most cases, they’re also faster.  
+Conditions using Python booleans are easier to read and less error-prone. In
+most cases, they're also faster.  
 Python のブール値による条件式は読みやすく、また間違いを起こしにくくなっています。
 ほとんどの場合、高速でもあります。
 
@@ -1160,67 +1188,75 @@ C/C++ 開発者には不思議におもえるかもしれません。
 
 取り決め
 
-Use the “implicit” false if possible, e.g., `if foo:` rather than
-`if foo != []:`. There are a few caveats that you should keep in mind though:  
+Use the "implicit" false if possible, e.g., `if foo:` rather than `if foo !=
+[]:`. There are a few caveats that you should keep in mind though:  
 可能なところではすべて「暗黙の」 false をつかいます。たとえば `if foo != []:` でなく
 `if foo:` と書きます。ただしいくつか注意点がありますので覚えておいてください：
 
-* Always use `if foo is None:` (or `is not None`) to check for a `None` value.
-E.g., when testing whether a variable or argument that defaults to None was
-set to some other value. The other value might be a value that’s false in a
-boolean context!  
-None はかならず `if foo is None` （あるいは `is not None`）で確認してください。
-変数や引数のデフォルト値 `None` が別の値かを確かめるときなどです。
-ほかにもブール値として偽と評価される値があります！
-* Never compare a boolean variable to `False` using `==`. Use `if not x:`
-instead. If you need to distinguish `False` from `None` then chain the
+-   Always use `if foo is None:` (or `is not None`) to check for a `None` value.
+    E.g., when testing whether a variable or argument that defaults to `None`
+    was set to some other value. The other value might be a value that's false
+    in a boolean context!  
+    None はかならず `if foo is None` （あるいは `is not None`）で確認してください。
+    変数や引数のデフォルト値 `None` が別の値かを確かめるときなどです。
+    ほかにもブール値として偽と評価される値があります！
+-   Never compare a boolean variable to `False` using `==`. Use `if not x:`
+    instead. If you need to distinguish `False` from `None` then chain the
+    expressions, such as `if not x and x is not None:`.  
 expressions, such as `if not x and x is not None:`.  
-ブール変数を `False` と `==` で比較せず、代わりに `if not x:` とします。
-`False` と `None` を判別するには `if not x and x is not None:`
-のように式をつなぎます。
-* For sequences (strings, lists, tuples), use the fact that empty sequences
-are false, so `if seq:` and `if not seq:` are preferable to `if len(seq):`
+    expressions, such as `if not x and x is not None:`.  
+    ブール変数を `False` と `==` で比較せず、代わりに `if not x:` とします。
+    `False` と `None` を判別するには `if not x and x is not None:`
+    のように式をつなぎます。
+-   For sequences (strings, lists, tuples), use the fact that empty sequences
+    are false, so `if seq:` and `if not seq:` are preferable to `if len(seq):`
+    and `if not len(seq):` respectively.  
 and `if not len(seq):` respectively.  
-並び（文字列、リスト、タプル）では、空の並びが偽であることを利用して `if seq:`
-あるいは `if not seq:` のように書きます。（`if len(seq):` や `if not len(seq):`
-より望ましい書きかたです）
-* When handling integers, implicit false may involve more risk than benefit
-(i.e., accidentally handling `None` as 0). You may compare a value which
-is known to be an integer (and is not the result of `len()`) against the
+    and `if not len(seq):` respectively.  
+    並び（文字列、リスト、タプル）では、空の並びが偽であることを利用して `if seq:`
+    あるいは `if not seq:` のように書きます。（`if len(seq):` や `if not len(seq):`
+    より望ましい書きかたです）
+-   When handling integers, implicit false may involve more risk than benefit
+    (i.e., accidentally handling `None` as 0). You may compare a value which is
+    known to be an integer (and is not the result of `len()`) against the
+    integer 0.  
 integer 0.  
-整数の処理では暗黙の偽への変換は利点にくらべ危険が大きくなります
-（つまり `None` が誤って 0 になる、など）。整数になることが確実な値は 0
-と比較したほうがよいでしょう。（ただし `len()` の結果は除く）
+    integer 0.  
+    整数の処理では暗黙の偽への変換は利点にくらべ危険が大きくなります
+    （つまり `None` が誤って 0 になる、など）。整数になることが確実な値は 0
+    と比較したほうがよいでしょう。（ただし `len()` の結果は除く）
 
-```python
-Yes: if not users:
-         print('no users')
+    ```python
+    Yes: if not users:
+             print('no users')
 
-     if foo == 0:
-         self.handle_zero()
+         if foo == 0:
+             self.handle_zero()
 
-     if i % 10 == 0:
-         self.handle_multiple_of_ten()
+         if i % 10 == 0:
+             self.handle_multiple_of_ten()
 
-     def f(x=None):
-         if x is None:
-             x = []
-```
-```python
-No:  if len(users) == 0:
-         print('no users')
+         def f(x=None):
+             if x is None:
+                 x = []
+    ```
 
-     if foo is not None and not foo:
-         self.handle_zero()
+    ```python
+    No:  if len(users) == 0:
+             print('no users')
 
-     if not i % 10:
-         self.handle_multiple_of_ten()
+         if foo is not None and not foo:
+             self.handle_zero()
 
-     def f(x=None):
-         x = x or []
-```
-* Note that `'0'` (i.e., `0` as string) evaluates to true.  
-（数値の `0` でなく文字列の） `'0'` は真になることに注意。
+         if not i % 10:
+             self.handle_multiple_of_ten()
+
+         def f(x=None):
+             x = x or []
+    ```
+
+-   Note that `'0'` (i.e., `0` as string) evaluates to true.  
+    （数値の `0` でなく文字列の） `'0'` は真になることに注意。
 
 
 ### 2.16 Lexical Scoping
@@ -1231,16 +1267,17 @@ Okay to use.
 つかってヨシ！
 
 
+<a id="lexical-scoping"></a>
 #### 2.16.1 Definition
 
 定義
 
 A nested Python function can refer to variables defined in enclosing functions,
-but cannot assign to them. Variable bindings are resolved using lexical
-scoping, that is, based on the static program text. Any assignment to a name
-in a block will cause Python to treat all references to that name as a local
-variable, even if the use precedes the assignment. If a global declaration
-occurs, the name is treated as a global variable.  
+but cannot assign to them. Variable bindings are resolved using lexical scoping,
+that is, based on the static program text. Any assignment to a name in a block
+will cause Python to treat all references to that name as a local variable, even
+if the use precedes the assignment. If a global declaration occurs, the name is
+treated as a global variable.  
 入れ子の Python 関数はそれを囲む関数の変数を参照できます（ただし代入はできません）。
 変数の束縛は文脈スコープ、つまりプログラムの字面どおりに解決されます。
 ブロック内でのある名前への代入は Python ではローカル変数への参照あつかいになります
@@ -1264,7 +1301,7 @@ def get_adder(summand1: float) -> Callable[[float], float]:
 利点
 
 Often results in clearer, more elegant code. Especially comforting to
-experienced Lisp and Scheme (and Haskell and ML and …) programmers.  
+experienced Lisp and Scheme (and Haskell and ML and ...) programmers.  
 簡潔で洗練されたコードになります。とくに熟練した関数型言語つかい（Lisp や Scheme、 Haskell、 ML など）
 には心地よいでしょう。
 
@@ -1291,7 +1328,8 @@ def foo(x: Iterable[int]):
     bar()
 ```
 
-So `foo([1, 2, 3])` will print `1 2 3 3`, not `1 2 3 4`.
+So `foo([1, 2, 3])` will print `1 2 3 3`,
+not `1 2 3 4`.  
 よって `foo([1, 2, 3])` の呼びだしは `1 2 3 3` を表示します。（`1 2 3 4` にはなりません）
 
 #### 2.16.4 Decision
@@ -1301,13 +1339,14 @@ So `foo([1, 2, 3])` will print `1 2 3 3`, not `1 2 3 4`.
 Okay to use.  
 おつかいください。
 
-
+<a id="function-and-method-decorators"></a>
+<a id="decorators"></a>
 ### 2.17 Function and Method Decorators
 
 関数とメソッドのデコレーター
 
-Use decorators judiciously when there is a clear advantage.
-Avoid `staticmethod` and limit use of `classmethod`.  
+Use decorators judiciously when there is a clear advantage. Avoid `staticmethod`
+and limit use of `classmethod`.  
 明確な利点があると判断できるときにデコレーターをつかいます。
 `staticmethod` はつかわないでください。 `classmethod` の利用は控えてください。
 
@@ -1316,10 +1355,10 @@ Avoid `staticmethod` and limit use of `classmethod`.
 定義
 
 [Decorators for Functions and Methods](https://docs.python.org/3/glossary.html#term-decorator)
-(a.k.a “the `@` notation”). One common decorator is `@property`, used for
-converting ordinary methods into dynamically computed attributes. However,
-the decorator syntax allows for user-defined decorators as well. Specifically,
-for some function `my_decorator`, this:  
+(a.k.a "the `@` notation"). One common decorator is `@property`, used for
+converting ordinary methods into dynamically computed attributes. However, the
+decorator syntax allows for user-defined decorators as well. Specifically, for
+some function `my_decorator`, this:  
 [関数とメソッドのデコレーター](https://docs.python.org/3/glossary.html#term-decorator)のとおりです
 （「`@` 記法」ともいう）。 `@property` が有名です。これはふつうのメソッドを動的に計算する属性に変換します。
 ところでデコレーターの文法はユーザー定義のデコレーターをつくるためにもつかえます。
@@ -1355,10 +1394,10 @@ eliminate some repetitive code, enforce invariants, etc.
 
 欠点
 
-Decorators can perform arbitrary operations on a function’s arguments or
-return values, resulting in surprising implicit behavior. Additionally,
-decorators execute at import time. Failures in decorator code are pretty
-much impossible to recover from.  
+Decorators can perform arbitrary operations on a function's arguments or return
+values, resulting in surprising implicit behavior. Additionally, decorators
+execute at import time. Failures in decorator code are pretty much impossible to
+recover from.  
 デコレーターは関数の引数や戻り値にたいしてあらゆる操作ができるため、
 驚くような予期せぬ結果が生じます。加えてデコレーターはインポート時に処理されます。
 デコレーターの実装に問題があると、ここから復帰することはほぼ不可能です。
@@ -1367,32 +1406,32 @@ much impossible to recover from.
 
 取り決め
 
-Use decorators judiciously when there is a clear advantage. Decorators
-should follow the same import and naming guidelines as functions. Decorator
-pydoc should clearly state that the function is a decorator. Write unit
-tests for decorators.  
+Use decorators judiciously when there is a clear advantage. Decorators should
+follow the same import and naming guidelines as functions. Decorator pydoc
+should clearly state that the function is a decorator. Write unit tests for
+decorators.  
 明確な利点があると判断できるときだけデコレーターをつかいます。
 デコレーターは関数と同じインポートと名前づけのガイドラインにしたがってください。
 デコレーターの docstring では、それがデコレーターであると明記してください。
 デコレーター（の定義）にはユニットテストを書きます。
 
-Avoid external dependencies in the decorator itself (e.g. don’t rely on
-files, sockets, database connections, etc.), since they might not be
-available when the decorator runs (at import time, perhaps from `pydoc`
-or other tools). A decorator that is called with valid parameters should
-(as much as possible) be guaranteed to succeed in all cases.  
+Avoid external dependencies in the decorator itself (e.g. don't rely on files,
+sockets, database connections, etc.), since they might not be available when the
+decorator runs (at import time, perhaps from `pydoc` or other tools). A
+decorator that is called with valid parameters should (as much as possible) be
+guaranteed to succeed in all cases.  
 デコレーターに外部への依存を持ちこまないでください（つまり、ファイルやソケット、
 データベース接続などに頼らない）。これらはデコレーターの解釈時に利用できないかもしれません
 （解釈はインポート時におこなわれ、 pydoc などのツールもインポートはします）。
 ただしく呼びだされたデコレーターはいかなるときも必ず成功するようにしてください。
 
-Decorators are a special case of “top level code” - see [main](#317-main)
-for more discussion.  
+Decorators are a special case of "top level code" - see [main](#317-main) for
+more discussion.  
 デコレーターは「トップレベルコード」の特殊な場合です。詳細は [main](#317-main)
 の節を参照してください。
 
-Never use `staticmethod` unless forced to in order to integrate with an
-API defined in an existing library. Write a module level function instead.  
+Never use `staticmethod` unless forced to in order to integrate with an API
+defined in an existing library. Write a module level function instead.  
 `staticmethod` の利用は禁止です。
 （既存のライブラリーに定義された API と結合するために指定されている場合は除きます）  
 代わりにモジュールレベルの関数を定義してください。
@@ -1403,6 +1442,7 @@ routine that modifies necessary global state such as a process-wide cache.
 プロセスワイドなキャッシュのような大域的状態の変更が避けられないクラス固有の処理を定義するときに（のみ）つかいます。
 
 
+<a id="threading"></a>
 ### 2.18 Threading
 
 マルチスレッド
@@ -1410,17 +1450,17 @@ routine that modifies necessary global state such as a process-wide cache.
 Do not rely on the atomicity of built-in types.  
 組み込み型の不可分性にたよらないでください。
 
-While Python’s built-in data types such as dictionaries appear to have
-atomic operations, there are corner cases where they aren’t atomic (e.g. if
-`__hash__` or `__eq__` are implemented as Python methods) and their atomicity
-should not be relied upon. Neither should you rely on atomic variable
-assignment (since this in turn depends on dictionaries).  
+While Python's built-in data types such as dictionaries appear to have atomic
+operations, there are corner cases where they aren't atomic (e.g. if `__hash__`
+or `__eq__` are implemented as Python methods) and their atomicity should not be
+relied upon. Neither should you rely on atomic variable assignment (since this
+in turn depends on dictionaries).  
 辞書のような Python 組み込みデータ型が不可分操作を提供しているように見えても、
 これらには不可分ではないエッジケースがあります（`__hash__` や `__eq__` が Python
 のメソッドとして実装されている場合など）。そしてその不可分性をあてにしてはならないのです。
 もちろん代入の不可分性もあてにしてはいけません（それが辞書になっていたとしてもです）。
 
-Use the Queue module’s `Queue` data type as the preferred way to communicate
+Use the Queue module's `Queue` data type as the preferred way to communicate
 data between threads. Otherwise, use the threading module and its locking
 primitives. Prefer condition variables and `threading.Condition` instead of
 using lower-level locks.  
@@ -1428,6 +1468,8 @@ using lower-level locks.
 そうでなければ threading モジュールと、これのロック用プリミティブをつかいます。
 その他の低レベルロックでなく条件変数 `threading.Condition` をつかってください。
 
+
+<a id="power-features"></a>
 ### 2.19 Power Features
 
 上級者機能
@@ -1439,11 +1481,11 @@ Avoid these features.
 
 定義
 
-Python is an extremely flexible language and gives you many fancy features
-such as custom metaclasses, access to bytecode, on-the-fly compilation,
-dynamic inheritance, object reparenting, import hacks, reflection (e.g.
-some uses of `getattr()`), modification of system internals, `__del__`
-methods implementing customized cleanup, etc.  
+Python is an extremely flexible language and gives you many fancy features such
+as custom metaclasses, access to bytecode, on-the-fly compilation, dynamic
+inheritance, object reparenting, import hacks, reflection (e.g. some uses of
+`getattr()`), modification of system internals, `__del__` methods implementing
+customized cleanup, etc.  
 Python は柔軟性に富んでいます。カスタム・メタクラス、バイトコードへのアクセス、
 実行時コンパイル、動的継承、親の更新、インポートハック、リフレクション（`getattr()`
 の応用）、システム内部の書きかえ、 `__del__` メソッドによるクリーンアップの改造など、
@@ -1460,11 +1502,11 @@ These are powerful language features. They can make your code more compact.
 
 欠点
 
-It’s very tempting to use these “cool” features when they’re not absolutely
-necessary. It’s harder to read, understand, and debug code that’s using
-unusual features underneath. It doesn’t seem that way at first (to the
-original author), but when revisiting the code, it tends to be more difficult
-than code that is longer but is straightforward.  
+It's very tempting to use these "cool" features when they're not absolutely
+necessary. It's harder to read, understand, and debug code that's using unusual
+features underneath. It doesn't seem that way at first (to the original author),
+but when revisiting the code, it tends to be more difficult than code that is
+longer but is straightforward.  
 とりたてて必要がなくてもつかいたくなるくらい「魅力的」な機能です。
 しかし背後で一般的でない機能をつかったコードは、読みづらく、把握しづらく、
 デバッグしづらくなります。最初はそうは見えません（コードの原著者には）が、
@@ -1477,13 +1519,14 @@ than code that is longer but is straightforward.
 Avoid these features in your code.  
 つかわないでください。
 
-Standard library modules and classes that internally use these features are
-okay to use (for example, `abc.ABCMeta`, `dataclasses`, and `enum`).  
+Standard library modules and classes that internally use these features are okay
+to use (for example, `abc.ABCMeta`, `dataclasses`, and `enum`).  
 標準ライブラリー定義のモジュールや、これらを内部的につかうクラスはつかって構いません。
 （たとえば `abc.ABCMeta` や `dataclasses`、 `enum` など）
 
 
-### 2.20 Modern Python: from __future__ imports
+<a id="modern-python"></a>
+### 2.20 Modern Python: from \_\_future\_\_ imports
 
 Python 新機能: `__future__` インポート
 
@@ -1496,9 +1539,9 @@ import to enable them on a per-file basis within earlier runtimes.
 
 定義
 
-Being able to turn on some of the more modern features via
-`from __future__ import` statements allows early use of features from expected
-future Python versions.  
+Being able to turn on some of the more modern features via `from __future__
+import` statements allows early use of features from expected future Python
+versions.  
 `from __future__ import` 文で新機能を有効にすると、 Python
 の将来バージョンでの機能を先行してつかえます。
 
@@ -1506,11 +1549,11 @@ future Python versions.
 
 利点
 
-This has proven to make runtime version upgrades smoother as changes can be
-made on a per-file basis while declaring compatibility and preventing
-regressions within those files. Modern code is more maintainable as it is
-less likely to accumulate technical debt that will be problematic during
-future runtime upgrades.  
+This has proven to make runtime version upgrades smoother as changes can be made
+on a per-file basis while declaring compatibility and preventing regressions
+within those files. Modern code is more maintainable as it is less likely to
+accumulate technical debt that will be problematic during future runtime
+upgrades.  
 ランタイムを円滑にアップグレードできます。ファイル単位で変更できますし、
 これらファイル中で互換性を定義したりバグを回帰させないよう対策できるためです。
 コードを近代化することで保守性も高まります。
@@ -1521,8 +1564,8 @@ future runtime upgrades.
 欠点
 
 Such code may not work on very old interpreter versions prior to the
-introduction of the needed future statement. The need for this is more common
-in projects supporting an extremely wide variety of environments.  
+introduction of the needed future statement. The need for this is more common in
+projects supporting an extremely wide variety of environments.  
 future 文がつかえるようになる前のはるかに古いインタープリターではつかえません。
 広範な環境をサポートするプロジェクトでは切実な問題です。
 
@@ -1533,15 +1576,14 @@ future 文がつかえるようになる前のはるかに古いインタープ�
 ##### from __future__ imports
 
 Use of `from __future__ import` statements is encouraged. It allows a given
-source file to start using more modern Python syntax features today. Once
-you no longer need to run on a version where the features are hidden behind
-a `__future__` import, feel free to remove those lines.  
+source file to start using more modern Python syntax features today. Once you no
+longer need to run on a version where the features are hidden behind a
+`__future__` import, feel free to remove those lines.  
 `from __future__ import` 文を活用してください。そのソースで、その日から近代的な
 Python 文法をつかえます。 `__future__` インポートで機能を上書きするバージョンの対応が不要になったなら、
 ためらわずにこの行の削除してください。
 
-In code that may execute on versions as old as 3.5 rather than >= 3.7,
-import:  
+In code that may execute on versions as old as 3.5 rather than >= 3.7, import:  
 バージョン 3.7 に満たない 3.5 程度に古い環境で実行するなら次をインポートしてください：
 
 ```python
@@ -1562,21 +1604,20 @@ For more information read the
 documentation.  
 さらに詳しくは [Python future 文](https://docs.python.org/3/library/__future__.html)の文書を参照してください。
 
-Please don’t remove these imports until you are confident the code is only
-ever used in a sufficiently modern environment. Even if you do not currently
-use the feature a specific future import enables in your code today, keeping
-it in place in the file prevents later modifications of the code from
-inadvertently depending on the older behavior.  
+Please don't remove these imports until you are confident the code is only ever
+used in a sufficiently modern environment. Even if you do not currently use the
+feature a specific future import enables in your code today, keeping it in place
+in the file prevents later modifications of the code from inadvertently
+depending on the older behavior.  
 上述のインポートは、コードが十二分にあたらしい環境でしか実行されないと確信できるまでは削除しないでください。
 future インポートで有効にした機能をつかっていないとしてもインポートは残してください。
 のちの変更で予期しなかった古い挙動に依存しないようにするためです。
 
-Use other `from __future__ import` statements as you see fit. We did not
-include `unicode_literals` in our recommendations for 2.7 as it was not a
-clear win due to implicit default codec conversion consequences it introduced
-in many places within 2.7. Most dual-version 2-and-3 code was better off with
-explicit use of `b''` and `u''` bytes and unicode string literals where
-necessary.  
+Use other `from __future__` import statements as you see fit. We did not include
+`unicode_literals` in our recommendations for 2.7 as it was not a clear win due
+to implicit default codec conversion consequences it introduced in many places
+within 2.7. Most dual-version 2-and-3 code was better off with explicit use of
+`b''` and `u''` bytes and unicode string literals where necessary.  
 このほかの `from __future__ import` は用途に応じてつかってください。
 なお 2.7 の推奨インポートに `unicode_literals` を含めなかったのは、結果、
 この暗黙の符号変換が 2.7 環境のいたるところで取りこまれるだろうと考えられ、
@@ -1586,31 +1627,33 @@ necessary.
 
 ##### The six, future, and past libraries
 
-When your project still needs to support use under both Python 2 and 3, use
-the [six](https://pypi.org/project/six/), [future](https://pypi.org/project/future/),
-and [past](https://pypi.org/project/past/) libraries as you see fit.
-They exist to make your code cleaner and life easier.  
+When your project still needs to support use under both Python 2 and 3, use the
+[six](https://pypi.org/project/six/),
+[future](https://pypi.org/project/future/), and
+[past](https://pypi.org/project/past/) libraries as you see fit. They exist to
+make your code cleaner and life easier.  
 プロジェクトが Python 2 と 3 の両対応をするなら、 [six](https://pypi.org/project/six/)、
 [future](https://pypi.org/project/future/)、 [past](https://pypi.org/project/past/)
 のいずれか、適切なライブラリーをつかってください。
 これらはコードをきれいに、そして人生を楽にしてくれます。
 
+
+<a id="typed-code"></a>
 ### 2.21 Type Annotated Code
 
 型注釈つきコード
 
 You can annotate Python 3 code with type hints according to
-[PEP-484](https://www.python.org/dev/peps/pep-0484/), and type-check the
-code at build time with a type checking tool like
-[pytype](https://github.com/google/pytype).  
+[PEP-484](https://www.python.org/dev/peps/pep-0484/), and type-check the code at
+build time with a type checking tool like [pytype](https://github.com/google/pytype).  
 Python 3 では [PEP-484](https://www.python.org/dev/peps/pep-0484/)
 にしたがった型ヒントをつけられ、 [pytype](https://github.com/google/pytype)
 などのツールでビルド時に型を確認できます。
 
 Type annotations can be in the source or in a
-[stub pyi file](https://www.python.org/dev/peps/pep-0484/#stub-files).
-Whenever possible, annotations should be in the source. Use pyi files for
-third-party or extension modules.  
+[stub pyi file](https://www.python.org/dev/peps/pep-0484/#stub-files). Whenever
+possible, annotations should be in the source. Use pyi files for third-party or
+extension modules.  
 型注釈はソースやスタブの pyi ファイルにつけられます。
 できるかぎりソースで注釈をしてください。
 Pyi ファイルをつかうのはサードパーティー製のモジュールや拡張モジュールの場合です。
@@ -1619,8 +1662,8 @@ Pyi ファイルをつかうのはサードパーティー製のモジュール�
 
 定義
 
-Type annotations (or “type hints”) are for function or method arguments
-and return values:  
+Type annotations (or "type hints") are for function or method arguments and
+return values:  
 型注釈（あるいは「型ヒント」）は引数や戻り値のある関数・メソッドのためのものです：
 
 ```python
@@ -1646,36 +1689,39 @@ a = some_func()  # type: SomeType
 
 利点
 
-Type annotations improve the readability and maintainability of your code.
-The type checker will convert many runtime errors to build-time errors,
-and reduce your ability to use [Power Features](#219-power-features).  
+Type annotations improve the readability and maintainability of your code. The
+type checker will convert many runtime errors to build-time errors, and reduce
+your ability to use [Power Features](#power-features).  
 型注釈はコードの可読性と保守性を高めます。
 型チェックをすると多くの実行時エラーをビルド時に検出できるようになり、
-[上級者向け機能](#219-power-features)にたよる必要も薄れます。
+[上級者向け機能](#power-features)にたよる必要も薄れます。
 
 #### 2.21.3 Cons
 
 欠点
 
-You will have to keep the type declarations up to date. You might see type
-errors that you think are valid code. Use of a type checker may reduce
-your ability to use [Power Features](#219-power-features).  
+You will have to keep the type declarations up to date.
+You might see type errors that you think are
+valid code. Use of a
+[type checker](https://github.com/google/pytype)
+may reduce your ability to use [Power Features](#power-features).  
 型の宣言を更新し続ける必要があります。
 ただしいとおもうコードに型エラーがつくこともあるでしょう。
-型チェッカーをつかうと[上級者向け機能](#219-power-features)をつかう能力が衰えるでしょう。
+型チェッカーをつかうと[上級者向け機能](#power-features)をつかう能力が衰えるでしょう。
 
 #### 2.21.4 Decision
 
 取り決め
 
-You are strongly encouraged to enable Python type analysis when updating
-code. When adding or modifying public APIs, include type annotations and
-enable checking via pytype in the build system. As static analysis is
-relatively new to Python, we acknowledge that undesired side-effects
-(such as wrongly inferred types) may prevent adoption by some projects.
-In those situations, authors are encouraged to add a comment with a 
-or link to a bug describing the issue(s) currently preventing type
-annotation adoption in the BUILD file or in the code itself as appropriate.  
+You are strongly encouraged to enable Python type analysis when updating code.
+When adding or modifying public APIs, include type annotations and enable
+checking via pytype in the build system. As static analysis is relatively new to
+Python, we acknowledge that undesired side-effects (such as
+wrongly
+inferred types) may prevent adoption by some projects. In those situations,
+authors are encouraged to add a comment with a TODO or link to a bug describing
+the issue(s) currently preventing type annotation adoption in the BUILD file or
+in the code itself as appropriate.  
 コードを更新するときに Python の型解析を有効にすることを強くおすすめします。
 あらたな公開 API の追加や更新の際は型注釈をつけ、ビルドシステムに pytype
 を組みこんでチェックしましょう。静的解析は Python に取りいれられてまだ日が浅いため
@@ -1685,20 +1731,24 @@ annotation adoption in the BUILD file or in the code itself as appropriate.
 適切に対応してください。
 
 
+<a id="python-style-rules"></a>
 ## 3 Python Style Rules
 
 Python 整形にかかわる規則
 
+
+<a id="semicolons"></a>
 ### 3.1 Semicolons
 
 セミコロン
 
-Do not terminate your lines with semicolons, and do not use semicolons
-to put two statements on the same line.  
+Do not terminate your lines with semicolons, and do not use semicolons to put
+two statements on the same line.  
 行末にセミコロンをおいてはいけません。
 ふたつの文を一行にまとめるためにセミコロンをつかってもいけません。
 
 
+<a id="line-length"></a>
 ### 3.2 Line length
 
 行の長さ
@@ -1709,24 +1759,26 @@ Maximum line length is *80 characters*.
 Explicit exceptions to the 80 character limit:  
 80文字を超えてよいのは以下にかぎります：
 
-* Long import statements.  
-長いインポート文。
-* URLs, pathnames, or long flags in comments.  
-コメント中の URL、ファイルパス名、長いフラグなど。
-* Long string module level constants not containing whitespace that would be
+-   Long import statements.  
+    長いインポート文。
+-   URLs, pathnames, or long flags in comments.  
+    コメント中の URL、ファイルパス名、長いフラグなど。
+-   Long string module level constants not containing whitespace that would be
+    inconvenient to split across lines such as URLs or pathnames.  
 inconvenient to split across lines such as URLs or pathnames.  
-モジュールレベルの文字列定数で空白をふくんでおらず、 URL
-やファイルパス名のように行をまたいだ分割が適さないもの。
-  * Pylint disable comments. (e.g.: `# pylint: disable=invalid-name`)  
-  Pylint 停止コメントを付します（`# pylint: disable=invalid-name`）
+    inconvenient to split across lines such as URLs or pathnames.  
+    モジュールレベルの文字列定数で空白をふくんでおらず、 URL
+    やファイルパス名のように行をまたいだ分割が適さないもの。
+    -   Pylint disable comments. (e.g.: `# pylint: disable=invalid-name`)
+        Pylint 停止コメントを付します（`# pylint: disable=invalid-name`）
 
 Do not use backslash line continuation except for `with` statements requiring
 three or more context managers.  
 バックスラッシュによる行継続はつかいません。（例外として、３つ以上のコンテキスト・
 マネージャーを必要とする `with` 文はバックスラッシュ継続を認めます）
 
-Make use of
-[Python’s implicit line joining inside parentheses, brackets and braces](http://docs.python.org/reference/lexical_analysis.html#implicit-line-joining).
+Make use of Python's
+[implicit line joining inside parentheses, brackets and braces](http://docs.python.org/reference/lexical_analysis.html#implicit-line-joining).
 If necessary, you can add an extra pair of parentheses around an expression.  
 [Python の括弧内の暗黙の行結合](http://docs.python.org/reference/lexical_analysis.html#implicit-line-joining)を活用します。
 必要に応じて式をかこむ括弧を追加してください。
@@ -1739,7 +1791,7 @@ Yes: foo_bar(self, width, height, color='black', design=None, x='foo',
          color == 'red' and emphasis == 'strong'):
 ```
 
-When a literal string won’t fit on a single line, use parentheses for implicit
+When a literal string won't fit on a single line, use parentheses for implicit
 line joining.  
 文字列リテラルが一行におさまらなければ括弧による行結合をつかいます。
 
@@ -1761,9 +1813,9 @@ No:  # See details at
      # v2.0/csv_file_name_extension_full_specification.html
 ```
 
-It is permissible to use backslash continuation when defining a `with`
-statement whose expressions span three or more lines. For two lines of
-expressions, use a nested `with` statement:  
+It is permissible to use backslash continuation when defining a `with` statement
+whose expressions span three or more lines. For two lines of expressions, use a
+nested `with` statement:  
 ３行以上にまたがる `with` 文を定義するときはバックスラッシュでの行継続をつかってよいものとします。
 ２式までなら `with` 文を入れ子にしてください。
 
@@ -1784,21 +1836,22 @@ Yes:  with very_long_first_expression_function() as spam:
               place_order(beans, spam)
 ```
 
-Make note of the indentation of the elements in the line continuation
-examples above; see the [indentation](#34-indentation) section for
-explanation.  
+Make note of the indentation of the elements in the line continuation examples
+above; see the [indentation](#34-indentation) section for explanation.  
 上記例中の継続行内要素のインデントについて注意してください。
 詳細は[インデント](#34-indentation)の節を参照してください。
 
 In all other cases where a line exceeds 80 characters, and the
-[yapf](https://github.com/google/yapf/) auto-formatter does not help bring
-the line below the limit, the line is allowed to exceed this maximum.
-Authors are encouraged to manually break the line up per the notes above
-when it is sensible.  
+[yapf](https://github.com/google/yapf/)
+auto-formatter does not help bring the line below the limit, the line is allowed
+to exceed this maximum. Authors are encouraged to manually break the line up per
+the notes above when it is sensible.  
 これ以外で、行が 80 文字を超えてしまい [yapf](https://github.com/google/yapf/)
 での自動整形で制限内におさまらない場合は、これらはすべて制限を超過してよいものとします。
 コードを書く人は上述の内容にしたがい理にかなった行わけをするよう努めてください。
 
+
+<a id="parentheses"></a>
 ### 3.3 Parentheses
 
 丸カッコ
@@ -1806,9 +1859,9 @@ when it is sensible.
 Use parentheses sparingly.  
 括弧は控えめに。
 
-It is fine, though not required, to use parentheses around tuples.
-Do not use them in return statements or conditional statements unless
-using parentheses for implied line continuation or to indicate a tuple.  
+It is fine, though not required, to use parentheses around tuples. Do not use
+them in return statements or conditional statements unless using parentheses for
+implied line continuation or to indicate a tuple.  
 タプルのまわりの括弧は、必要とはされていませんが、つけてください。
 ただし return 文や条件文では不要です。（この場合も、
 暗黙の行継続やタプルを明示するためなら利用可です）
@@ -1839,6 +1892,7 @@ No:  if (x):
 ```
 
 
+<a id="indentation"></a>
 ### 3.4 Indentation
 
 インデント
@@ -1847,10 +1901,10 @@ Indent your code blocks with *4 spaces*.
 コードブロックは空白４つでインデントします。
 
 Never use tabs or mix tabs and spaces. In cases of implied line continuation,
-you should align wrapped elements either vertically, as per the examples in
-the [line length](#32-line-length) section; or using a hanging indent of 4
-spaces, in which case there should be nothing after the open parenthesis or
-bracket on the first line.  
+you should align wrapped elements either vertically, as per the examples in the
+[line length](#32-line-length) section; or using a hanging indent of 4 spaces,
+in which case there should be nothing after the open parenthesis or bracket on
+the first line.  
 タブ文字やタブと空白を混ぜてつかわないでください。意図的に行を継続している場合、
 [行の長さ](#32-line-length)の節で例示したように各要素を縦にそろえてください。
 もしくは４空白のぶらさげインデントをおきます。
@@ -1912,6 +1966,9 @@ No:    # Stuff on first line forbidden
        }
 ```
 
+<a id="trailing_comma"></a>
+<a id="trailing_commas"></a>
+<a id="trailing-comma"></a>
 #### 3.4.1 Trailing commas in sequences of items?
 
 シーケンス末尾のコンマは？
@@ -1919,9 +1976,8 @@ No:    # Stuff on first line forbidden
 Trailing commas in sequences of items are recommended only when the closing
 container token `]`, `)`, or `}` does not appear on the same line as the final
 element. The presence of a trailing comma is also used as a hint to our Python
-code auto-formatter [YAPF](https://pypi.org/project/yapf/) to direct it to
-auto-format the container of items to one item per line when the `,` after the
-final element is present.  
+code auto-formatter [YAPF](https://pypi.org/project/yapf/) to direct it to auto-format the container
+of items to one item per line when the `,` after the final element is present.  
 項目並びの末尾のコンマは、 `]`、 `)`、 `}` のコンテナ終端トークンが最終要素とおなじ行にないときにつかいます。
 末尾コンマは Python コードの自動整形ツール [YAPF](https://pypi.org/project/yapf/)
 へのヒントにもなっており、末尾コンマはコンテナの要素ごとに１行で整形する指示になります。
@@ -1945,6 +2001,7 @@ No:    golomb4 = [
 ```
 
 
+<a id="blank-lines"></a>
 ### 3.5 Blank Lines
 
 空白行
@@ -1959,6 +2016,7 @@ blank lines as you judge appropriate within functions or methods.
 関数やメソッドの途中には適切と感じられるなら１行の空行を入れてください。
 
 
+<a id="whitespace"></a>
 ### 3.6 Whitespace
 
 空白文字類
@@ -1976,8 +2034,8 @@ Yes: spam(ham[1], {'eggs': 2}, [])
 No:  spam( ham[ 1 ], { 'eggs': 2 }, [ ] )
 ```
 
-No whitespace before a comma, semicolon, or colon. Do use whitespace
-after a comma, semicolon, or colon, except at the end of the line.  
+No whitespace before a comma, semicolon, or colon. Do use whitespace after a
+comma, semicolon, or colon, except at the end of the line.  
 コンマ、セミコロン、コロンの前には空白をおきません。コンマ、セミコロン、
 コロンの後ろには空白をいれます。（ただし行末は除きます）
 
@@ -1999,12 +2057,15 @@ indexing or slicing.
 ```python
 Yes: spam(1)
 ```
+
 ```python
 No:  spam (1)
 ```
+
 ```python
 Yes: dict['key'] = list[index]
 ```
+
 ```python
 No:  dict ['key'] = list [index]
 ```
@@ -2026,29 +2087,31 @@ for the insertion of spaces around arithmetic operators (`+`, `-`, `*`, `/`,
 ```python
 Yes: x == 1
 ```
+
 ```python
 No:  x<1
 ```
 
-Never use spaces around `=` when passing keyword arguments or defining a
-default parameter value, with one exception:
-[when a type annotation](#3194-default-values) is present, *do* use spaces
+Never use spaces around `=` when passing keyword arguments or defining a default
+parameter value, with one exception:
+[when a type annotation is present](#typing-default-values), _do_ use spaces
 around the `=` for the default parameter value.  
 キーワード引数とパラメーターの規定値を定義する `=` の両端には空白をおきません。
-唯一の例外は[規定値つきの型注釈](#3194-default-values)をしているときで、
+唯一の例外は[規定値つきの型注釈](#typing-default-values)をしているときで、
 規定値定義の `=` の両端に空白をいれます。
 
 ```python
 Yes: def complex(real, imag=0.0): return Magic(r=real, i=imag)
 Yes: def complex(real, imag: float = 0.0): return Magic(r=real, i=imag)
 ```
+
 ```python
 No:  def complex(real, imag = 0.0): return Magic(r = real, i = imag)
 No:  def complex(real, imag: float=0.0): return Magic(r = real, i = imag)
 ```
 
-Don’t use spaces to vertically align tokens on consecutive lines, since
-it becomes a maintenance burden (applies to `:`, `#`, `=`, etc.):  
+Don't use spaces to vertically align tokens on consecutive lines, since it
+becomes a maintenance burden (applies to `:`, `#`, `=`, etc.):  
 複数行でトークンの桁をそろえるために空白をつかってはいけません。
 のちの保守の重荷になるからです。（`:`, `#`, `=` などでの桁ぞろえも同様に不可です）
 
@@ -2062,6 +2125,7 @@ Yes:
       'long_name': 2,
   }
 ```
+
 ```python
 No:
   foo       = 1000  # comment
@@ -2074,13 +2138,14 @@ No:
 ```
 
 
+<a id="shebang-line"></a>
 ### 3.7 Shebang Line
 
 シェバン行
 
-Most `.py` files do not need to start with a `#!` line. Start the main file
-of a program with `#!/usr/bin/env python3` (to support virtualenvs) or
-`#!/usr/bin/python3` per
+Most `.py` files do not need to start with a `#!` line. Start the main file of a
+program with
+`#!/usr/bin/env python3` (to support virtualenvs) or `#!/usr/bin/python3` per
 [PEP-394](https://www.python.org/dev/peps/pep-0394/).  
 ほとんどの `.py` ファイルは `#!` 行ではじめる必要はありません。
 プログラムのメインファイルは（仮想環境に対応するなら） `#!/user/bin/env python3` で、
@@ -2095,23 +2160,26 @@ Python がモジュールをインポートするときにはこれを無視し�
 これは直接実行する想定のファイルでのみ必要です。
 
 
+<a id="documentation"></a>
 ### 3.8 Comments and Docstrings
 
 コメントと docstring
 
-Be sure to use the right style for module, function, method docstrings
-and inline comments.  
+Be sure to use the right style for module, function, method docstrings and
+inline comments.  
 モジュール、関数、メソッドの docstring やコード内コメントをただしく整形しましょう。
 
+<a id="docstrings"></a>
 #### 3.8.1 Docstrings
 
 docstring
 
-Python uses docstrings to document code. A docstring is a string that is the
+Python uses _docstrings_ to document code. A docstring is a string that is the
 first statement in a package, module, class or function. These strings can be
-extracted automatically through the `__doc__` member of the object and are
-used by `pydoc`. (Try running `pydoc` on your module to see how it looks.)
-Always use the three double-quote `"""` format for docstrings (per
+extracted automatically through the `__doc__` member of the object and are used
+by `pydoc`.
+(Try running `pydoc` on your module to see how it looks.) Always use the three
+double-quote `"""` format for docstrings (per
 [PEP 257](https://www.google.com/url?sa=D&q=http://www.python.org/dev/peps/pep-0257/)).
 A docstring should be organized as a summary line (one physical line not
 exceeding 80 characters) terminated by a period, question mark, or exclamation
@@ -2119,7 +2187,7 @@ point. When writing more (encouraged), this must be followed by a blank line,
 followed by the rest of the docstring starting at the same cursor position as
 the first quote of the first line. There are more formatting guidelines for
 docstrings below.  
-Python はコードのドキュメントに docstring をつかいます。 Docstring はパッケージ、
+Python はコードのドキュメントに _docstring_ をつかいます。 Docstring はパッケージ、
 モジュール、クラスや関数の一番はじめの「文字列」です。この文字列は対象の `__doc__`
 メンバーとして自動抽出され、これを `pydoc` がつかいます（どんな感じか自分のモジュールで
 `pydoc` を試してみてください）。
@@ -2130,6 +2198,7 @@ Docstring は [PEP 257](https://www.google.com/url?sa=D&q=http://www.python.org/
 そしてサマリー行の開始引用符のカーソル位置にあわせて続きを書きます。
 docstring 整形のガイドラインをつづけて紹介します。
 
+<a id="module-docs"></a>
 #### 3.8.2 Modules
 
 モジュール
@@ -2140,8 +2209,8 @@ BSD, LGPL, GPL)
 すべてのファイルにライセンスのボイラープレートを入れてください。
 プロジェクトに適したボイラープレートを選びます。（Apache 2.0、 BSD、 LGPL、 GPL など）
 
-Files should start with a docstring describing the contents and usage of
-the module.  
+Files should start with a docstring describing the contents and usage of the
+module.  
 ファイルは docstring ではじめます。これにはモジュールの内容と利用法を書きます。
 
 ```python
@@ -2163,31 +2232,31 @@ examples.
 """
 ```
 
+<a id="function-docs"></a>
 #### 3.8.3 Functions and Methods
 
 関数とメソッド
 
-In this section, “function” means a method, function, or generator.  
+In this section, "function" means a method, function, or generator.  
 この節では「関数」はメソッド、関数、ジェネレーターすべてを指します。
 
-A function must have a docstring, unless it meets all of the following
-criteria:  
+A function must have a docstring, unless it meets all of the following criteria:  
 関数にはすべて docstring を書きます。ただし以下の三つは例外とします:
-* not externally visible  
-外部には非公開
-* very short  
-ごく短い
-* obvious  
-単純明快
+-   not externally visible  
+    外部には非公開
+-   very short  
+    ごく短い
+-   obvious  
+    単純明快
 
 A docstring should give enough information to write a call to the function
-without reading the function’s code. The docstring should describe the
-function’s calling syntax and its semantics, but generally not its
-implementation details, unless those details are relevant to how the function
-is to be used. For example, a function that mutates one of its arguments as a
-side effect should note that in its docstring. Otherwise, subtle but important
-details of a function’s implementation that are not relevant to the caller are
-better expressed as comments alongside the code than within the function’s
+without reading the function's code. The docstring should describe the
+function's calling syntax and its semantics, but generally not its
+implementation details, unless those details are relevant to how the function is
+to be used. For example, a function that mutates one of its arguments as a side
+effect should note that in its docstring. Otherwise, subtle but important
+details of a function's implementation that are not relevant to the caller are
+better expressed as comments alongside the code than within the function's
 docstring.  
 Docstring にはコードを読まずとも関数の呼びだしを書けるよう十分な情報を書きます。
 呼びだしの文法、そしてその意味（なにが起きるか）は必ず書きます。
@@ -2196,10 +2265,10 @@ Docstring にはコードを読まずとも関数の呼びだしを書けるよ�
 関数の呼びだし元には関係しないけれど、重要でしかし気づきにくい実装の詳細は関数の
 docstring でなくコードのコメントとして書くのがよいでしょう。
 
-The docstring should be descriptive-style
-(`"""Fetches rows from a Bigtable."""`) rather than imperative-style
-(`"""Fetch rows from a Bigtable."""`). The docstring for a `@property` data
-descriptor should use the same style as the docstring for an attribute or a
+The docstring should be descriptive-style (`"""Fetches rows from a
+Bigtable."""`) rather than imperative-style (`"""Fetch rows from a
+Bigtable."""`). The docstring for a `@property` data descriptor should use the
+same style as the docstring for an attribute or a
 [function argument](#doc-function-args) (`"""The Bigtable path."""`,
 rather than `"""Returns the Bigtable path."""`).  
 Docstring は命令形（`"""Bigtable から複数行を取得せよ。"""`）でなく叙述的
@@ -2208,13 +2277,13 @@ Docstring は命令形（`"""Bigtable から複数行を取得せよ。"""`）�
 （`"""Bigtable パスを返す。"""` でなく `"""Bigtable パス。"""`）。
 
 A method that overrides a method from a base class may have a simple docstring
-sending the reader to its overridden method's docstring, such as
-`"""See base class."""`. The rationale is that there is no need to repeat in
-many places documentation that is already present in the base method's
-docstring. However, if the overriding method's behavior is substantially
-different from the overridden method, or details need to be provided (e.g.,
-documenting additional side effects), a docstring with at least those
-differences is required on the overriding method.  
+sending the reader to its overridden method's docstring, such as `"""See base
+class."""`. The rationale is that there is no need to repeat in many places
+documentation that is already present in the base method's docstring. However,
+if the overriding method's behavior is substantially different from the
+overridden method, or details need to be provided (e.g., documenting additional
+side effects), a docstring with at least those differences is required on the
+overriding method.  
 基底クラスの実装をオーバーライドしたメソッドは、オーバーライドした実装の docstring
 を参照するよう（`"""基底クラスを参照。"""` のように）簡単に書いてかまいません。
 基底クラスの docstring で説明ずみの内容をあちこちで繰りかえさなくてよかろうという理由です。
@@ -2350,6 +2419,7 @@ def fetch_smalltable_rows(table_handle: smalltable.Table,
     """
 ```
 
+<a id="class-docs"></a>
 #### 3.8.4 Classes
 
 クラス
@@ -2382,12 +2452,13 @@ class SampleClass:
         """Performs operation blah."""
 ```
 
+<a id="comments"></a>
 #### 3.8.5 Block and Inline Comments
 
 ブロックコメントとインラインコメント
 
 The final place to have comments is in tricky parts of the code. If you're going
-to have to explain it at the next [code review](http://en.wikipedia.org/wiki/Code_review),
+to have to explain it at the next [code review](https://en.wikipedia.org/wiki/Code_review),
 you should comment it now. Complicated operations get a few lines of comments
 before the operations commence. Non-obvious ones get comments at the end of the
 line.  
@@ -2428,6 +2499,10 @@ knows Python (though not what you're trying to do) better than you do.
 
 <!-- The next section is copied from the C++ style guide. -->
 
+<a id="spelling"></a>
+<a id="punctuation"></a>
+<a id="grammar"></a>
+<a id="punctuation-spelling-grammar"></a>
 #### 3.8.6 Punctuation, Spelling, and Grammar
 
 句読点、綴り、文法
@@ -2453,6 +2528,7 @@ punctuation, spelling, and grammar help with that goal.
 適切な句読点、綴り、文法はこの目的に沿うものです。
 
 
+<a id="strings"></a>
 ### 3.10 Strings
 
 文字列
@@ -2586,6 +2662,7 @@ Don't do this.
       will collapse common leading spaces in each line.""")
 ```
 
+<a id="logging"></a>
 #### 3.10.1 Logging
 
 ログ出力
@@ -2633,6 +2710,7 @@ configured to output.
     logging.error(f'Cannot write to home directory, $HOME={homedir!r}')
 ```
 
+<a id="error-messages"></a>
 #### 3.10.2 Error Messages
 
 エラーメッセージ
@@ -2695,6 +2773,8 @@ messages shown to the user) should follow three guidelines:
 ```
 
 
+<a id="files-and-sockets"></a>
+<a id="files"></a>
 ### 3.11 Files, Sockets, and similar Stateful Resources
 
 ファイルやソケットなど、状態をもつリソース
@@ -2788,6 +2868,7 @@ documentation must explain clearly how resource lifetime is managed.
 文脈でのリソース管理がつかえない場合は、コードの文書でそのライフ管理を明快に説明してください。
 
 
+<a id="todo"></a>
 ### 3.12 TODO Comments
 
 TODO コメント
@@ -2824,6 +2905,7 @@ event ("Remove this code when all clients can handle XML responses.").
 あるいは状況（「全クライアントが XML 応答を処理できるようになったら削除」）を特定してください。
 
 
+<a id="imports-formatting"></a>
 ### 3.13 Imports formatting
 
 インポートの整形
@@ -2945,6 +3027,7 @@ from otherproject.ai import soul
 ```
 
 
+<a id="statements"></a>
 ### 3.14 Statements
 
 文
@@ -2981,6 +3064,8 @@ No:
 ```
 
 
+<a id="access-control"></a>
+<a id="accessors"></a>
 ### 3.15 Accessors
 
 アクセス用関数（アクセッサー）
@@ -3007,6 +3092,7 @@ complexity.
 古い方法で変数をつかおうとするコードははっきりと壊れ、結果、複雑さによる変更に気づけます。
 
 
+<a id="naming"></a>
 ### 3.16 Naming
 
 名づけ
@@ -3027,6 +3113,7 @@ letters within a word.
 Always use a `.py` filename extension. Never use dashes.  
 ファイル拡張子はつねに `.py` とします。ダッシュはつかいません。
 
+<a id="names-to-avoid"></a>
 #### 3.16.1 Names to Avoid 
 
 避けるべき名前
@@ -3062,6 +3149,7 @@ Always use a `.py` filename extension. Never use dashes.
     `id_to_name_dict`)  
     不要な型情報をふくむ名前（たとえば `id_to_name_dict`）
 
+<a id="naming-conventions"></a>
 #### 3.16.2 Naming Conventions
 
 命名規則
@@ -3110,6 +3198,7 @@ Always use a `.py` filename extension. Never use dashes.
     を分割するためです。 `test<MethodUnderTest>_<state> `といったパターン、たとえば
     `testPop_EmptyStack` は OK です。テストメソッド名には「唯一絶対の正解」はありません。
 
+<a id="file-naming"></a>
 #### 3.16.3 File Naming
 
 ファイル名
@@ -3122,6 +3211,7 @@ Python のファイル名は `.py` 拡張子をつけダッシュ（`-`）を含
 こうすることでインポートでき、ユニットテストもできます。拡張子なしの実行形式は、
 シンボリックリンクを張るか、 `exec "$0.py" "$@"` と定義した bash ラッパーをつかいます。
 
+<a id="guidelines-derived-from-guidos-recommendations"></a>
 #### 3.16.4 Guidelines derived from [Guido](https://en.wikipedia.org/wiki/Guido_van_Rossum)'s Recommendations
 
 Guido のおすすめから作成したガイドライン
@@ -3203,6 +3293,7 @@ Guido のおすすめから作成したガイドライン
 
 </table>
 
+<a id="math-notation"></a>
 #### 3.16.5 Mathematical Notation
 
 数学的記法
@@ -3222,6 +3313,7 @@ encountered out of context.
 （数式の文脈を離れたらこれがよくある形式でしょう）
 
 
+<a id="main"></a>
 ### 3.17 Main
 
 main 関数
@@ -3270,6 +3362,7 @@ should not be executed when the file is being `pydoc`ed.
 その他の操作を実行しないよう注意してください。
 
 
+<a id="function-length"></a>
 ### 3.18 Function length
 
 関数の長さ
@@ -3301,10 +3394,12 @@ the function into smaller and more manageable pieces.
 関数を小わけにして扱いやすくしましょう。
 
 
+<a id="type-annotations"></a>
 ### 3.19 Type Annotations
 
 型注釈
 
+<a id="typing-general"></a>
 #### 3.19.1 General Rules
 
 総則
@@ -3337,6 +3432,7 @@ the function into smaller and more manageable pieces.
         型の観点で安定したコードは注釈する。
         こなれたコード中のほとんどの関数は柔軟性をうしなわずに注釈できる。
 
+<a id="typing-line-breaking"></a>
 #### 3.19.2 Line Breaking
 
 改行
@@ -3442,6 +3538,7 @@ def my_function(
   ...
 ```
 
+<a id="forward-declarations"></a>
 #### 3.19.3 Forward Declarations
 
 前方宣言
@@ -3460,6 +3557,7 @@ class MyClass:
                stack: List["MyClass"]) -> None:
 ```
 
+<a id="typing-default-values"></a>
 #### 3.19.4 Default Values
 
 規定値
@@ -3484,6 +3582,7 @@ def func(a:int=0) -> int:
   ...
 ```
 
+<a id="none-type"></a>
 #### 3.19.5 NoneType
 
 NoneType
@@ -3519,6 +3618,8 @@ def implicit_optional(a: str = None) -> str:
   ...
 ```
 
+<a id="typing-aliases"></a>
+<a id="type-aliases"></a>
 #### 3.19.6 Type Aliases
 
 型エイリアス
@@ -3541,6 +3642,7 @@ Other examples are complex nested types and multiple return variables from a
 function (as a tuple).  
 ほかにも複雑な入れ子の型や複数の値を（タプルとして）返す関数などがあります。
 
+<a id="typing-ignore"></a>
 #### 3.19.7 Ignoring Types
 
 型情報の放棄
@@ -3556,6 +3658,7 @@ ignore`.
 # pytype: disable=attribute-error
 ```
 
+<a id="typing-variables"></a>
 #### 3.19.8 Typing Variables
 
 型変数
@@ -3583,6 +3686,7 @@ a = SomeUndecoratedFunction()  # type: Foo
 a: Foo = SomeUndecoratedFunction()
 ```
 
+<a id="typing-tuples"></a>
 #### 3.19.9 Tuples vs Lists
 
 タプルかリストか
@@ -3600,6 +3704,7 @@ b = (1, 2, 3)  # type: Tuple[int, ...]
 c = (1, "2", 3.5)  # type: Tuple[int, str, float]
 ```
 
+<a id="typevars"></a>
 #### 3.19.10 TypeVars
 
 型変数
@@ -3644,6 +3749,7 @@ def check_length(x: AnyStr) -> AnyStr:
   raise ValueError()
 ```
 
+<a id="typing-strings"></a>
 #### 3.19.11 String types
 
 文字列型
@@ -3708,6 +3814,7 @@ return type is the same as the argument type in the code above, use
 たとえば上のコードで戻り値型が引数の型と一致するようなときは
 [AnyStr](#31910-typevars) をつかいます。
 
+<a id="typing-imports"></a>
 #### 3.19.12 Imports For Typing
 
 型づけのためのインポート
@@ -3736,6 +3843,7 @@ Python コードで定義されたものとはみなしません。型とモジ�
 from typing import Any as AnyType
 ```
 
+<a id="typing-conditional-imports"></a>
 #### 3.19.13 Conditional Imports
 
 条件つきインポート
@@ -3775,6 +3883,7 @@ if typing.TYPE_CHECKING:
 def f(x: "sketch.Sketch"): ...
 ```
 
+<a id="typing-circular-deps"></a>
 #### 3.19.14 Circular Dependencies
 
 循環依存
@@ -3809,6 +3918,7 @@ def my_method(self, var: "some_mod.SomeType") -> None:
   ...
 ```
 
+<a id="generics"></a>
 #### 3.19.15 Generics
 
 ジェネリクス
@@ -3852,6 +3962,7 @@ def get_names(employee_ids: List[T]) -> Dict[T, str]:
 ```
 
 
+<a id="consistency"></a>
 ## 4 Parting Words
 
 むすび
