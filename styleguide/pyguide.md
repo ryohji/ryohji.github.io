@@ -64,8 +64,8 @@ See https://creativecommons.org/licenses/by/3.0/ for more details.
 
 Python is the main dynamic language used at Google. This style guide is a list
 of *dos and don'ts* for Python programs.  
-このスタイルガイドは Python プログラムで *すべきこと、してはいけないこと* を挙げたものです。
 Python は Google の主要な動的言語です。
+このスタイルガイドは Python プログラムで *すべきこと、してはいけないこと* を挙げたものです。
 
 To help you format code correctly, we've created a
 [settings file for Vim](https://google.github.io/styleguide/google_python_style.vim).
@@ -131,11 +131,11 @@ on your code.
 
 Suppress warnings if they are inappropriate so that other issues are not hidden.
 To suppress warnings, you can set a line-level comment:  
-（そのためにほかの問題が消えなくなるような）不適切な警告は抑止します。
-抑止は行単位のコメントで設定します：
+不適切な警告は抑止します（ほかの問題は隠さないでください）。行単位のコメントで抑止します：
 
 ```python
 dict = 'something awful'  # Bad Idea... pylint: disable=redefined-builtin
+                          # 拙いことだけど... pylint: disable=redefined-builtin
 ```
 
 `pylint`
