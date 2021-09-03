@@ -1,8 +1,8 @@
 # Google Python Style Guide
 
 Note that this copy is from Google's [work](https://google.github.io/styleguide/pyguide.html)
-which is originally licensed under the CC-By 3.0 License, and this copy inherits it too.
-See https://creativecommons.org/licenses/by/3.0/ for more details.  
+which is originally licensed under the [CC-By 3.0 License]((https://creativecommons.org/licenses/by/3.0/)),
+and this copy inherits it too.  
 これは Google が CC-By 3.0 ライセンスで公開しているガイドの日本語訳です。
 原文と同様 CC-By 3.0 で公開します。  
 ![Creative Commons License](https://i.creativecommons.org/l/by/3.0/88x31.png)
