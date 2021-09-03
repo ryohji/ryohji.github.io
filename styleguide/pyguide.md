@@ -215,7 +215,7 @@ are exempt from this rule.
 定義
 
 Reusability mechanism for sharing code from one module to another.  
-あるモジュールから別モジュールへコードを共有する、再利用の仕組みです。
+あるモジュールのコードを別モジュールと共有する再利用の仕組みです。
 
 #### 2.2.2 Pros
 
@@ -224,39 +224,33 @@ Reusability mechanism for sharing code from one module to another.
 The namespace management convention is simple. The source of each identifier is
 indicated in a consistent way; `x.Obj` says that object `Obj` is defined in
 module `x`.  
-名前空間を管理する規約は単純です。各識別子に対応するソースは一貫した方法で示されます。
-たとえば `x.Obj` はオブジェクト `Obj` はモジュール `x` で定義されているといった具合です。
+名前空間は単純な方法で管理します。識別子のソースを一貫した方法で提示します。
+たとえば `x.Obj` で、オブジェクト `Obj` はモジュール `x` に定義されているとわかります。
 
 #### 2.2.3 Cons
 
 欠点
 
 Module names can still collide. Some module names are inconveniently long.  
-モジュール名が衝突することがあります。つかいづらいほど長い名前のモジュールもあります。
+モジュール名が衝突することがあります。長くて不便な名前のモジュールもあります。
 
 #### 2.2.4 Decision
 
 取り決め
 
 *   Use `import x` for importing packages and modules.  
-    `import x` はパッケージあるいはモジュールのインポートにつかいます。
+    `import x` はパッケージあるいはモジュールのインポートにつかう。
 *   Use `from x import y` where `x` is the package prefix and `y` is the module
     name with no prefix.  
-name with no prefix.  
-    name with no prefix.  
     `from x import y` は前置されるパッケージ名 `x` に対しモジュール名 `y`
-    を前置なしで参照するためにつかいます。
+    を前置なしで参照するためにつかう。
 *   Use `from x import y as z` if two modules named `y` are to be imported or if
     `y` is an inconveniently long name.  
-`y` is an inconveniently long name.  
-    `y` is an inconveniently long name.  
     `from x import y as z` は同名のモジュール `y` をインポートするとき、あるいは
-    `y` が不必要に長いときにつかいます。
+    長く不便な名前の `y` につかう。
 *   Use `import y as z` only when `z` is a standard abbreviation (e.g., `np` for
-    `numpy`).
-`numpy`).  
-    `numpy`).
-    `import y as z` は `z` が標準的な略語のときにつかいます。（たとえば `numpy`
+    `numpy`).  
+    `import y as z` をつかうのは `z` が標準的な略語のときだけ。（たとえば `numpy`
     に対する `np`）
 
 For example the module `sound.effects.echo` may be imported as follows:  
@@ -413,13 +407,13 @@ Exceptions must follow certain conditions:
     enforce correct usage nor to indicate that some unexpected event occurred.
     If an exception is desired in the latter cases, use a raise statement. For
     example:  
-    組み込みの例外は、その意味が生きるときにつかいます。たとえば `ValueError`
-    は間違ったコードで事前条件が満たされないときにつかえます
+    組み込みの例外は、その意味を活かしてつかう。たとえば `ValueError` で、
+    コードを間違えて事前条件に違反したことを伝えられる
     （正の値が必要な処理で負の値を受けとったなど）。
-    公開 API で引数を確認するためには `assert` をつかいません。 `assert`
+    公開 API での引数確認のために `assert` をつかわない。 `assert`
     は内部的なただしさを確認するためにつかい、
-    ただしい利用方法を強制したり不測の事態を知らせるためにつかってはいけません。
-    不測の事態をつたえるために例外が望ましいならば raise 文をつかいます。たとえば：
+    ただしい利用方法を強調したり不測の事態を知らせるためにはつかわない。
+    例外で不測の事態をつたえるなら raise 文をつかう。たとえば：
 
     ```python
     Yes:
@@ -472,13 +466,13 @@ Exceptions must follow certain conditions:
 -   Libraries or packages may define their own exceptions. When doing so they
     must inherit from an existing exception class. Exception names should end in
     `Error` and should not introduce stutter (`foo.FooError`).  
-    ライブラリーやパッケージで独自の例外を定義できます。このときは既存の例外クラスを継承します。
-    例外名は `Error` で終わるようにします。また `foo.FooError` のような冗長な繰り返しは避けます。
+    ライブラリーやパッケージで独自の例外を定義できる。このときは既存の例外クラスを継承する。
+    例外名は `Error` で終わらせる。また `foo.FooError` のような冗長な繰り返しを避ける。
 
 -   Never use catch-all `except:` statements, or catch `Exception` or
     `StandardError`, unless you are  
     すべてを飲み込む `except:` 文や `Exception` や `StandardError`
-    の捕捉は決してつかわないこと。ただし、
+    の捕捉は決してつかわない。ただし、
 
     -   re-raising the exception, or  
         その例外を再送出する場合や、
@@ -486,29 +480,29 @@ Exceptions must follow certain conditions:
         propagated but are recorded and suppressed instead, such as protecting a
         thread from crashing by guarding its outermost block.  
         例外を伝播せず記録して抑止するようなプログラムの隔離場所をつくるとき
-        （たとえばスレッドの最外ブロックでクラッシュを防止する）は除きます。  
+        （たとえばスレッドの最外ブロックでクラッシュを防止する）は除く。  
 
     Python is very tolerant in this regard and `except:` will really catch
     everything including misspelled names, sys.exit() calls, Ctrl+C interrupts,
     unittest failures and all kinds of other exceptions that you simply don't
     want to catch.  
-    Python はこのような例外捕捉に従順なうえ `except:` はあらゆるものを捕まえてしまいます。
+    Python はこのような例外捕捉に従順なうえ `except:` はあらゆるものを捕まえてしまう。
     たとえば名前の間違い、 sys.exit() 呼びだし、 Ctrl+C による割り込み、ユニットテストの失敗、
-    その他よもや捕まえようとはおもわないあらゆる例外を、です。
+    その他よもや捕まえようとはおもわないあらゆる例外が対象となる。
 
 -   Minimize the amount of code in a `try`/`except` block. The larger the body
     of the `try`, the more likely that an exception will be raised by a line of
     code that you didn't expect to raise an exception. In those cases, the
     `try`/`except` block hides a real error.  
-    `try`/`except` ブロックで囲むコードをできるだけ短くしてください。
-    `try` の本文が大きくなるほど、望まなかったコード行までが例外を投げるようになります。
-    こうなると `try`/`except` ブロックが本当のエラーを隠してしまいます。
+    `try`/`except` ブロックで囲むコードをできるだけ短くする。
+    `try` の本文が大きくなるほど、望まなかったコード行までが例外を投げるようになる。
+    こうなると `try`/`except` ブロックが本当のエラーを隠してしまう。
 
 -   Use the `finally` clause to execute code whether or not an exception is
     raised in the `try` block. This is often useful for cleanup, i.e., closing a
     file.  
-    `finally` 節は `try` ブロック内での例外の発生如何によらず実行したいコードを書くためにつかいます。
-    `finally` はファイルを閉じるといった後片付けに役立ちます。
+    `finally` 節には `try` ブロック内での例外の発生如何によらず実行したいコードを書く。
+    `finally` はファイルを閉じるといった後片付けに役立つ。
 
 
 <a id="global-variables"></a>
@@ -1204,34 +1198,28 @@ Use the "implicit" false if possible, e.g., `if foo:` rather than `if foo !=
     E.g., when testing whether a variable or argument that defaults to `None`
     was set to some other value. The other value might be a value that's false
     in a boolean context!  
-    None はかならず `if foo is None` （あるいは `is not None`）で確認してください。
-    変数や引数のデフォルト値 `None` が別の値かを確かめるときなどです。
-    ほかにもブール値として偽と評価される値があります！
+    `None` はかならず `if foo is None` （あるいは `is not None`）で確認する。
+    変数や引数のデフォルト値 `None` が、別の値かを確かめるときなど。
+    `None` とおなじに、ほかにもブール値として偽と評価される値がある！
 -   Never compare a boolean variable to `False` using `==`. Use `if not x:`
     instead. If you need to distinguish `False` from `None` then chain the
     expressions, such as `if not x and x is not None:`.  
-expressions, such as `if not x and x is not None:`.  
-    expressions, such as `if not x and x is not None:`.  
-    ブール変数を `False` と `==` で比較せず、代わりに `if not x:` とします。
+    ブール変数を `False` と `==` で比較せず、代わりに `if not x:` とする。
     `False` と `None` を判別するには `if not x and x is not None:`
-    のように式をつなぎます。
+    のように式をつなぐ。
 -   For sequences (strings, lists, tuples), use the fact that empty sequences
     are false, so `if seq:` and `if not seq:` are preferable to `if len(seq):`
     and `if not len(seq):` respectively.  
-and `if not len(seq):` respectively.  
-    and `if not len(seq):` respectively.  
     並び（文字列、リスト、タプル）では、空の並びが偽であることを利用して `if seq:`
-    あるいは `if not seq:` のように書きます。（`if len(seq):` や `if not len(seq):`
-    より望ましい書きかたです）
+    あるいは `if not seq:` のように書く。（`if len(seq):` や `if not len(seq):`
+    より望ましい）
 -   When handling integers, implicit false may involve more risk than benefit
     (i.e., accidentally handling `None` as 0). You may compare a value which is
     known to be an integer (and is not the result of `len()`) against the
     integer 0.  
-integer 0.  
-    integer 0.  
-    整数の処理では暗黙の偽への変換は利点にくらべ危険が大きくなります
-    （つまり `None` が誤って 0 になる、など）。整数になることが確実な値は 0
-    と比較したほうがよいでしょう。（ただし `len()` の結果は除く）
+    整数の処理では暗黙の偽への変換は利点より危険が大きい
+    （つまり `None` を誤って 0 と処理する、など）。整数になることが確実な値は 0
+    と比較したほうがよい。（ただし `len()` の結果は除く）
 
     ```python
     Yes: if not users:
@@ -1777,7 +1765,7 @@ inconvenient to split across lines such as URLs or pathnames.
     モジュールレベルの文字列定数で空白をふくんでおらず、 URL
     やファイルパス名のように行をまたいだ分割が適さないもの。
     -   Pylint disable comments. (e.g.: `# pylint: disable=invalid-name`)
-        Pylint 停止コメントを付します（`# pylint: disable=invalid-name`）
+        Pylint 停止コメントを付す（`# pylint: disable=invalid-name`）
 
 Do not use backslash line continuation except for `with` statements requiring
 three or more context managers.  
@@ -3175,24 +3163,24 @@ Always use a `.py` filename extension. Never use dashes.
     (using name mangling); we discourage its use as it impacts readability and
     testability, and isn't *really* private. Prefer a single underscore.  
     アンダースコアをふたつインスタンス変数やメソッドに前置する（“dunder” ともいう `__`）
-    と、（名前修飾として）変数やメソッドがそのクラスの private という意味になります。
+    と、（名前修飾として）変数やメソッドがそのクラスの private という意味になる。
     しかしつかわないように。読みづらく、テストしづらく、そして *実際のところ* private
-    でもない。アンダースコアはひとつにしましょう。
+    でもない。アンダースコアはひとつにする。
 
 -   Place related classes and top-level functions together in a
     module.
     Unlike Java, there is no need to limit yourself to one class per module.  
-    関連するクラス群とトップレベル関数群はおなじモジュールに入れましょう。
-    Java とは違い１モジュール１クラスの制限はありません。
+    関連するクラス群とトップレベル関数群はおなじモジュールに入れる。
+    Java とは違い１モジュール１クラスの制限はない。
 
 -   Use CapWords for class names, but lower\_with\_under.py for module names.
     Although there are some old modules named CapWords.py, this is now
     discouraged because it's confusing when the module happens to be named after
     a class. ("wait -- did I write `import StringIO` or `from StringIO import
     StringIO`?")  
-    クラス名にはキャメルケースをつかい、モジュール名にはスネークケースをつかいます。
-    古いモジュールにキャメルケース名がありますが現在は非推奨です。
-    クラス名にちなんで名づけられたモジュール名がとくにまぎらわしいからです。
+    クラス名にはキャメルケースをつかい、モジュール名にはスネークケースをつかう。
+    キャメルケース名の古いモジュールがあるが現在は非推奨。
+    クラス名にちなんで名づけられたモジュール名はとくにまぎらわしい。
     （「あれ、 `import StringIO` としたっけ、それとも `from StringIO import StringIO`？」）
 
 -   Underscores may appear in *unittest* method names starting with `test` to
@@ -3200,10 +3188,10 @@ Always use a `.py` filename extension. Never use dashes.
     CapWords. One possible pattern is `test<MethodUnderTest>_<state>`; for
     example `testPop_EmptyStack` is okay. There is no One Correct Way to name
     test methods.  
-    `test` を前置する *ユニットテスト* のメソッド名にアンダースコアをつかうことがあります。
-    これはテスト名にふくまれる論理コンポーネント（これら名前がキャメルケースで識別できるとしても）
-    を分割するためです。 `test<MethodUnderTest>_<state> `といったパターン、たとえば
-    `testPop_EmptyStack` は OK です。テストメソッド名には「唯一絶対の正解」はありません。
+    `test` を前置する *ユニットテスト* のメソッド名にアンダースコアをつかうことがある。
+    これでテスト名にふくまれる論理コンポーネント（これら名前がキャメルケースで識別できるとしても）
+    を分割する。 `test<MethodUnderTest>_<state> `といったパターン、たとえば
+    `testPop_EmptyStack` はよい。テストメソッド名には「唯一絶対の正解」はない。
 
 <a id="file-naming"></a>
 #### 3.16.3 File Naming
