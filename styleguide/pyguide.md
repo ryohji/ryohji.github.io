@@ -2563,7 +2563,7 @@ which an optimization applies are not easy to predict and may change. Instead,
 add each substring to a list and `''.join` the list after the loop terminates,
 or write each substring to an `io.StringIO` buffer. These techniques
 consistently have amortized-linear run time complexity.  
-ループ中では `+` や `+=` で連結しないようにします。文字列の繰り返し連結したところ、
+ループ中では `+` や `+=` で連結しないようにします。文字列を繰り返し連結したところ、
 線形時間でなく二乗で遅くなった例もありました。この類の連結は CPython
 で最適化されたりもするでしょうけれど、実装詳細に過ぎます。
 最適化が効く条件は簡単に予測できませんし条件は変わりえます。
@@ -3320,7 +3320,7 @@ before executing your main program, so that it is not executed when the module
 is imported.  
 Python では `pydoc` やユニットテストをつかうために、モジュールはインポートできなくてはなりません。
 ファイルを実行可能にするなら、その主要機能は `main()` 関数に書きます。
-そしてモジュールのインポート時には動作しないよう` if __name__ == '__main__'`
+そしてモジュールのインポート時には動作しないよう `if __name__ == '__main__'`
 を確認してから主プログラムを実行します。
 
 When using [absl](https://github.com/abseil/abseil-py), use `app.run`:  
